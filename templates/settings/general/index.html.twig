@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-cog"></i> General Configuration</h3>
+                <div class="card-tools">
+                    <a href="{{ path('settings_general_edit') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> Edit Configuration
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>General Settings</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="40%">Allow Pre-Releases</th>
+                                <td>
+                                    {% if config.allowPreReleases is defined and config.allowPreReleases %}
+                                        <span class="badge badge-success"><i class="fas fa-check"></i> Enabled</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary"><i class="fas fa-times"></i> Disabled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Workspace Folder</th>
+                                <td><code>{{ config.workspaceFolder ?? 'workspaces' }}</code></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>Proxy Settings</h5>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="40%">Domain</th>
+                                <td><code>{{ config.proxy.domain ?? 'dev.localhost' }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>Subdomain</th>
+                                <td><code>{{ config.proxy.subDomain ?? 'devcontainer' }}</code></td>
+                            </tr>
+                        </table>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="icon fas fa-info-circle"></i>
+                            <strong>Example URLs:</strong><br>
+                            <small>
+                                With subdomain "<code>{{ config.proxy.subDomain ?? 'devcontainer' }}</code>" and domain "<code>{{ config.proxy.domain ?? 'dev.localhost' }}</code>":<br>
+                                - Main: <code>{{ config.proxy.subDomain ?? 'devcontainer' }}.{{ config.proxy.domain ?? 'dev.localhost' }}</code><br>
+                                - WWW: <code>www.{{ config.proxy.subDomain ?? 'devcontainer' }}.{{ config.proxy.domain ?? 'dev.localhost' }}</code>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="callout callout-info">
+                            <h5><i class="fas fa-book"></i> Documentation</h5>
+                            <p>For more information about these configuration options, please refer to the 
+                                <a href="https://derroylo.github.io/reference/webdev_yml/config" target="_blank">
+                                    official documentation <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

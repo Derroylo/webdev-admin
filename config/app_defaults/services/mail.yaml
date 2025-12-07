@@ -1,0 +1,69 @@
+templates:
+  mailpit:
+    name: "Mailpit - Email Testing Tool"
+    category: mail
+    description: "Email testing tool with web interface for development"
+    docker_image: "axllent/mailpit:latest"
+    default_port: 8025
+    subdomain_suggestion: "mail"
+    webdev_config:
+      name: "Mailpit - Email Testing Tool"
+      category: mail
+      active: false
+      port: 8025
+      subDomain: mail
+    docker_compose_snippet: |
+      mailpit:
+        image: axllent/mailpit:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-mailpit
+        networks:
+          - webdev-network
+        ports:
+          - 8025:8025  # Web UI
+          - 1025:1025  # SMTP
+
+  mailhog:
+    name: "MailHog - Email Testing Tool"
+    category: mail
+    description: "Email testing tool for developers (alternative to Mailpit)"
+    docker_image: "mailhog/mailhog:latest"
+    default_port: 8025
+    subdomain_suggestion: "mailhog"
+    webdev_config:
+      name: "MailHog - Email Testing Tool"
+      category: mail
+      active: false
+      port: 8025
+      subDomain: mailhog
+    docker_compose_snippet: |
+      mailhog:
+        image: mailhog/mailhog:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-mailhog
+        networks:
+          - webdev-network
+        ports:
+          - 8025:8025  # Web UI
+          - 1025:1025  # SMTP
+
+  mailtrap:
+    name: "Mailtrap - Email Sandbox"
+    category: mail
+    description: "Email sandbox for safe email testing"
+    docker_image: "eaudeweb/mailtrap:latest"
+    default_port: 80
+    subdomain_suggestion: "mailtrap"
+    webdev_config:
+      name: "Mailtrap - Email Sandbox"
+      category: mail
+      active: false
+      port: 80
+      subDomain: mailtrap
+    docker_compose_snippet: |
+      mailtrap:
+        image: eaudeweb/mailtrap:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-mailtrap
+        networks:
+          - webdev-network
+        ports:
+          - 1025:25    # SMTP
+          - 1080:80    # Web UI

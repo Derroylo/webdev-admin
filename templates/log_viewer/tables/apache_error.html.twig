@@ -1,0 +1,19 @@
+<table id="logTable" class="table table-bordered table-striped log-table">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Level</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+            <tr>
+                <td style="white-space: nowrap;">{{ log.timestamp }}</td>
+                <td><span class="log-level">{{ log.level }}</span></td>
+                <td>{{ log.message }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

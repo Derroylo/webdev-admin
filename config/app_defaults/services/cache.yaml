@@ -1,0 +1,63 @@
+templates:
+  redis:
+    name: "Redis - In-Memory Key-Value Store"
+    category: cache
+    description: "Fast in-memory data structure store, used as cache, message broker, and more"
+    docker_image: "redis:latest"
+    default_port: 6379
+    subdomain_suggestion: "redis"
+    webdev_config:
+      name: "Redis - In-Memory Key-Value Store"
+      category: cache
+      active: false
+      port: 6379
+    docker_compose_snippet: |
+      redis:
+        image: redis:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-redis
+        networks:
+          - webdev-network
+        ports:
+          - 6379:6379
+
+  memcached:
+    name: "Memcached - High-Performance Caching System"
+    category: cache
+    description: "Distributed memory object caching system"
+    docker_image: "memcached:latest"
+    default_port: 11211
+    subdomain_suggestion: "memcached"
+    webdev_config:
+      name: "Memcached - High-Performance Caching System"
+      category: cache
+      active: false
+      port: 11211
+    docker_compose_snippet: |
+      memcached:
+        image: memcached:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-memcached
+        networks:
+          - webdev-network
+        ports:
+          - 11211:11211
+
+  valkey:
+    name: "Valkey - Redis-Compatible In-Memory Store"
+    category: cache
+    description: "Open-source alternative to Redis with full compatibility"
+    docker_image: "valkey/valkey:latest"
+    default_port: 6379
+    subdomain_suggestion: "valkey"
+    webdev_config:
+      name: "Valkey - Redis-Compatible In-Memory Store"
+      category: cache
+      active: false
+      port: 6379
+    docker_compose_snippet: |
+      valkey:
+        image: valkey/valkey:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-valkey
+        networks:
+          - webdev-network
+        ports:
+          - 6379:6379

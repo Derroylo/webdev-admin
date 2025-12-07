@@ -1,0 +1,58 @@
+{# Project Selection Modal #}
+<div class="modal fade" id="projectSelectionModal" tabindex="-1" aria-labelledby="projectSelectionModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" data-project-selected="{{ project_selected|default(false) ? 'true' : 'false' }}">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title" id="projectSelectionModalLabel">
+                    <i class="fas fa-folder-open"></i> Select the active project
+                </h5>
+                {% if project_selected|default(false) %}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                {% endif %}
+            </div>
+            <div class="modal-body">
+                <div id="project-list-loading" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading projects...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading projects...</p>
+                </div>
+                <div id="project-list-error" class="alert alert-danger" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="project-list-error-message"></span>
+                </div>
+                <div id="project-list-container" style="display: none;">
+                    {% if not project_selected|default(false) %}
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle"></i> Please select a project to continue.
+                    </p>
+                    {% endif %}
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" id="project-search" class="form-control" placeholder="Search projects by name..." autocomplete="off">
+                        </div>
+                    </div>
+                    <div id="project-list-empty" class="alert alert-info" style="display: none;">
+                        <i class="fas fa-info-circle"></i> No webdev-compatible projects found. Please ensure projects have a <code>.devcontainer/webdev.yml</code> file.
+                    </div>
+                    <div id="project-list-no-results" class="alert alert-warning" style="display: none;">
+                        <i class="fas fa-search"></i> No projects match your search.
+                    </div>
+                    <div id="project-list" class="list-group" style="max-height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem;">
+                        <!-- Projects will be loaded here via JavaScript -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                {% if project_selected|default(false) %}
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,49 @@
+php:
+  versions:
+    - version: "7.4"
+      label: "PHP 7.4"
+      deprecated: true
+      eol_date: "2022-11-28"
+    - version: "8.0"
+      label: "PHP 8.0"
+      deprecated: true
+      eol_date: "2023-11-26"
+    - version: "8.1"
+      label: "PHP 8.1"
+      recommended: false
+    - version: "8.2"
+      label: "PHP 8.2"
+      recommended: false
+    - version: "8.3"
+      label: "PHP 8.3"
+      recommended: true
+    - version: "8.4"
+      label: "PHP 8.4 (Latest)"
+      recommended: true
+  default_version: "8.3"
+
+nodejs:
+  versions:
+    - version: 14
+      label: "Node.js 14 LTS"
+      lts: true
+      deprecated: true
+    - version: 16
+      label: "Node.js 16 LTS"
+      lts: true
+      deprecated: true
+    - version: 18
+      label: "Node.js 18 LTS"
+      lts: true
+      recommended: true
+    - version: 20
+      label: "Node.js 20 LTS (Iron)"
+      lts: true
+      recommended: true
+    - version: 22
+      label: "Node.js 22 (Latest)"
+      lts: false
+      recommended: false
+  default_version: 20
+  min_version: 14
+  max_version: 22

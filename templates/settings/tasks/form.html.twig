@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks"></i> 
+                    {% if is_edit %}Edit Task{% else %}Add New Task{% endif %}
+                </h3>
+            </div>
+            {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+            <div class="card-body">
+                <div class="form-group">
+                    {{ form_row(form.name) }}
+                    <small class="form-text text-muted">
+                        A descriptive name for the task
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        {{ form_widget(form.onlyMain) }}
+                        {{ form_label(form.onlyMain) }}
+                    </div>
+                    <small class="form-text text-muted">
+                        If checked, this task will only run in the main workspace
+                    </small>
+                </div>
+
+                <hr>
+
+                <h5>Lifecycle Hooks</h5>
+                <p class="text-muted">Add commands to run at different lifecycle stages</p>
+
+                <div class="form-group">
+                    <label>Init Commands</label>
+                    <div id="init-commands">
+                        {{ form_widget(form.init) }}
+                    </div>
+                    <small class="form-text text-muted">
+                        Commands to run during initialization
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Create Commands</label>
+                    <div id="create-commands">
+                        {{ form_widget(form.create) }}
+                    </div>
+                    <small class="form-text text-muted">
+                        Commands to run when the environment is created
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Start Commands</label>
+                    <div id="start-commands">
+                        {{ form_widget(form.start) }}
+                    </div>
+                    <small class="form-text text-muted">
+                        Commands to run when the environment starts
+                    </small>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="icon fas fa-info"></i>
+                    <strong>Note:</strong> Changes will be saved to your <code>webdev.yml</code> file.
+                    {% if is_edit %}The task key is <code>{{ task_key }}</code>{% endif %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Task
+                </button>
+                <a href="{{ path('settings_tasks') }}" class="btn btn-default">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h3 class="card-title">Lifecycle Hooks</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><strong>init:</strong> Run during initialization</li>
+                    <li><strong>create:</strong> Run when environment is created</li>
+                    <li><strong>start:</strong> Run when environment starts</li>
+                </ul>
+                <p class="text-muted mb-0">Commands are executed in the order they are listed.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

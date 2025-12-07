@@ -1,0 +1,23 @@
+<table id="logTable" class="table table-bordered table-striped log-table">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Channel</th>
+            <th>Level</th>
+            <th>Message</th>
+            <th>Context</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+            <tr>
+                <td style="white-space: nowrap;">{{ log.timestamp }}</td>
+                <td><span class="badge badge-secondary">{{ log.channel }}</span></td>
+                <td><span class="log-level">{{ log.level }}</span></td>
+                <td class="text-break">{{ log.message }}</td>
+                <td class="text-break"><small>{{ log.context }}</small></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

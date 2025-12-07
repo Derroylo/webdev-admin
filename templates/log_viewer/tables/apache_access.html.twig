@@ -1,0 +1,29 @@
+<table id="logTable" class="table table-bordered table-striped log-table">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>IP Address</th>
+            <th>Method</th>
+            <th>URI</th>
+            <th>Status</th>
+            <th>Size</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+            <tr>
+                <td style="white-space: nowrap;">{{ log.timestamp }}</td>
+                <td>{{ log.ip }}</td>
+                <td><span class="badge badge-primary">{{ log.method }}</span></td>
+                <td class="text-break">{{ log.uri }}</td>
+                <td>
+                    <span class="badge {{ log.status >= 500 ? 'badge-danger' : (log.status >= 400 ? 'badge-warning' : (log.status >= 300 ? 'badge-info' : 'badge-success')) }}">
+                        {{ log.status }}
+                    </span>
+                </td>
+                <td>{{ log.size }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

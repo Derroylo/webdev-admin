@@ -1,0 +1,115 @@
+templates:
+  mysql:
+    name: "MySQL Server - Relational Database"
+    category: database
+    description: "Popular open-source relational database"
+    docker_image: "mysql:8.0"
+    default_port: 3306
+    subdomain_suggestion: "mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: webdev
+      MYSQL_DATABASE: webdev
+      MYSQL_ROOT_HOST: "%"
+    webdev_config:
+      name: "MySQL Server - Relational Database"
+      category: database
+      active: false
+      port: 3306
+    docker_compose_snippet: |
+      mysql:
+        image: mysql:8.0
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-mysql
+        networks:
+          - webdev-network
+        ports:
+          - 3306:3306
+        environment:
+          - MYSQL_ROOT_PASSWORD=webdev
+          - MYSQL_DATABASE=webdev
+          - MYSQL_ROOT_HOST=%
+
+  postgresql:
+    name: "PostgreSQL - Advanced Relational Database"
+    category: database
+    description: "Advanced open-source relational database with strong standards compliance"
+    docker_image: "postgres:16"
+    default_port: 5432
+    subdomain_suggestion: "postgres"
+    environment:
+      POSTGRES_PASSWORD: webdev
+      POSTGRES_DB: webdev
+      POSTGRES_USER: webdev
+    webdev_config:
+      name: "PostgreSQL - Advanced Relational Database"
+      category: database
+      active: false
+      port: 5432
+      subDomain: postgres
+    docker_compose_snippet: |
+      postgresql:
+        image: postgres:16
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-postgresql
+        networks:
+          - webdev-network
+        ports:
+          - 5432:5432
+        environment:
+          - POSTGRES_PASSWORD=webdev
+          - POSTGRES_DB=webdev
+          - POSTGRES_USER=webdev
+
+  mongodb:
+    name: "MongoDB - NoSQL Document Database"
+    category: database
+    description: "Popular NoSQL database for flexible document storage"
+    docker_image: "mongo:7"
+    default_port: 27017
+    subdomain_suggestion: "mongo"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: webdev
+      MONGO_INITDB_ROOT_PASSWORD: webdev
+    webdev_config:
+      name: "MongoDB - NoSQL Document Database"
+      category: database
+      active: false
+      port: 27017
+      subDomain: mongo
+    docker_compose_snippet: |
+      mongodb:
+        image: mongo:7
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-mongodb
+        networks:
+          - webdev-network
+        ports:
+          - 27017:27017
+        environment:
+          - MONGO_INITDB_ROOT_USERNAME=webdev
+          - MONGO_INITDB_ROOT_PASSWORD=webdev
+
+  mariadb:
+    name: "MariaDB - MySQL-Compatible Database"
+    category: database
+    description: "Community-developed fork of MySQL with enhanced features"
+    docker_image: "mariadb:11"
+    default_port: 3306
+    subdomain_suggestion: "mariadb"
+    environment:
+      MYSQL_ROOT_PASSWORD: webdev
+      MYSQL_DATABASE: webdev
+    webdev_config:
+      name: "MariaDB - MySQL-Compatible Database"
+      category: database
+      active: false
+      port: 3306
+      subDomain: mariadb
+    docker_compose_snippet: |
+      mariadb:
+        image: mariadb:11
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-mariadb
+        networks:
+          - webdev-network
+        ports:
+          - 3306:3306
+        environment:
+          - MYSQL_ROOT_PASSWORD=webdev
+          - MYSQL_DATABASE=webdev

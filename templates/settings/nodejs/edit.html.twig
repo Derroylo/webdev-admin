@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fab fa-node-js"></i> Edit NodeJS Configuration</h3>
+            </div>
+            {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+            <div class="card-body">
+                <div class="form-group">
+                    {{ form_row(form.version) }}
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="icon fas fa-info"></i>
+                    <strong>Note:</strong> Changing NodeJS version will update your <code>webdev.yml</code> file.
+                    You may need to restart your development environment for changes to take effect.
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Configuration
+                </button>
+                <a href="{{ path('settings_nodejs') }}" class="btn btn-default">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h3 class="card-title">LTS Versions</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> NodeJS 14 LTS (Fermium)</li>
+                    <li><i class="fas fa-check text-success"></i> NodeJS 16 LTS (Gallium)</li>
+                    <li><i class="fas fa-check text-success"></i> NodeJS 18 LTS (Hydrogen)</li>
+                    <li><i class="fas fa-check text-success"></i> NodeJS 20 LTS (Iron)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

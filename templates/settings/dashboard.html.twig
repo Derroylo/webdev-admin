@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ php_version }}</h3>
+                <p>PHP Version</p>
+            </div>
+            <div class="icon">
+                <i class="fab fa-php"></i>
+            </div>
+            <a href="{{ path('settings_php') }}" class="small-box-footer">
+                Manage PHP <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ nodejs_version }}</h3>
+                <p>NodeJS Version</p>
+            </div>
+            <div class="icon">
+                <i class="fab fa-node-js"></i>
+            </div>
+            <a href="{{ path('settings_nodejs') }}" class="small-box-footer">
+                Manage NodeJS <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ active_services }}/{{ total_services }}</h3>
+                <p>Active Services</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-server"></i>
+            </div>
+            <a href="{{ path('settings_services') }}" class="small-box-footer">
+                Manage Services <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ total_tasks }}</h3>
+                <p>Tasks</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <a href="{{ path('settings_tasks') }}" class="small-box-footer">
+                Manage Tasks <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-info-circle"></i> Quick Actions</h3>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{{ path('settings_general_edit') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-cog"></i> Edit General Configuration
+                    </a>
+                    <a href="{{ path('settings_php_edit') }}" class="list-group-item list-group-item-action">
+                        <i class="fab fa-php"></i> Edit PHP Configuration
+                    </a>
+                    <a href="{{ path('settings_nodejs_edit') }}" class="list-group-item list-group-item-action">
+                        <i class="fab fa-node-js"></i> Edit NodeJS Configuration
+                    </a>
+                    <a href="{{ path('settings_services_new') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-plus"></i> Add New Service
+                    </a>
+                    <a href="{{ path('settings_tasks_new') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-plus"></i> Add New Task
+                    </a>
+                    <a href="{{ path('settings_tests_new') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-plus"></i> Add New Test
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-chart-pie"></i> Overview</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><strong>Total Services:</strong> {{ total_services }}</li>
+                    <li><strong>Active Services:</strong> {{ active_services }}</li>
+                    <li><strong>Total Tasks:</strong> {{ total_tasks }}</li>
+                    <li><strong>Total Tests:</strong> {{ total_tests }}</li>
+                </ul>
+                <hr>
+                <p class="text-muted">
+                    Manage your WebDev development environment configuration through this admin panel.
+                    Changes are saved directly to your <code>webdev.yml</code> file.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

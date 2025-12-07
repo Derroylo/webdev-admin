@@ -1,0 +1,243 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-vial"></i> 
+                    {% if is_edit %}Edit Test{% else %}Add New Test{% endif %}
+                </h3>
+            </div>
+            {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+            <div class="card-body">
+                {% if not is_edit %}
+                <div class="alert alert-info">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Quick Start:</strong> Select a template category and choose a pre-defined test tool, or continue with manual entry.
+                </div>
+
+                <div class="card mb-3 bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-file-alt"></i> Use Template (Optional)
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_row(form.template_category) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_row(form.template_key) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div id="template-info" class="alert alert-secondary d-none">
+                            <h6><i class="fas fa-info-circle"></i> Template Information</h6>
+                            <p id="template-description" class="mb-1"></p>
+                            <p id="template-package" class="mb-1"></p>
+                            <p id="template-docs" class="mb-0"></p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <h5 class="mb-3">
+                    <i class="fas fa-edit"></i> Test Configuration
+                </h5>
+
+                <div class="form-group">
+                    {{ form_row(form.name) }}
+                    <small class="form-text text-muted">
+                        A descriptive name for the test
+                    </small>
+                </div>
+
+                <hr>
+
+                <div class="form-group">
+                    <label>Commands <span class="text-danger">*</span></label>
+                    <div id="test-commands">
+                        {{ form_widget(form.commands) }}
+                    </div>
+                    <small class="form-text text-muted">
+                        Commands to execute for this test (at least one required)
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>Dependent Tests</label>
+                    <div id="dependent-tests">
+                        {{ form_widget(form.tests) }}
+                    </div>
+                    <small class="form-text text-muted">
+                        Other test keys that should run before this test
+                    </small>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="icon fas fa-info"></i>
+                    <strong>Note:</strong> Changes will be saved to your <code>webdev.yml</code> file.
+                    {% if is_edit %}The test key is <code>{{ test_key }}</code>{% endif %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Test
+                </button>
+                <a href="{{ path('settings_tests') }}" class="btn btn-default">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h3 class="card-title">Help & Information</h3>
+            </div>
+            <div class="card-body">
+                {% if not is_edit %}
+                <h6><strong>Available Templates</strong></h6>
+                <ul class="mb-3">
+                    <li><strong>Unit Testing:</strong> PHPUnit, Pest, Codeception, Behat</li>
+                    <li><strong>Static Analysis:</strong> PHPStan, Psalm, Phan</li>
+                    <li><strong>Code Formatting:</strong> PHP CS Fixer, PHPCS, Rector</li>
+                    <li><strong>Security:</strong> Security checkers</li>
+                    <li><strong>Mutation Testing:</strong> Infection</li>
+                </ul>
+                <hr>
+                {% endif %}
+                <h6><strong>Manual Entry</strong></h6>
+                <p><strong>Commands:</strong> Shell commands to run for testing</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li><code>phpunit</code></li>
+                    <li><code>phpstan analyze</code></li>
+                    <li><code>php-cs-fixer fix --dry-run</code></li>
+                </ul>
+                <p class="mb-0"><strong>Dependencies:</strong> Tests that must run before this one</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not is_edit %}
+<script>
+// Test templates data
+const testTemplates = {{ templates_by_category|json_encode|raw }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('test_template_category');
+    const templateSelect = document.getElementById('test_template_key');
+    const templateInfo = document.getElementById('template-info');
+    const nameField = document.getElementById('test_name');
+    const commandsContainer = document.getElementById('test_commands');
+
+    // Handle category change
+    categorySelect.addEventListener('change', function() {
+        const category = this.value;
+        
+        // Reset template select
+        templateSelect.innerHTML = '<option value="">-- Select a template --</option>';
+        templateSelect.disabled = !category;
+        templateInfo.classList.add('d-none');
+        
+        if (category && testTemplates[category]) {
+            // Populate template options
+            Object.keys(testTemplates[category]).forEach(key => {
+                const template = testTemplates[category][key];
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = template.name;
+                templateSelect.appendChild(option);
+            });
+        }
+    });
+
+    // Handle template selection
+    templateSelect.addEventListener('change', function() {
+        const templateKey = this.value;
+        const category = categorySelect.value;
+        
+        if (!templateKey || !category) {
+            templateInfo.classList.add('d-none');
+            return;
+        }
+        
+        const template = testTemplates[category][templateKey];
+        if (!template) return;
+        
+        // Show template info
+        const infoHtml = [];
+        if (template.description) {
+            document.getElementById('template-description').innerHTML = 
+                '<strong>Description:</strong> ' + template.description;
+        }
+        if (template.package) {
+            document.getElementById('template-package').innerHTML = 
+                '<strong>Package:</strong> <code>' + template.package + 
+                (template.suggested_version ? ' ' + template.suggested_version : '') + '</code>';
+        }
+        if (template.documentation_url) {
+            document.getElementById('template-docs').innerHTML = 
+                '<strong>Documentation:</strong> <a href="' + template.documentation_url + 
+                '" target="_blank">' + template.documentation_url + ' <i class="fas fa-external-link-alt"></i></a>';
+        }
+        templateInfo.classList.remove('d-none');
+        
+        // Auto-fill form fields
+        if (template.webdev_config) {
+            // Fill name
+            if (template.webdev_config.name) {
+                nameField.value = template.webdev_config.name;
+            }
+            
+            // Fill commands
+            if (template.webdev_config.commands && Array.isArray(template.webdev_config.commands)) {
+                // Clear existing commands except the first one
+                const existingInputs = commandsContainer.querySelectorAll('input[type="text"]');
+                existingInputs.forEach((input, index) => {
+                    if (index === 0) {
+                        input.value = template.webdev_config.commands[0] || '';
+                    } else {
+                        // Remove extra inputs
+                        const parent = input.closest('.form-group') || input.parentElement;
+                        if (parent) parent.remove();
+                    }
+                });
+                
+                // Add new command fields if needed
+                template.webdev_config.commands.forEach((command, index) => {
+                    if (index === 0) {
+                        // Already handled above
+                        return;
+                    }
+                    
+                    // Find the add button and click it
+                    const addButton = commandsContainer.querySelector('[data-collection-add-btn]');
+                    if (addButton) {
+                        addButton.click();
+                        // Set the value of the newly added field
+                        setTimeout(() => {
+                            const inputs = commandsContainer.querySelectorAll('input[type="text"]');
+                            if (inputs[index]) {
+                                inputs[index].value = command;
+                            }
+                        }, 50);
+                    }
+                });
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fab fa-node-js"></i> NodeJS Configuration</h3>
+                <div class="card-tools">
+                    <a href="{{ path('settings_nodejs_edit') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> Edit Configuration
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="40%">NodeJS Version</th>
+                        <td><span class="badge badge-success">{{ config.version ?? 'Not set' }}</span></td>
+                    </tr>
+                </table>
+
+                <div class="alert alert-info mt-3">
+                    <i class="icon fas fa-info"></i>
+                    <strong>Current NodeJS Version:</strong> {{ config.version ?? 'Not configured' }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h3 class="card-title">Information</h3>
+            </div>
+            <div class="card-body">
+                <p>NodeJS is used for front-end build tools and JavaScript development.</p>
+                <p class="mb-0"><strong>Supported Versions:</strong> 14, 16, 18, 20, 21, 22</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

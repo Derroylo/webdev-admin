@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fab fa-php"></i> Edit PHP Configuration</h3>
+            </div>
+            {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>General Settings</h5>
+                        <div class="form-group">
+                            {{ form_row(form.version) }}
+                        </div>
+
+                        <h5 class="mt-4">PHP Configuration (php.ini)</h5>
+                        <div class="form-group">
+                            {{ form_row(form.opcache_enable) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.xdebug_mode) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.xdebug_start_with_request) }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>Web Configuration</h5>
+                        <div class="form-group">
+                            {{ form_row(form.memory_limit_web) }}
+                        </div>
+
+                        <h5 class="mt-4">CLI Configuration</h5>
+                        <div class="form-group">
+                            {{ form_row(form.memory_limit_cli) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.max_execution_time_cli) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="icon fas fa-info"></i>
+                    <strong>Note:</strong> Changing PHP configuration will update your <code>webdev.yml</code> file.
+                    You may need to restart your development environment for changes to take effect.
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Configuration
+                </button>
+                <a href="{{ path('settings_php') }}" class="btn btn-default">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

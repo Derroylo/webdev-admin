@@ -1,0 +1,147 @@
+templates:
+  phpmyadmin:
+    name: "PhpMyAdmin - MySQL Admin Tool"
+    category: tools
+    description: "Web-based MySQL administration tool"
+    docker_image: "phpmyadmin:latest"
+    default_port: 80
+    subdomain_suggestion: "pma"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: webdev
+      UPLOAD_LIMIT: 2048M
+      PMA_PMADB: pma
+    webdev_config:
+      name: "PhpMyAdmin - MySQL Admin Tool"
+      category: tools
+      active: false
+      port: 80
+      subDomain: pma
+    docker_compose_snippet: |
+      phpmyadmin:
+        image: phpmyadmin:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-pma
+        depends_on:
+          - mysql
+        networks:
+          - webdev-network
+        environment:
+          - PMA_HOST=mysql
+          - PMA_USER=root
+          - PMA_PASSWORD=webdev
+          - UPLOAD_LIMIT=2048M
+          - PMA_PMADB=pma
+        ports:
+          - "8081:80"
+
+  phpcacheadmin:
+    name: "PhpCacheAdmin - UI for managing PHP cache systems"
+    category: tools
+    description: "Web interface for Redis, Memcached and other cache systems"
+    docker_image: "robinn/phpcacheadmin"
+    default_port: 80
+    subdomain_suggestion: "pca"
+    environment:
+      PCA_REDIS_0_HOST: redis
+      PCA_REDIS_0_PORT: "6379"
+    webdev_config:
+      name: "PhpCacheAdmin - UI for managing PHP cache systems"
+      category: tools
+      active: false
+      port: 80
+      subDomain: pca
+    docker_compose_snippet: |
+      phpcacheadmin:
+        image: robinn/phpcacheadmin
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-phpcacheadmin
+        networks:
+          - webdev-network
+        ports:
+          - "8082:80"
+        environment:
+          - PCA_REDIS_0_HOST=redis
+          - PCA_REDIS_0_PORT=6379
+
+  adminer:
+    name: "Adminer - Database Management Tool"
+    category: tools
+    description: "Full-featured database management tool for MySQL, PostgreSQL, and more"
+    docker_image: "adminer:latest"
+    default_port: 8080
+    subdomain_suggestion: "adminer"
+    webdev_config:
+      name: "Adminer - Database Management Tool"
+      category: tools
+      active: false
+      port: 8080
+      subDomain: adminer
+    docker_compose_snippet: |
+      adminer:
+        image: adminer:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-adminer
+        networks:
+          - webdev-network
+        ports:
+          - 8080:8080
+
+  mongo-express:
+    name: "Mongo Express - MongoDB Admin Interface"
+    category: tools
+    description: "Web-based MongoDB admin interface"
+    docker_image: "mongo-express:latest"
+    default_port: 8081
+    subdomain_suggestion: "mongoexpress"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: webdev
+      ME_CONFIG_MONGODB_ADMINPASSWORD: webdev
+      ME_CONFIG_MONGODB_URL: "mongodb://webdev:webdev@mongodb:27017/"
+    webdev_config:
+      name: "Mongo Express - MongoDB Admin Interface"
+      category: tools
+      active: false
+      port: 8081
+      subDomain: mongoexpress
+    docker_compose_snippet: |
+      mongo-express:
+        image: mongo-express:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-mongo-express
+        depends_on:
+          - mongodb
+        networks:
+          - webdev-network
+        ports:
+          - 8081:8081
+        environment:
+          - ME_CONFIG_MONGODB_ADMINUSERNAME=webdev
+          - ME_CONFIG_MONGODB_ADMINPASSWORD=webdev
+          - ME_CONFIG_MONGODB_URL=mongodb://webdev:webdev@mongodb:27017/
+
+  traefik:
+    name: "Traefik - Reverse Proxy"
+    category: proxy
+    description: "Modern HTTP reverse proxy and load balancer"
+    docker_image: "traefik:latest"
+    default_port: 8080
+    subdomain_suggestion: "traefik"
+    webdev_config:
+      name: "Traefik - Reverse Proxy for Web Development"
+      category: proxy
+      active: false
+      port: 8080
+      subDomain: traefik
+    docker_compose_snippet: |
+      traefik:
+        image: traefik:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-traefik
+        ports:
+          - "80:80"
+          - "443:443"
+          - "8083:8080"
+        volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock:ro"
+          - "./traefik/config/traefik.yml:/etc/traefik/traefik.yml:ro"
+          - "./traefik/config/dynamic.yml:/etc/traefik/dynamic.yml:ro"
+          - "./traefik/certs/:/etc/certs:ro"
+        networks:
+          - webdev-network

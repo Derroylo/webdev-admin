@@ -1,0 +1,102 @@
+config:
+  proxy:
+    subDomain: logs
+php:
+  version: 8.3
+  config:
+    opcache.enable: off
+    xdebug.mode: off
+    xdebug.start_with_request: yes
+  configWeb:
+    memory_limit: 512M
+  configCLI:
+    max_execution_time: 0
+    memory_limit: -1
+nodejs:
+  version: 22
+services:
+  traefik:
+    name: Reverse Proxy for Web Development
+    category: proxy
+    active: true
+    port: 8080
+    subDomain: traefik
+  mysql:
+    name: MySQL Server - Relational Database
+    category: database
+    active: false
+    port: 8080
+  mailpit:
+    name: Mailpit - Email Testing Tool
+    category: mail
+    port: 8025
+    subDomain: mail
+  redis:
+    name: Redis - In-Memory Key-Value Store
+    category: cache
+    port: 8080
+  phpmyadmin:
+    name: PhpMyAdmin - MySQL Admin Tool
+    category: tools
+    port: 80
+    subDomain: pma
+  phpcacheadmin:
+    name: PhpCacheAdmin - UI for managing PHP cache systems
+    category: tools
+    active: false
+    port: 80
+    subDomain: pca
+tasks:
+  services:
+    name: Start the active services
+    init:
+    - webdev-prerelease services start -d
+  settings:
+    name: Restore all settings for nodejs, php etc.
+    create:
+    - webdev-prerelease restore all
+    start:
+    - webdev-prerelease restore all
+  install:
+    name: Run composer install and setup everything
+    onlyMain: false
+    create:
+    - webdev-prerelease project install
+  apache:
+    name: Start apache
+    start:
+    - apachectl start
+  info:
+    name: Show information about the development environment
+    start:
+    - webdev-prerelease info --no-header
+tests:
+  lint:
+    name: Run linting
+    tests:
+    - phpcsfixer
+    - phpstan
+  phpstan:
+    name: Run phpstan
+    commands:
+    - php -d memory_limit=1G vendor/bin/phpstan analyze -c phpstan.dist.neon
+  phpstan-baseline:
+    name: Generate phpstan baseline
+    commands:
+    - php -d memory_limit=1G vendor/bin/phpstan analyze -c phpstan.dist.neon --generate-baseline
+  phpcsfixer:
+    name: Run php-cs-fixer
+    commands:
+    - php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --diff --using-cache=no
+  phpcsfixer-fix:
+    name: Run php-cs-fixer fix
+    commands:
+    - php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --diff --using-cache=no
+  phpunit:
+    name: Run phpunit tests
+    commands:
+    - php vendor/bin/phpunit --testdox --colors
+  coverage:
+    name: Run coverage
+    commands:
+    - XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-html coverage

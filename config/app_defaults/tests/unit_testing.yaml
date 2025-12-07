@@ -1,0 +1,62 @@
+templates:
+  phpunit:
+    name: "PHPUnit - Unit Testing Framework"
+    category: unit_testing
+    description: "The most popular PHP testing framework"
+    package: "phpunit/phpunit"
+    suggested_version: "^10.0"
+    config_file: "phpunit.xml.dist"
+    documentation_url: "https://phpunit.de/documentation.html"
+    webdev_config:
+      name: "Run PHPUnit tests"
+      commands:
+        - "php vendor/bin/phpunit --testdox --colors"
+    additional_configs:
+      coverage:
+        name: "Run PHPUnit with code coverage"
+        commands:
+          - "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-html coverage"
+
+  pest:
+    name: "Pest - Elegant PHP Testing Framework"
+    category: unit_testing
+    description: "Elegant testing framework with a focus on simplicity, built on top of PHPUnit"
+    package: "pestphp/pest"
+    suggested_version: "^2.0"
+    config_file: "phpunit.xml.dist"
+    documentation_url: "https://pestphp.com/"
+    webdev_config:
+      name: "Run Pest tests"
+      commands:
+        - "php vendor/bin/pest --colors=always"
+    additional_configs:
+      coverage:
+        name: "Run Pest with code coverage"
+        commands:
+          - "XDEBUG_MODE=coverage php vendor/bin/pest --coverage"
+
+  codeception:
+    name: "Codeception - Full-Stack Testing Framework"
+    category: unit_testing
+    description: "Modern full-stack testing framework for PHP supporting unit, functional, and acceptance tests"
+    package: "codeception/codeception"
+    suggested_version: "^5.0"
+    config_file: "codeception.yml"
+    documentation_url: "https://codeception.com/"
+    webdev_config:
+      name: "Run Codeception tests"
+      commands:
+        - "php vendor/bin/codecept run"
+
+  behat:
+    name: "Behat - BDD Testing Framework"
+    category: unit_testing
+    description: "Behavior-Driven Development framework for PHP"
+    package: "behat/behat"
+    suggested_version: "^3.13"
+    config_file: "behat.yml"
+    documentation_url: "https://docs.behat.org/"
+    webdev_config:
+      name: "Run Behat tests"
+      commands:
+        - "php vendor/bin/behat"

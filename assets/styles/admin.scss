@@ -1,0 +1,182 @@
+// Import AdminLTE
+@import '~admin-lte/dist/css/adminlte.min.css';
+
+// Import Font Awesome
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+
+// Import DataTables Bootstrap 5 styling
+@import '~datatables.net-bs5/css/dataTables.bootstrap5.min.css';
+
+// Custom variables and overrides
+$sidebar-dark-bg: #343a40;
+$sidebar-dark-hover-bg: #3f474e;
+
+// Custom styles for the admin panel
+.content-wrapper {
+    min-height: calc(100vh - 57px - 57px); // viewport - header - footer
+}
+
+.brand-link {
+    font-size: 1.25rem;
+    font-weight: 500;
+    
+    .brand-image {
+        margin-left: .5rem;
+        margin-right: .5rem;
+    }
+}
+
+// Card customizations
+.card {
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+    margin-bottom: 1rem;
+}
+
+// Form styling
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+// DataTables customizations
+.dataTables_wrapper {
+    .dataTables_length,
+    .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+    
+    table.dataTable {
+        margin-top: 0 !important;
+    }
+}
+
+// Log level badges
+.badge-log-error,
+.badge-log-critical,
+.badge-log-fatal {
+    background-color: #dc3545;
+}
+
+.badge-log-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-log-info,
+.badge-log-notice {
+    background-color: #17a2b8;
+}
+
+.badge-log-debug {
+    background-color: #6c757d;
+}
+
+// Service status toggles
+.service-toggle {
+    cursor: pointer;
+}
+
+// Responsive adjustments
+@media (max-width: 767.98px) {
+    .content-wrapper {
+        padding: 0.5rem;
+    }
+    
+    .card-body {
+        padding: 0.75rem;
+    }
+}
+
+// Settings forms
+.settings-form {
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-row {
+        margin-bottom: 1rem;
+    }
+}
+
+// Dynamic form collections (for tasks/tests)
+.collection-item {
+    position: relative;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    
+    .remove-item {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+}
+
+.add-collection-item {
+    margin-top: 0.5rem;
+}
+
+// Terminal output styling
+.terminal-output {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    max-height: 500px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    
+    // ANSI color support
+    .ansi-black-fg { color: #000000; }
+    .ansi-red-fg { color: #cd3131; }
+    .ansi-green-fg { color: #0dbc79; }
+    .ansi-yellow-fg { color: #e5e510; }
+    .ansi-blue-fg { color: #2472c8; }
+    .ansi-magenta-fg { color: #bc3fbc; }
+    .ansi-cyan-fg { color: #11a8cd; }
+    .ansi-white-fg { color: #e5e5e5; }
+    
+    .ansi-bright-black-fg { color: #666666; }
+    .ansi-bright-red-fg { color: #f14c4c; }
+    .ansi-bright-green-fg { color: #23d18b; }
+    .ansi-bright-yellow-fg { color: #f5f543; }
+    .ansi-bright-blue-fg { color: #3b8eea; }
+    .ansi-bright-magenta-fg { color: #d670d6; }
+    .ansi-bright-cyan-fg { color: #29b8db; }
+    .ansi-bright-white-fg { color: #e5e5e5; }
+    
+    .ansi-black-bg { background-color: #000000; }
+    .ansi-red-bg { background-color: #cd3131; }
+    .ansi-green-bg { background-color: #0dbc79; }
+    .ansi-yellow-bg { background-color: #e5e510; }
+    .ansi-blue-bg { background-color: #2472c8; }
+    .ansi-magenta-bg { background-color: #bc3fbc; }
+    .ansi-cyan-bg { background-color: #11a8cd; }
+    .ansi-white-bg { background-color: #e5e5e5; }
+    
+    .ansi-bright-black-bg { background-color: #666666; }
+    .ansi-bright-red-bg { background-color: #f14c4c; }
+    .ansi-bright-green-bg { background-color: #23d18b; }
+    .ansi-bright-yellow-bg { background-color: #f5f543; }
+    .ansi-bright-blue-bg { background-color: #3b8eea; }
+    .ansi-bright-magenta-bg { background-color: #d670d6; }
+    .ansi-bright-cyan-bg { background-color: #29b8db; }
+    .ansi-bright-white-bg { background-color: #e5e5e5; }
+    
+    // Bold text
+    .ansi-bold { font-weight: bold; }
+    
+    // Dim text
+    .ansi-dim { opacity: 0.5; }
+    
+    // Italic
+    .ansi-italic { font-style: italic; }
+    
+    // Underline
+    .ansi-underline { text-decoration: underline; }
+}

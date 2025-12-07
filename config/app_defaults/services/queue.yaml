@@ -1,0 +1,93 @@
+templates:
+  rabbitmq:
+    name: "RabbitMQ - Message Broker"
+    category: queue
+    description: "Reliable message broker supporting multiple messaging protocols"
+    docker_image: "rabbitmq:3-management"
+    default_port: 5672
+    subdomain_suggestion: "rabbitmq"
+    environment:
+      RABBITMQ_DEFAULT_USER: webdev
+      RABBITMQ_DEFAULT_PASS: webdev
+    webdev_config:
+      name: "RabbitMQ - Message Broker"
+      category: queue
+      active: false
+      port: 15672
+      subDomain: rabbitmq
+    docker_compose_snippet: |
+      rabbitmq:
+        image: rabbitmq:3-management
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-rabbitmq
+        networks:
+          - webdev-network
+        ports:
+          - 5672:5672   # AMQP port
+          - 15672:15672 # Management UI
+        environment:
+          - RABBITMQ_DEFAULT_USER=webdev
+          - RABBITMQ_DEFAULT_PASS=webdev
+
+  kafka:
+    name: "Apache Kafka - Distributed Event Streaming"
+    category: queue
+    description: "Distributed event streaming platform for high-performance data pipelines"
+    docker_image: "confluentinc/cp-kafka:latest"
+    default_port: 9092
+    subdomain_suggestion: "kafka"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+    webdev_config:
+      name: "Apache Kafka - Distributed Event Streaming"
+      category: queue
+      active: false
+      port: 9092
+    docker_compose_snippet: |
+      zookeeper:
+        image: confluentinc/cp-zookeeper:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-zookeeper
+        networks:
+          - webdev-network
+        environment:
+          - ZOOKEEPER_CLIENT_PORT=2181
+          - ZOOKEEPER_TICK_TIME=2000
+      
+      kafka:
+        image: confluentinc/cp-kafka:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-kafka
+        depends_on:
+          - zookeeper
+        networks:
+          - webdev-network
+        ports:
+          - 9092:9092
+        environment:
+          - KAFKA_BROKER_ID=1
+          - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+          - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+          - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+
+  activemq:
+    name: "Apache ActiveMQ - Message Broker"
+    category: queue
+    description: "Popular open-source message broker with JMS support"
+    docker_image: "apache/activemq-classic:latest"
+    default_port: 61616
+    subdomain_suggestion: "activemq"
+    webdev_config:
+      name: "Apache ActiveMQ - Message Broker"
+      category: queue
+      active: false
+      port: 8161
+      subDomain: activemq
+    docker_compose_snippet: |
+      activemq:
+        image: apache/activemq-classic:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-activemq
+        networks:
+          - webdev-network
+        ports:
+          - 61616:61616 # OpenWire
+          - 8161:8161   # Web Console

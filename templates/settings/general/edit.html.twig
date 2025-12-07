@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-cog"></i> Edit General Configuration</h3>
+            </div>
+            {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>General Settings</h5>
+                        <div class="form-group">
+                            <div class="form-check">
+                                {{ form_widget(form.allowPreReleases) }}
+                                {{ form_label(form.allowPreReleases) }}
+                            </div>
+                            {% if form.allowPreReleases.vars.help is defined %}
+                                <small class="form-text text-muted">{{ form.allowPreReleases.vars.help }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.workspaceFolder) }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>Proxy Settings</h5>
+                        <div class="form-group">
+                            {{ form_row(form.proxyDomain) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.proxySubDomain) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="icon fas fa-info"></i>
+                    <strong>Note:</strong> Changing general configuration will update your <code>webdev.yml</code> file.
+                    You may need to restart your development environment for changes to take effect.
+                </div>
+
+                <div class="alert alert-warning">
+                    <i class="icon fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> The <strong>workspaceFolder</strong> setting determines where additional workspaces are located. 
+                    Changing this value may require updating your project structure.
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Configuration
+                </button>
+                <a href="{{ path('settings_general') }}" class="btn btn-default">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

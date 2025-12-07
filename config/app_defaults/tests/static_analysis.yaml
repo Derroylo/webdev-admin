@@ -1,0 +1,49 @@
+templates:
+  phpstan:
+    name: "PHPStan - Static Analysis Tool"
+    category: static_analysis
+    description: "Find bugs in your code without running it"
+    package: "phpstan/phpstan"
+    suggested_version: "^1.10"
+    config_file: "phpstan.dist.neon"
+    documentation_url: "https://phpstan.org/"
+    webdev_config:
+      name: "Run PHPStan"
+      commands:
+        - "php -d memory_limit=1G vendor/bin/phpstan analyze -c phpstan.dist.neon"
+    additional_configs:
+      baseline:
+        name: "Generate PHPStan baseline"
+        commands:
+          - "php -d memory_limit=1G vendor/bin/phpstan analyze -c phpstan.dist.neon --generate-baseline"
+
+  psalm:
+    name: "Psalm - Static Analysis Tool"
+    category: static_analysis
+    description: "A static analysis tool for finding errors in PHP applications"
+    package: "vimeo/psalm"
+    suggested_version: "^5.0"
+    config_file: "psalm.xml"
+    documentation_url: "https://psalm.dev/"
+    webdev_config:
+      name: "Run Psalm"
+      commands:
+        - "php vendor/bin/psalm"
+    additional_configs:
+      baseline:
+        name: "Generate Psalm baseline"
+        commands:
+          - "php vendor/bin/psalm --set-baseline=psalm-baseline.xml"
+
+  phan:
+    name: "Phan - Static Analyzer"
+    category: static_analysis
+    description: "Fast and comprehensive static analyzer for PHP"
+    package: "phan/phan"
+    suggested_version: "^5.4"
+    config_file: ".phan/config.php"
+    documentation_url: "https://github.com/phan/phan"
+    webdev_config:
+      name: "Run Phan"
+      commands:
+        - "php vendor/bin/phan"

@@ -1,0 +1,18 @@
+templates:
+  infection:
+    name: "Infection - Mutation Testing Framework"
+    category: mutation_testing
+    description: "Measures the effectiveness of your test suite by introducing mutations"
+    package: "infection/infection"
+    suggested_version: "^0.27"
+    config_file: "infection.json.dist"
+    documentation_url: "https://infection.github.io/"
+    webdev_config:
+      name: "Run Infection"
+      commands:
+        - "php vendor/bin/infection --threads=4"
+    additional_configs:
+      min-msi:
+        name: "Run Infection with minimum MSI requirement"
+        commands:
+          - "php vendor/bin/infection --threads=4 --min-msi=80 --min-covered-msi=90"

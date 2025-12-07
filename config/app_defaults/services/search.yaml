@@ -1,0 +1,90 @@
+templates:
+  elasticsearch:
+    name: "Elasticsearch - Search and Analytics Engine"
+    category: search
+    description: "Distributed search and analytics engine built on Apache Lucene"
+    docker_image: "docker.elastic.co/elasticsearch/elasticsearch:8.11.0"
+    default_port: 9200
+    subdomain_suggestion: "elastic"
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    webdev_config:
+      name: "Elasticsearch - Search and Analytics Engine"
+      category: search
+      active: false
+      port: 9200
+      subDomain: elastic
+    docker_compose_snippet: |
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-elasticsearch
+        networks:
+          - webdev-network
+        ports:
+          - 9200:9200
+          - 9300:9300
+        environment:
+          - discovery.type=single-node
+          - xpack.security.enabled=false
+          - ES_JAVA_OPTS=-Xms512m -Xmx512m
+
+  opensearch:
+    name: "OpenSearch - Search and Analytics Engine"
+    category: search
+    description: "Community-driven, open-source fork of Elasticsearch"
+    docker_image: "opensearchproject/opensearch:latest"
+    default_port: 9200
+    subdomain_suggestion: "opensearch"
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+    webdev_config:
+      name: "OpenSearch - Search and Analytics Engine"
+      category: search
+      active: false
+      port: 9200
+      subDomain: opensearch
+    docker_compose_snippet: |
+      opensearch:
+        image: opensearchproject/opensearch:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-opensearch
+        networks:
+          - webdev-network
+        ports:
+          - 9200:9200
+          - 9600:9600
+        environment:
+          - discovery.type=single-node
+          - DISABLE_SECURITY_PLUGIN=true
+          - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+
+  meilisearch:
+    name: "Meilisearch - Lightning Fast Search Engine"
+    category: search
+    description: "A RESTful search API with instant results and typo tolerance"
+    docker_image: "getmeili/meilisearch:latest"
+    default_port: 7700
+    subdomain_suggestion: "search"
+    environment:
+      MEILI_ENV: development
+      MEILI_MASTER_KEY: webdev
+    webdev_config:
+      name: "Meilisearch - Lightning Fast Search Engine"
+      category: search
+      active: false
+      port: 7700
+      subDomain: search
+    docker_compose_snippet: |
+      meilisearch:
+        image: getmeili/meilisearch:latest
+        container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-meilisearch
+        networks:
+          - webdev-network
+        ports:
+          - 7700:7700
+        environment:
+          - MEILI_ENV=development
+          - MEILI_MASTER_KEY=webdev

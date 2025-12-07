@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-folder-open"></i> 
+                    {% if is_edit %}Edit Workspace{% else %}Add New Workspace{% endif %}
+                </h3>
+            </div>
+            {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+            <div class="card-body">
+                <div class="form-group">
+                    {{ form_row(form.name) }}
+                    <small class="form-text text-muted">
+                        Optional name for this workspace
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    {{ form_row(form.description) }}
+                    <small class="form-text text-muted">
+                        Describe the purpose of this workspace
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    {{ form_row(form.repository) }}
+                    <small class="form-text text-muted">
+                        Git repository URL (will be cloned if provided)
+                    </small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_row(form.branch) }}
+                            <small class="form-text text-muted">
+                                Branch to checkout (e.g., main, develop)
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_row(form.folder) }}
+                            <small class="form-text text-muted">
+                                Subfolder name (defaults to workspace key)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_row(form.docRoot) }}
+                            <small class="form-text text-muted">
+                                Document root directory (default: public)
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_row(form.mode) }}
+                            <small class="form-text text-muted">
+                                Workspace mode (currently only vhost is supported)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.subDomains) }}
+                    <div id="subdomains-collection" data-prototype="{{ form_widget(form.subDomains.vars.prototype)|e('html_attr') }}">
+                        {% for subdomain in form.subDomains %}
+                            <div class="subdomain-item mb-2">
+                                <div class="input-group">
+                                    {{ form_widget(subdomain) }}
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-danger remove-subdomain">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-subdomain">
+                        <i class="fas fa-plus"></i> Add Subdomain
+                    </button>
+                    <small class="form-text text-muted">
+                        Define subdomains for accessing this workspace
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        {{ form_widget(form.disableWeb) }}
+                        {{ form_label(form.disableWeb) }}
+                    </div>
+                    <small class="form-text text-muted">
+                        Check if workspace should not be served via Apache (e.g., for Node.js apps)
+                    </small>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="icon fas fa-info"></i>
+                    <strong>Note:</strong> Changes will be saved to your <code>webdev.yml</code> file.
+                    {% if is_edit %}The workspace key is <code>{{ workspace_key }}</code>{% endif %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Workspace
+                </button>
+                <a href="{{ path('settings_workspaces') }}" class="btn btn-default">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h3 class="card-title">Workspace Configuration</h3>
+            </div>
+            <div class="card-body">
+                <p>Workspaces allow you to define different project environments within your development setup.</p>
+                <ul class="list-unstyled">
+                    <li><strong>main:</strong> Your main project workspace (special key)</li>
+                    <li><strong>repository:</strong> Auto-clone Git repos</li>
+                    <li><strong>subDomains:</strong> Access via proxy</li>
+                    <li><strong>disableWeb:</strong> For non-Apache apps</li>
+                </ul>
+                <p class="mb-0"><small>See <a href="https://derroylo.github.io/reference/webdev_yml/workspaces" target="_blank">documentation</a> for more details.</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascripts %}
+<script>
+// Handle collection for subDomains
+document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('add-subdomain');
+    const collectionHolder = document.getElementById('subdomains-collection');
+    
+    if (!addButton || !collectionHolder) return;
+    
+    let index = collectionHolder.querySelectorAll('.subdomain-item').length;
+    
+    addButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const prototype = collectionHolder.dataset.prototype;
+        const newForm = prototype.replace(/__name__/g, index);
+        
+        const div = document.createElement('div');
+        div.className = 'subdomain-item mb-2';
+        div.innerHTML = `
+            <div class="input-group">
+                ${newForm}
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-danger remove-subdomain">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        collectionHolder.appendChild(div);
+        index++;
+        
+        attachRemoveHandler(div.querySelector('.remove-subdomain'));
+    });
+    
+    function attachRemoveHandler(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.closest('.subdomain-item').remove();
+        });
+    }
+    
+    // Attach to existing items
+    document.querySelectorAll('.remove-subdomain').forEach(attachRemoveHandler);
+});
+</script>
+{% endblock %}
+

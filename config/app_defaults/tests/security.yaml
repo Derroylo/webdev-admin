@@ -1,0 +1,37 @@
+templates:
+  security-checker:
+    name: "Symfony Security Checker"
+    category: security
+    description: "Check for known security vulnerabilities in dependencies"
+    package: "symfony/security-checker"
+    suggested_version: "^6.0"
+    documentation_url: "https://github.com/symfony/security-checker"
+    webdev_config:
+      name: "Run Security Checker"
+      commands:
+        - "php vendor/bin/security-checker security:check"
+
+  local-php-security-checker:
+    name: "Local PHP Security Checker"
+    category: security
+    description: "Check composer dependencies for known security vulnerabilities"
+    package: "fabpot/local-php-security-checker"
+    suggested_version: "^2.0"
+    documentation_url: "https://github.com/fabpot/local-php-security-checker"
+    webdev_config:
+      name: "Run Local PHP Security Checker"
+      commands:
+        - "php vendor/bin/local-php-security-checker"
+
+  enlightn:
+    name: "Enlightn Security Scanner"
+    category: security
+    description: "Security and performance scanner for Laravel/PHP applications"
+    package: "enlightn/enlightn"
+    suggested_version: "^2.0"
+    config_file: "config/enlightn.php"
+    documentation_url: "https://www.laravel-enlightn.com/"
+    webdev_config:
+      name: "Run Enlightn Security Scanner"
+      commands:
+        - "php artisan enlightn"

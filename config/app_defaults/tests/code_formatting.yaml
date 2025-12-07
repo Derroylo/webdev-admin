@@ -1,0 +1,67 @@
+templates:
+  php-cs-fixer:
+    name: "PHP CS Fixer - Code Style Fixer"
+    category: code_formatting
+    description: "Tool to automatically fix PHP Coding Standards issues"
+    package: "friendsofphp/php-cs-fixer"
+    suggested_version: "^3.0"
+    config_file: ".php-cs-fixer.dist.php"
+    documentation_url: "https://cs.symfony.com/"
+    webdev_config:
+      name: "Run PHP CS Fixer (check only)"
+      commands:
+        - "php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --dry-run --diff --using-cache=no"
+    additional_configs:
+      fix:
+        name: "Run PHP CS Fixer (apply fixes)"
+        commands:
+          - "php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -vvv --diff --using-cache=no"
+
+  phpcs:
+    name: "PHP_CodeSniffer - Code Standards Checker"
+    category: code_formatting
+    description: "Detects violations of coding standards"
+    package: "squizlabs/php_codesniffer"
+    suggested_version: "^3.7"
+    config_file: "phpcs.xml.dist"
+    documentation_url: "https://github.com/squizlabs/PHP_CodeSniffer"
+    webdev_config:
+      name: "Run PHP CodeSniffer"
+      commands:
+        - "php vendor/bin/phpcs"
+    additional_configs:
+      fix:
+        name: "Run PHP Code Beautifier and Fixer"
+        commands:
+          - "php vendor/bin/phpcbf"
+
+  rector:
+    name: "Rector - Instant Upgrades and Automated Refactoring"
+    category: code_formatting
+    description: "Tool for instant upgrades and automated refactoring of PHP code"
+    package: "rector/rector"
+    suggested_version: "^1.0"
+    config_file: "rector.php"
+    documentation_url: "https://getrector.com/"
+    webdev_config:
+      name: "Run Rector (dry-run)"
+      commands:
+        - "php vendor/bin/rector process --dry-run"
+    additional_configs:
+      fix:
+        name: "Run Rector (apply changes)"
+        commands:
+          - "php vendor/bin/rector process"
+
+  phpmd:
+    name: "PHPMD - PHP Mess Detector"
+    category: code_formatting
+    description: "Detects code smells and possible errors in PHP code"
+    package: "phpmd/phpmd"
+    suggested_version: "^2.13"
+    config_file: "phpmd.xml"
+    documentation_url: "https://phpmd.org/"
+    webdev_config:
+      name: "Run PHPMD"
+      commands:
+        - "php vendor/bin/phpmd src text cleancode,codesize,controversial,design,naming,unusedcode"

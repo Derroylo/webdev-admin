@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ log_title }} - WebDev Admin{% endblock %}
+
+{% block breadcrumb %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ log_title }}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="breadcrumb-item">Logs</li>
+                    <li class="breadcrumb-item active">{{ log_title }}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-file-alt"></i> Log Entries (Last 1000 entries)</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if logs is empty %}
+                    <div class="alert alert-info">
+                        <i class="icon fas fa-info"></i>
+                        No log entries found or log file is empty.
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        {% if log_type == 'apache-error' %}
+                            {{ include('log_viewer/tables/apache_error.html.twig') }}
+                        {% elseif log_type == 'apache-access' %}
+                            {{ include('log_viewer/tables/apache_access.html.twig') }}
+                        {% elseif log_type == 'php' %}
+                            {{ include('log_viewer/tables/php.html.twig') }}
+                        {% elseif log_type == 'symfony' %}
+                            {{ include('log_viewer/tables/symfony.html.twig') }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascripts %}
+<script>
+    $(document).ready(function() {
+        const table = $('#logTable').DataTable({
+            order: [[0, 'desc']],
+            pageLength: 50,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            responsive: true,
+            autoWidth: false,
+            language: {
+                search: "Search logs:",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ log entries",
+                infoEmpty: "No log entries available",
+                infoFiltered: "(filtered from _MAX_ total entries)",
+            }
+        });
+
+        // Color-code log levels
+        $('#logTable tbody tr').each(function() {
+            const levelCell = $(this).find('.log-level');
+            const level = levelCell.text().toLowerCase();
+            
+            if (level.includes('error') || level.includes('fatal') || level.includes('critical')) {
+                levelCell.addClass('badge badge-danger');
+            } else if (level.includes('warn')) {
+                levelCell.addClass('badge badge-warning');
+            } else if (level.includes('info') || level.includes('notice')) {
+                levelCell.addClass('badge badge-info');
+            } else if (level.includes('debug')) {
+                levelCell.addClass('badge badge-secondary');
+            } else {
+                levelCell.addClass('badge badge-light');
+            }
+        });
+    });
+</script>
+{% endblock %}
+

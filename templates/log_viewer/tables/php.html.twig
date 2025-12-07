@@ -1,0 +1,23 @@
+<table id="logTable" class="table table-bordered table-striped log-table">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Type</th>
+            <th>Message</th>
+            <th>File</th>
+            <th>Line</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+            <tr>
+                <td style="white-space: nowrap;">{{ log.timestamp }}</td>
+                <td><span class="log-level">{{ log.type }}</span></td>
+                <td class="text-break">{{ log.message }}</td>
+                <td class="text-break"><small>{{ log.file }}</small></td>
+                <td>{{ log.line > 0 ? log.line : '' }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

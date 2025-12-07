@@ -1,0 +1,24 @@
+{# Breadcrumb Component #}
+{% if breadcrumbs is defined and breadcrumbs|length > 0 %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title|default('Page') }}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
+                    {% for breadcrumb in breadcrumbs %}
+                        {% if loop.last %}
+                            <li class="breadcrumb-item active">{{ breadcrumb.label }}</li>
+                        {% else %}
+                            <li class="breadcrumb-item"><a href="{{ breadcrumb.url }}">{{ breadcrumb.label }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

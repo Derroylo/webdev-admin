@@ -1,0 +1,65 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/php
+{
+	"name": "Logviewer",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "devcontainer",
+	"runServices": ["devcontainer"],
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"in4margaret.compareit",
+				"DEVSENSE.composer-php-vscode",
+				"donjayamanne.githistory",
+				"eamodio.gitlens",
+				"DEVSENSE.intelli-php-vscode",
+				"DEVSENSE.phptools-vscode",
+				"marabesi.php-import-checker",
+				"DEVSENSE.profiler-php-vscode",
+				"bmewburn.vscode-intelephense-client",
+				"xdebug.php-debug",
+				"Vue.volar",
+				"dbaeumer.vscode-eslint",
+				"phil294.git-log--graph",
+				"zackiles.cursor-workbench"
+			]
+		}
+	},
+	"forwardPorts": [8080,3306,8025,8081,8082],
+	"portsAttributes": {
+		"8080": {
+			"label": "Apache Webserver",
+			"onAutoForward": "notify"
+		},
+		"3306": {
+			"label": "MySQL Database",
+			"onAutoForward": "notify"
+		},
+		"8025": {
+			"label": "Mailpit Webinterface",
+			"onAutoForward": "notify"
+		},
+		"8081": {
+			"label": "PHPMyAdmin",
+			"onAutoForward": "notify"
+		},
+		"8082": {
+			"label": "PHPCacheAdmin",
+			"onAutoForward": "notify"
+		}
+	},
+	"initializeCommand": "webdev-prerelease workspaces-on-init --no-header && webdev-prerelease tasks init --no-header",
+	"postStartCommand": "sudo ln -sf ~/webdev/prerelease/webdev.sh /usr/local/bin/webdev-prerelease && webdev-prerelease tasks create --no-header && sudo webdev-prerelease workspaces-post-start --no-header && webdev-prerelease tasks start --no-header",
+	"remoteUser": "webdev",
+	"workspaceFolder": "/var/www/html/",
+	"containerEnv": {
+    	"WEBDEV_WORKSPACE_FOLDER": "/var/www/html/",
+		// We need to set this variable so webdev can determine if it is running within a container or locally
+		"DEVCONTAINER": "1",
+		"COMPOSE_PROJECT_NAME": "${localWorkspaceFolderBasename}"
+	}
+}

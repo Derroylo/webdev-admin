@@ -1,0 +1,9 @@
+Cursor:
+  name: "Cursor"
+  command: "cursor ."
+PHPStorm:
+  name: "PHPStorm"
+  command: "phpstorm ."
+VSCode:
+  name: "VSCode"
+  command: "code ."

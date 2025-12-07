@@ -1,0 +1,212 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block breadcrumb %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">{{ page_title }}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    {% for breadcrumb in breadcrumbs %}
+                        {% if breadcrumb.url %}
+                            <li class="breadcrumb-item"><a href="{{ breadcrumb.url }}">{{ breadcrumb.label }}</a></li>
+                        {% else %}
+                            <li class="breadcrumb-item active">{{ breadcrumb.label }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-project-diagram"></i> Overview</h3>
+                <div class="card-tools">
+                    <a href="{{ path('projects_overview', {refresh: 1}) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if base_path is empty %}
+                    <div class="alert alert-warning">
+                        <i class="icon fas fa-exclamation-triangle"></i>
+                        <strong>Configuration Required:</strong> The PROJECTS_BASE_PATH environment variable is not set. 
+                        Please configure it to scan for projects.
+                    </div>
+                {% elseif projects is empty %}
+                    <div class="alert alert-info">
+                        <i class="icon fas fa-info"></i>
+                        No projects found in the configured base path: <code>{{ base_path }}</code>
+                    </div>
+                {% else %}
+                    <div class="mb-3">
+                        <div class="btn-group" role="group" aria-label="Filter projects by WebDev compatibility">
+                            <button type="button" class="btn btn-sm btn-success filter-btn active" data-filter="compatible">
+                                <i class="fas fa-check-circle"></i> Compatible
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger filter-btn" data-filter="incompatible">
+                                <i class="fas fa-times-circle"></i> Incompatible
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary filter-btn" data-filter="all">
+                                <i class="fas fa-list"></i> All
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="projects-table" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>PHP Version</th>
+                                    <th>Node.js Version</th>
+                                    <th>WebDev Compatible</th>
+                                    <th>Path</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in projects %}
+                                    <tr data-compatible="{{ project.isWebdevCompatible ? 'true' : 'false' }}">
+                                        <td><strong>{{ project.name }}</strong></td>
+                                        <td>
+                                            {% if project.phpVersion %}
+                                                <span class="badge badge-info">{{ project.phpVersion }}</span>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if project.nodejsVersion %}
+                                                <span class="badge badge-success">{{ project.nodejsVersion }}</span>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if project.isWebdevCompatible %}
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check"></i> Yes
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-danger">
+                                                    <i class="fas fa-times"></i> No
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <code class="text-sm">{{ project.path }}</code>
+                                        </td>
+                                        <td>
+                                            <div class="margin">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-sm btn-info">Open in IDE</button>
+                                                    <button type="button" class="btn btn-sm btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        {% for ideKey, ideConfig in ideConfigs %}
+                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-ide="{{ ideKey }}">{{ ideConfig.name }}</a></li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                                {% if project.isWebdevCompatible %}
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-sm btn-success">Project</button>
+                                                        <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Project start</a></li>
+                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Project stop</a></li>
+                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Project info</a></li>
+                                                            <div class="dropdown-divider"></div>
+                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Set as current project</a></li>
+
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                                {% if project.isWebdevCompatible and project.tests is not empty %}
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-sm btn-primary">Tests</button>
+                                                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            {% for testKey, testName in project.tests %}
+                                                                <li><a class="dropdown-item test-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-test-key="{{ testKey|e('html_attr') }}" data-test-name="{{ testName|e('html_attr') }}">{{ testName }}</a></li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+            {% if base_path %}
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="fas fa-info-circle"></i>
+                        Scanning from: <code>{{ base_path }}</code> | 
+                        Results are cached for 1 hour. Click "Refresh" to update immediately.
+                    </small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Test Execution Modal -->
+<div class="modal fade" id="testExecutionModal" tabindex="-1" aria-labelledby="testExecutionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testExecutionModalLabel">
+                    <i class="fas fa-terminal"></i> <span id="test-execution-title">Executing Test</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="test-execution-loading" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Executing test...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Executing test commands...</p>
+                </div>
+                <div id="test-execution-output" class="d-none">
+                    <div class="terminal-output" id="test-terminal-output"></div>
+                </div>
+                <div id="test-execution-error" class="d-none">
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="test-execution-error-message"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascripts %}
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
+
