@@ -12,7 +12,7 @@ class PhpConfigService extends AbstractWebDevConfigService implements PhpConfigS
 {
     public function __construct(
         private readonly PhpPresetsServiceInterface $phpPresetsService,
-        ProjectSessionServiceInterface $projectSessionService
+        ProjectSessionServiceInterface $projectSessionService,
     ) {
         parent::__construct($projectSessionService);
     }
@@ -23,6 +23,7 @@ class PhpConfigService extends AbstractWebDevConfigService implements PhpConfigS
     public function getPhpConfig(): array
     {
         $config = $this->getConfig();
+
         return $config['php'] ?? [];
     }
 
@@ -32,7 +33,7 @@ class PhpConfigService extends AbstractWebDevConfigService implements PhpConfigS
     public function updatePhpConfig(array $data): void
     {
         $this->validatePhpConfig($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -48,8 +49,9 @@ class PhpConfigService extends AbstractWebDevConfigService implements PhpConfigS
     {
         if (isset($data['version'])) {
             $validVersions = $this->phpPresetsService->getValidPhpVersions();
-            if (!in_array($data['version'], $validVersions, true)) {
-                throw new \InvalidArgumentException("Invalid PHP version. Must be one of: " . implode(', ', $validVersions));
+
+            if (!\in_array($data['version'], $validVersions, true)) {
+                throw new \InvalidArgumentException('Invalid PHP version. Must be one of: ' . implode(', ', $validVersions));
             }
         }
     }

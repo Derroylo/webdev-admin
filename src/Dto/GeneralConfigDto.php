@@ -19,12 +19,12 @@ class GeneralConfigDto
 
     public static function fromArray(array $data): self
     {
-        $dto = new self();
+        $dto                   = new self();
         $dto->allowPreReleases = $data['allowPreReleases'] ?? false;
-        $dto->workspaceFolder = $data['workspaceFolder'] ?? 'workspaces';
-        $dto->proxyDomain = $data['proxy']['domain'] ?? 'dev.localhost';
-        $dto->proxySubDomain = $data['proxy']['subDomain'] ?? 'devcontainer';
-        
+        $dto->workspaceFolder  = $data['workspaceFolder'] ?? 'workspaces';
+        $dto->proxyDomain      = $data['proxy']['domain'] ?? 'dev.localhost';
+        $dto->proxySubDomain   = $data['proxy']['subDomain'] ?? 'devcontainer';
+
         return $dto;
     }
 
@@ -32,9 +32,9 @@ class GeneralConfigDto
     {
         return [
             'allowPreReleases' => $this->allowPreReleases,
-            'workspaceFolder' => $this->workspaceFolder,
-            'proxy' => [
-                'domain' => $this->proxyDomain,
+            'workspaceFolder'  => $this->workspaceFolder,
+            'proxy'            => [
+                'domain'    => $this->proxyDomain,
                 'subDomain' => $this->proxySubDomain,
             ],
         ];

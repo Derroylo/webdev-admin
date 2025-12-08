@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteTaskController extends AbstractController
 {
     public function __construct(
-        private readonly TaskConfigServiceInterface $configService
+        private readonly TaskConfigServiceInterface $configService,
     ) {
     }
 

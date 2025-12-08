@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditSecretController extends AbstractController
 {
     public function __construct(
-        private readonly SecretConfigServiceInterface $configService
+        private readonly SecretConfigServiceInterface $configService,
     ) {
     }
 
@@ -23,13 +23,14 @@ class EditSecretController extends AbstractController
     public function __invoke(string $key, Request $request): Response
     {
         $secret = $this->configService->getSecret($key);
-        
+
         if (!$secret) {
             $this->addFlash('danger', 'Secret not found.');
+
             return $this->redirectToRoute('settings_secrets');
         }
 
-        $dto = SecretDto::fromArray($secret);
+        $dto  = SecretDto::fromArray($secret);
         $form = $this->createForm(SecretType::class, $dto);
         $form->handleRequest($request);
 
@@ -45,16 +46,15 @@ class EditSecretController extends AbstractController
         }
 
         return $this->render('settings/secrets/form.html.twig', [
-            'page_title' => 'Edit Secret: ' . $key,
+            'page_title'  => 'Edit Secret: ' . $key,
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Secrets', 'url' => $this->generateUrl('settings_secrets')],
                 ['label' => 'Edit: ' . $key, 'url' => ''],
             ],
-            'form' => $form,
-            'is_edit' => true,
+            'form'       => $form,
+            'is_edit'    => true,
             'secret_key' => $key,
         ]);
     }
 }
-

@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditGeneralConfigController extends AbstractController
 {
     public function __construct(
-        private readonly GeneralConfigServiceInterface $configService
+        private readonly GeneralConfigServiceInterface $configService,
     ) {
     }
 
@@ -23,7 +23,7 @@ class EditGeneralConfigController extends AbstractController
     public function __invoke(Request $request): Response
     {
         $generalConfig = $this->configService->getGeneralConfig();
-        $dto = GeneralConfigDto::fromArray($generalConfig);
+        $dto           = GeneralConfigDto::fromArray($generalConfig);
 
         $form = $this->createForm(GeneralConfigType::class, $dto);
         $form->handleRequest($request);
@@ -40,7 +40,7 @@ class EditGeneralConfigController extends AbstractController
         }
 
         return $this->render('settings/general/edit.html.twig', [
-            'page_title' => 'Edit General Configuration',
+            'page_title'  => 'Edit General Configuration',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'General Configuration', 'url' => $this->generateUrl('settings_general')],

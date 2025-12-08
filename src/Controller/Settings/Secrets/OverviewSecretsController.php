@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class OverviewSecretsController extends AbstractController
 {
     public function __construct(
-        private readonly SecretConfigServiceInterface $configService
+        private readonly SecretConfigServiceInterface $configService,
     ) {
     }
 
@@ -22,7 +22,7 @@ class OverviewSecretsController extends AbstractController
         $secrets = $this->configService->getSecrets();
 
         return $this->render('settings/secrets/index.html.twig', [
-            'page_title' => 'Secrets Management',
+            'page_title'  => 'Secrets Management',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Secrets', 'url' => ''],
@@ -31,4 +31,3 @@ class OverviewSecretsController extends AbstractController
         ]);
     }
 }
-

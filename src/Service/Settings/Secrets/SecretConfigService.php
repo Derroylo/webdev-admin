@@ -14,6 +14,7 @@ class SecretConfigService extends AbstractWebDevConfigService implements SecretC
     public function getSecrets(): array
     {
         $config = $this->getConfig();
+
         return $config['secrets'] ?? [];
     }
 
@@ -23,6 +24,7 @@ class SecretConfigService extends AbstractWebDevConfigService implements SecretC
     public function getSecret(string $key): ?array
     {
         $secrets = $this->getSecrets();
+
         return $secrets[$key] ?? null;
     }
 
@@ -32,7 +34,7 @@ class SecretConfigService extends AbstractWebDevConfigService implements SecretC
     public function createSecret(string $key, array $data): void
     {
         $this->validateSecretData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -55,7 +57,7 @@ class SecretConfigService extends AbstractWebDevConfigService implements SecretC
     public function updateSecret(string $key, array $data): void
     {
         $this->validateSecretData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -92,12 +94,12 @@ class SecretConfigService extends AbstractWebDevConfigService implements SecretC
     {
         // Source key is required
         if (!isset($data['source']['key']) || empty($data['source']['key'])) {
-            throw new \InvalidArgumentException("Secret source key is required");
+            throw new \InvalidArgumentException('Secret source key is required');
         }
 
         // Either target file or envVar must be present
         if (!isset($data['target']['file']) && !isset($data['target']['envVar'])) {
-            throw new \InvalidArgumentException("Secret must have either target file or envVar");
+            throw new \InvalidArgumentException('Secret must have either target file or envVar');
         }
     }
 }

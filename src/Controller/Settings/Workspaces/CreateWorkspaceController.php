@@ -15,14 +15,14 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateWorkspaceController extends AbstractController
 {
     public function __construct(
-        private readonly WorkspaceConfigServiceInterface $configService
+        private readonly WorkspaceConfigServiceInterface $configService,
     ) {
     }
 
     #[Route('/settings/workspaces/new', name: 'settings_workspaces_new')]
     public function __invoke(Request $request): Response
     {
-        $dto = new WorkspaceDto();
+        $dto  = new WorkspaceDto();
         $form = $this->createForm(WorkspaceType::class, $dto);
         $form->handleRequest($request);
 
@@ -30,7 +30,7 @@ class CreateWorkspaceController extends AbstractController
             try {
                 // Generate a key from the workspace name or folder
                 $key = $this->generateWorkspaceKey($request->request->all()['workspace'] ?? []);
-                
+
                 $this->configService->createWorkspace($key, $dto->toArray());
                 $this->addFlash('success', 'Workspace created successfully!');
 
@@ -41,13 +41,13 @@ class CreateWorkspaceController extends AbstractController
         }
 
         return $this->render('settings/workspaces/form.html.twig', [
-            'page_title' => 'Add New Workspace',
+            'page_title'  => 'Add New Workspace',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Workspaces', 'url' => $this->generateUrl('settings_workspaces')],
                 ['label' => 'New', 'url' => ''],
             ],
-            'form' => $form,
+            'form'    => $form,
             'is_edit' => false,
         ]);
     }
@@ -62,12 +62,11 @@ class CreateWorkspaceController extends AbstractController
         } else {
             return 'workspace_' . uniqid();
         }
-        
+
         // Generate a lowercase key without spaces
         $key = strtolower($key);
         $key = preg_replace('/[^a-z0-9]+/', '', $key);
-        
+
         return $key ?: 'workspace_' . uniqid();
     }
 }
-

@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditNodeJsSettingsController extends AbstractController
 {
     public function __construct(
-        private readonly NodeJsConfigServiceInterface $configService
+        private readonly NodeJsConfigServiceInterface $configService,
     ) {
     }
 
@@ -23,7 +23,7 @@ class EditNodeJsSettingsController extends AbstractController
     public function __invoke(Request $request): Response
     {
         $nodejsConfig = $this->configService->getNodeJsConfig();
-        $dto = NodeJsConfigDto::fromArray($nodejsConfig);
+        $dto          = NodeJsConfigDto::fromArray($nodejsConfig);
 
         $form = $this->createForm(NodeJsConfigType::class, $dto);
         $form->handleRequest($request);
@@ -40,7 +40,7 @@ class EditNodeJsSettingsController extends AbstractController
         }
 
         return $this->render('settings/nodejs/edit.html.twig', [
-            'page_title' => 'Edit NodeJS Configuration',
+            'page_title'  => 'Edit NodeJS Configuration',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'NodeJS Configuration', 'url' => $this->generateUrl('settings_nodejs')],

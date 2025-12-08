@@ -13,6 +13,7 @@ interface ProjectServiceInterface
      * Results are cached for performance
      *
      * @param string $basePath Base directory to scan for projects
+     *
      * @return ProjectDto[] Array of ProjectDto objects
      */
     public function getAllProjects(string $basePath): array;
@@ -28,8 +29,8 @@ interface ProjectServiceInterface
      * Force refresh projects (bypass cache)
      *
      * @param string $basePath Base directory to scan for projects
+     *
      * @return ProjectDto[] Array of ProjectDto objects
      */
     public function refreshProjects(string $basePath): array;
 }
-

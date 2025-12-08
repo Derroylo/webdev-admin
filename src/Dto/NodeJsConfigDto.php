@@ -11,9 +11,9 @@ class NodeJsConfigDto
 
     public static function fromArray(array $data): self
     {
-        $dto = new self();
+        $dto          = new self();
         $dto->version = isset($data['version']) ? (int) $data['version'] : null;
-        
+
         return $dto;
     }
 

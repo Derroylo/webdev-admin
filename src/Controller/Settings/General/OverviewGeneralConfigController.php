@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class OverviewGeneralConfigController extends AbstractController
 {
     public function __construct(
-        private readonly GeneralConfigServiceInterface $configService
+        private readonly GeneralConfigServiceInterface $configService,
     ) {
     }
 
@@ -22,7 +22,7 @@ class OverviewGeneralConfigController extends AbstractController
         $generalConfig = $this->configService->getGeneralConfig();
 
         return $this->render('settings/general/index.html.twig', [
-            'page_title' => 'General Configuration',
+            'page_title'  => 'General Configuration',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'General Configuration', 'url' => ''],

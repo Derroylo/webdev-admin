@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditWorkspaceController extends AbstractController
 {
     public function __construct(
-        private readonly WorkspaceConfigServiceInterface $configService
+        private readonly WorkspaceConfigServiceInterface $configService,
     ) {
     }
 
@@ -23,13 +23,14 @@ class EditWorkspaceController extends AbstractController
     public function __invoke(string $key, Request $request): Response
     {
         $workspace = $this->configService->getWorkspace($key);
-        
+
         if (!$workspace) {
             $this->addFlash('danger', 'Workspace not found.');
+
             return $this->redirectToRoute('settings_workspaces');
         }
 
-        $dto = WorkspaceDto::fromArray($workspace);
+        $dto  = WorkspaceDto::fromArray($workspace);
         $form = $this->createForm(WorkspaceType::class, $dto);
         $form->handleRequest($request);
 
@@ -45,16 +46,15 @@ class EditWorkspaceController extends AbstractController
         }
 
         return $this->render('settings/workspaces/form.html.twig', [
-            'page_title' => 'Edit Workspace: ' . ($workspace['name'] ?? $key),
+            'page_title'  => 'Edit Workspace: ' . ($workspace['name'] ?? $key),
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Workspaces', 'url' => $this->generateUrl('settings_workspaces')],
                 ['label' => 'Edit: ' . $key, 'url' => ''],
             ],
-            'form' => $form,
-            'is_edit' => true,
+            'form'          => $form,
+            'is_edit'       => true,
             'workspace_key' => $key,
         ]);
     }
 }
-

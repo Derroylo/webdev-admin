@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditTaskController extends AbstractController
 {
     public function __construct(
-        private readonly TaskConfigServiceInterface $configService
+        private readonly TaskConfigServiceInterface $configService,
     ) {
     }
 
@@ -23,13 +23,14 @@ class EditTaskController extends AbstractController
     public function __invoke(string $key, Request $request): Response
     {
         $task = $this->configService->getTask($key);
-        
+
         if (!$task) {
             $this->addFlash('danger', 'Task not found.');
+
             return $this->redirectToRoute('settings_tasks');
         }
 
-        $dto = TaskDto::fromArray($task);
+        $dto  = TaskDto::fromArray($task);
         $form = $this->createForm(TaskType::class, $dto);
         $form->handleRequest($request);
 
@@ -45,14 +46,14 @@ class EditTaskController extends AbstractController
         }
 
         return $this->render('settings/tasks/form.html.twig', [
-            'page_title' => 'Edit Task: ' . $task['name'],
+            'page_title'  => 'Edit Task: ' . $task['name'],
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Tasks', 'url' => $this->generateUrl('settings_tasks')],
                 ['label' => 'Edit: ' . $key, 'url' => ''],
             ],
-            'form' => $form,
-            'is_edit' => true,
+            'form'     => $form,
+            'is_edit'  => true,
             'task_key' => $key,
         ]);
     }

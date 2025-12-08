@@ -14,6 +14,7 @@ class WorkspaceConfigService extends AbstractWebDevConfigService implements Work
     public function getWorkspaces(): array
     {
         $config = $this->getConfig();
+
         return $config['workspaces'] ?? [];
     }
 
@@ -23,6 +24,7 @@ class WorkspaceConfigService extends AbstractWebDevConfigService implements Work
     public function getWorkspace(string $key): ?array
     {
         $workspaces = $this->getWorkspaces();
+
         return $workspaces[$key] ?? null;
     }
 

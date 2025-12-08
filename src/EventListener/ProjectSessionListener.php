@@ -52,7 +52,7 @@ class ProjectSessionListener
     ];
 
     public function __construct(
-        private readonly ProjectSessionServiceInterface $projectSessionService
+        private readonly ProjectSessionServiceInterface $projectSessionService,
     ) {
     }
 
@@ -63,10 +63,10 @@ class ProjectSessionListener
         }
 
         $request = $event->getRequest();
-        $route = $request->attributes->get('_route');
+        $route   = $request->attributes->get('_route');
 
         // Skip excluded routes
-        if ($route && in_array($route, self::EXCLUDED_ROUTES, true)) {
+        if ($route && \in_array($route, self::EXCLUDED_ROUTES, true)) {
             return;
         }
 
@@ -81,9 +81,10 @@ class ProjectSessionListener
 
         // Skip asset requests
         $pathInfo = $request->getPathInfo();
-        if (str_starts_with($pathInfo, '/build/') || 
-            str_starts_with($pathInfo, '/assets/') ||
-            str_starts_with($pathInfo, '/bundles/')) {
+
+        if (str_starts_with($pathInfo, '/build/')
+            || str_starts_with($pathInfo, '/assets/')
+            || str_starts_with($pathInfo, '/bundles/')) {
             return;
         }
 
@@ -93,13 +94,12 @@ class ProjectSessionListener
                 // Return JSON error for API requests
                 $event->setResponse(new JsonResponse([
                     'error' => 'No project selected',
-                    'code' => 'PROJECT_NOT_SELECTED',
+                    'code'  => 'PROJECT_NOT_SELECTED',
                 ], Response::HTTP_BAD_REQUEST));
             }
         }
-        
+
         // For regular page requests, the modal will be shown via JavaScript
         // when project_selected is false (handled by Twig global variables)
     }
 }
-

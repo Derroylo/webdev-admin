@@ -12,7 +12,7 @@ class ProjectSessionService implements ProjectSessionServiceInterface
     private const CONFIG_FILE = '.devcontainer/webdev.yml';
 
     public function __construct(
-        private readonly RequestStack $requestStack
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -46,6 +46,7 @@ class ProjectSessionService implements ProjectSessionServiceInterface
     public function hasProjectSelected(): bool
     {
         $path = $this->getCurrentProjectPath();
+
         return $path !== null && $this->isValidProjectPath($path);
     }
 
@@ -59,6 +60,7 @@ class ProjectSessionService implements ProjectSessionServiceInterface
         }
 
         $configPath = rtrim($path, '/') . '/' . self::CONFIG_FILE;
+
         return file_exists($configPath) && is_readable($configPath);
     }
 
@@ -68,6 +70,7 @@ class ProjectSessionService implements ProjectSessionServiceInterface
     public function getProjectName(): ?string
     {
         $path = $this->getCurrentProjectPath();
+
         if ($path === null) {
             return null;
         }
@@ -81,6 +84,7 @@ class ProjectSessionService implements ProjectSessionServiceInterface
     public function getConfigFilePath(): ?string
     {
         $path = $this->getCurrentProjectPath();
+
         if ($path === null) {
             return null;
         }
@@ -91,6 +95,7 @@ class ProjectSessionService implements ProjectSessionServiceInterface
     private function getSession(): \Symfony\Component\HttpFoundation\Session\SessionInterface
     {
         $request = $this->requestStack->getCurrentRequest();
+
         if ($request === null) {
             throw new \RuntimeException('No current request available');
         }
@@ -98,4 +103,3 @@ class ProjectSessionService implements ProjectSessionServiceInterface
         return $request->getSession();
     }
 }
-

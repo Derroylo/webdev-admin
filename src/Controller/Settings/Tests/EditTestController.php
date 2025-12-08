@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditTestController extends AbstractController
 {
     public function __construct(
-        private readonly TestConfigServiceInterface $configService
+        private readonly TestConfigServiceInterface $configService,
     ) {
     }
 
@@ -23,13 +23,14 @@ class EditTestController extends AbstractController
     public function __invoke(string $key, Request $request): Response
     {
         $test = $this->configService->getTest($key);
-        
+
         if (!$test) {
             $this->addFlash('danger', 'Test not found.');
+
             return $this->redirectToRoute('settings_tests');
         }
 
-        $dto = TestDto::fromArray($test);
+        $dto  = TestDto::fromArray($test);
         $form = $this->createForm(TestType::class, $dto);
         $form->handleRequest($request);
 
@@ -45,15 +46,15 @@ class EditTestController extends AbstractController
         }
 
         return $this->render('settings/tests/form.html.twig', [
-            'page_title' => 'Edit Test: ' . $test['name'],
+            'page_title'  => 'Edit Test: ' . $test['name'],
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Tests', 'url' => $this->generateUrl('settings_tests')],
                 ['label' => 'Edit: ' . $key, 'url' => ''],
             ],
-            'form' => $form,
-            'is_edit' => true,
+            'form'     => $form,
+            'is_edit'  => true,
             'test_key' => $key,
-        ]); 
+        ]);
     }
 }

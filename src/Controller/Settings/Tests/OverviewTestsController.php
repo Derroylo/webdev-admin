@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class OverviewTestsController extends AbstractController
 {
     public function __construct(
-        private readonly TestConfigServiceInterface $configService
+        private readonly TestConfigServiceInterface $configService,
     ) {
     }
 
@@ -22,7 +22,7 @@ class OverviewTestsController extends AbstractController
         $tests = $this->configService->getTests();
 
         return $this->render('settings/tests/index.html.twig', [
-            'page_title' => 'Tests Management',
+            'page_title'  => 'Tests Management',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Tests', 'url' => ''],

@@ -21,32 +21,32 @@ class ServiceDto
 
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-        $dto->name = $data['name'] ?? null;
-        $dto->category = $data['category'] ?? null;
-        $dto->active = $data['active'] ?? false;
-        $dto->port = isset($data['port']) ? (int) $data['port'] : null;
+        $dto            = new self();
+        $dto->name      = $data['name'] ?? null;
+        $dto->category  = $data['category'] ?? null;
+        $dto->active    = $data['active'] ?? false;
+        $dto->port      = isset($data['port']) ? (int) $data['port'] : null;
         $dto->subDomain = $data['subDomain'] ?? null;
-        
+
         return $dto;
     }
 
     public function toArray(): array
     {
         $result = [
-            'name' => $this->name,
+            'name'     => $this->name,
             'category' => $this->category,
-            'active' => $this->active,
+            'active'   => $this->active,
         ];
-        
+
         if ($this->port !== null) {
             $result['port'] = $this->port;
         }
-        
+
         if ($this->subDomain !== null) {
             $result['subDomain'] = $this->subDomain;
         }
-        
+
         return $result;
     }
 }

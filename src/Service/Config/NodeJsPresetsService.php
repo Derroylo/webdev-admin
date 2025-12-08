@@ -12,6 +12,7 @@ class NodeJsPresetsService extends AbstractPresetsService implements NodeJsPrese
     public function getNodeJsVersions(): array
     {
         $versions = $this->loadConfig('versions');
+
         return $versions['nodejs']['versions'] ?? [];
     }
 
@@ -29,6 +30,7 @@ class NodeJsPresetsService extends AbstractPresetsService implements NodeJsPrese
     public function getNodeJsVersionRange(): array
     {
         $versions = $this->loadConfig('versions');
+
         return [
             'min' => $versions['nodejs']['min_version'] ?? 14,
             'max' => $versions['nodejs']['max_version'] ?? 22,
@@ -41,6 +43,7 @@ class NodeJsPresetsService extends AbstractPresetsService implements NodeJsPrese
     public function getDefaultNodeJsVersion(): int
     {
         $versions = $this->loadConfig('versions');
+
         return $versions['nodejs']['default_version'] ?? 20;
     }
 }

@@ -14,8 +14,16 @@ abstract class AbstractPresetsService
     protected array $config = [];
 
     public function __construct(
-        protected readonly string $projectDir
+        protected readonly string $projectDir,
     ) {
+    }
+
+    /**
+     * Clear the configuration cache
+     */
+    public function clearCache(): void
+    {
+        $this->config = [];
     }
 
     /**
@@ -24,10 +32,10 @@ abstract class AbstractPresetsService
     protected function loadConfig(string $name): array
     {
         if (!isset($this->config[$name])) {
-            $path = $this->projectDir . '/' . self::CONFIG_DIR . '/' . $name . '.yaml';
+            $path                = $this->projectDir . '/' . self::CONFIG_DIR . '/' . $name . '.yaml';
             $this->config[$name] = $this->loadYamlFile($path);
         }
-        
+
         return $this->config[$name];
     }
 
@@ -46,17 +54,10 @@ abstract class AbstractPresetsService
 
         try {
             $data = Yaml::parseFile($path);
-            return is_array($data) ? $data : [];
-        } catch (ParseException $e) {
-            throw new \RuntimeException("Unable to parse YAML configuration: " . $e->getMessage());
-        }
-    }
 
-    /**
-     * Clear the configuration cache
-     */
-    public function clearCache(): void
-    {
-        $this->config = [];
+            return \is_array($data) ? $data : [];
+        } catch (ParseException $e) {
+            throw new \RuntimeException('Unable to parse YAML configuration: ' . $e->getMessage());
+        }
     }
 }

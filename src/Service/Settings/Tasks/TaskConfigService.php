@@ -14,6 +14,7 @@ class TaskConfigService extends AbstractWebDevConfigService implements TaskConfi
     public function getTasks(): array
     {
         $config = $this->getConfig();
+
         return $config['tasks'] ?? [];
     }
 
@@ -23,6 +24,7 @@ class TaskConfigService extends AbstractWebDevConfigService implements TaskConfi
     public function getTask(string $key): ?array
     {
         $tasks = $this->getTasks();
+
         return $tasks[$key] ?? null;
     }
 
@@ -32,7 +34,7 @@ class TaskConfigService extends AbstractWebDevConfigService implements TaskConfi
     public function createTask(string $key, array $data): void
     {
         $this->validateTaskData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -55,7 +57,7 @@ class TaskConfigService extends AbstractWebDevConfigService implements TaskConfi
     public function updateTask(string $key, array $data): void
     {
         $this->validateTaskData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -96,7 +98,7 @@ class TaskConfigService extends AbstractWebDevConfigService implements TaskConfi
 
         $validHooks = ['init', 'create', 'start'];
         foreach ($data as $key => $value) {
-            if (in_array($key, $validHooks) && !is_array($value)) {
+            if (\in_array($key, $validHooks) && !\is_array($value)) {
                 throw new \InvalidArgumentException("Task hook '{$key}' must be an array of commands");
             }
         }

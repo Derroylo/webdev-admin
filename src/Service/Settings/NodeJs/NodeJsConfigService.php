@@ -12,7 +12,7 @@ class NodeJsConfigService extends AbstractWebDevConfigService implements NodeJsC
 {
     public function __construct(
         private readonly NodeJsPresetsServiceInterface $nodeJsPresetsService,
-        ProjectSessionServiceInterface $projectSessionService
+        ProjectSessionServiceInterface $projectSessionService,
     ) {
         parent::__construct($projectSessionService);
     }
@@ -23,6 +23,7 @@ class NodeJsConfigService extends AbstractWebDevConfigService implements NodeJsC
     public function getNodeJsConfig(): array
     {
         $config = $this->getConfig();
+
         return $config['nodejs'] ?? [];
     }
 
@@ -32,7 +33,7 @@ class NodeJsConfigService extends AbstractWebDevConfigService implements NodeJsC
     public function updateNodeJsConfig(array $data): void
     {
         $this->validateNodeJsConfig($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -48,7 +49,8 @@ class NodeJsConfigService extends AbstractWebDevConfigService implements NodeJsC
     {
         if (isset($data['version'])) {
             $version = (int) $data['version'];
-            $range = $this->nodeJsPresetsService->getNodeJsVersionRange();
+            $range   = $this->nodeJsPresetsService->getNodeJsVersionRange();
+
             if ($version < $range['min'] || $version > $range['max']) {
                 throw new \InvalidArgumentException("Invalid NodeJS version. Must be between {$range['min']} and {$range['max']}");
             }

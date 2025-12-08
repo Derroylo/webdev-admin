@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class OverviewNodeJsSettingsController extends AbstractController
 {
     public function __construct(
-        private readonly NodeJsConfigServiceInterface $configService
+        private readonly NodeJsConfigServiceInterface $configService,
     ) {
     }
 
@@ -22,7 +22,7 @@ class OverviewNodeJsSettingsController extends AbstractController
         $nodejsConfig = $this->configService->getNodeJsConfig();
 
         return $this->render('settings/nodejs/index.html.twig', [
-            'page_title' => 'NodeJS Configuration',
+            'page_title'  => 'NodeJS Configuration',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'NodeJS Configuration', 'url' => ''],

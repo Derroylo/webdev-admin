@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditServiceController extends AbstractController
 {
     public function __construct(
-        private readonly ServiceConfigServiceInterface $configService
+        private readonly ServiceConfigServiceInterface $configService,
     ) {
     }
 
@@ -23,13 +23,14 @@ class EditServiceController extends AbstractController
     public function __invoke(string $key, Request $request): Response
     {
         $service = $this->configService->getService($key);
-        
+
         if (!$service) {
             $this->addFlash('danger', 'Service not found.');
+
             return $this->redirectToRoute('settings_services');
         }
 
-        $dto = ServiceDto::fromArray($service);
+        $dto  = ServiceDto::fromArray($service);
         $form = $this->createForm(ServiceType::class, $dto);
         $form->handleRequest($request);
 
@@ -45,14 +46,14 @@ class EditServiceController extends AbstractController
         }
 
         return $this->render('settings/services/form.html.twig', [
-            'page_title' => 'Edit Service: ' . $service['name'],
+            'page_title'  => 'Edit Service: ' . $service['name'],
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Services', 'url' => $this->generateUrl('settings_services')],
                 ['label' => 'Edit: ' . $key, 'url' => ''],
             ],
-            'form' => $form,
-            'is_edit' => true,
+            'form'        => $form,
+            'is_edit'     => true,
             'service_key' => $key,
         ]);
     }

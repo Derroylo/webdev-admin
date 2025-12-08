@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class OverviewWorkspacesController extends AbstractController
 {
     public function __construct(
-        private readonly WorkspaceConfigServiceInterface $configService
+        private readonly WorkspaceConfigServiceInterface $configService,
     ) {
     }
 
@@ -22,7 +22,7 @@ class OverviewWorkspacesController extends AbstractController
         $workspaces = $this->configService->getWorkspaces();
 
         return $this->render('settings/workspaces/index.html.twig', [
-            'page_title' => 'Workspaces Management',
+            'page_title'  => 'Workspaces Management',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Workspaces', 'url' => ''],
@@ -31,4 +31,3 @@ class OverviewWorkspacesController extends AbstractController
         ]);
     }
 }
-

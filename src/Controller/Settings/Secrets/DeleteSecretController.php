@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteSecretController extends AbstractController
 {
     public function __construct(
-        private readonly SecretConfigServiceInterface $configService
+        private readonly SecretConfigServiceInterface $configService,
     ) {
     }
 
@@ -29,4 +29,3 @@ class DeleteSecretController extends AbstractController
         return $this->redirectToRoute('settings_secrets');
     }
 }
-

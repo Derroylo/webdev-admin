@@ -19,13 +19,13 @@ class TaskDto
 
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-        $dto->name = $data['name'] ?? null;
+        $dto           = new self();
+        $dto->name     = $data['name'] ?? null;
         $dto->onlyMain = $data['onlyMain'] ?? false;
-        $dto->init = $data['init'] ?? [];
-        $dto->create = $data['create'] ?? [];
-        $dto->start = $data['start'] ?? [];
-        
+        $dto->init     = $data['init'] ?? [];
+        $dto->create   = $data['create'] ?? [];
+        $dto->start    = $data['start'] ?? [];
+
         return $dto;
     }
 
@@ -34,23 +34,23 @@ class TaskDto
         $result = [
             'name' => $this->name,
         ];
-        
+
         if ($this->onlyMain) {
             $result['onlyMain'] = $this->onlyMain;
         }
-        
+
         if (!empty($this->init)) {
             $result['init'] = array_values(array_filter($this->init));
         }
-        
+
         if (!empty($this->create)) {
             $result['create'] = array_values(array_filter($this->create));
         }
-        
+
         if (!empty($this->start)) {
             $result['start'] = array_values(array_filter($this->start));
         }
-        
+
         return $result;
     }
 }

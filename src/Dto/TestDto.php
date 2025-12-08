@@ -17,25 +17,25 @@ class TestDto
 
     public static function fromArray(array $data): self
     {
-        $dto = new self();
-        $dto->name = $data['name'] ?? null;
+        $dto           = new self();
+        $dto->name     = $data['name'] ?? null;
         $dto->commands = $data['commands'] ?? [];
-        $dto->tests = $data['tests'] ?? [];
-        
+        $dto->tests    = $data['tests'] ?? [];
+
         return $dto;
     }
 
     public function toArray(): array
     {
         $result = [
-            'name' => $this->name,
+            'name'     => $this->name,
             'commands' => array_values(array_filter($this->commands)),
         ];
-        
+
         if (!empty($this->tests)) {
             $result['tests'] = array_values(array_filter($this->tests));
         }
-        
+
         return $result;
     }
 }

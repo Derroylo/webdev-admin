@@ -6,9 +6,9 @@ use App\Dto\WorkspaceDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,80 +18,80 @@ class WorkspaceType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Name',
+                'label'    => 'Name',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., CMS Workspace',
                 ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label'    => 'Description',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'Describe the purpose of this workspace',
-                    'rows' => 3,
+                    'rows'        => 3,
                 ],
             ])
             ->add('repository', TextType::class, [
-                'label' => 'Repository URL',
+                'label'    => 'Repository URL',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., https://github.com/user/repo.git',
                 ],
             ])
             ->add('branch', TextType::class, [
-                'label' => 'Branch',
+                'label'    => 'Branch',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., main',
                 ],
             ])
             ->add('folder', TextType::class, [
-                'label' => 'Folder',
+                'label'    => 'Folder',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'Subfolder name (defaults to workspace key)',
                 ],
             ])
             ->add('docRoot', TextType::class, [
-                'label' => 'Document Root',
+                'label'    => 'Document Root',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'public',
                 ],
             ])
             ->add('mode', ChoiceType::class, [
-                'label' => 'Mode',
+                'label'   => 'Mode',
                 'choices' => [
                     'Virtual Host' => 'vhost',
                 ],
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('subDomains', CollectionType::class, [
-                'label' => 'Subdomains',
-                'entry_type' => TextType::class,
+                'label'         => 'Subdomains',
+                'entry_type'    => TextType::class,
                 'entry_options' => [
                     'attr' => [
-                        'class' => 'form-control',
+                        'class'       => 'form-control',
                         'placeholder' => 'e.g., cms',
                     ],
                 ],
-                'allow_add' => true,
+                'allow_add'    => true,
                 'allow_delete' => true,
-                'required' => false,
-                'prototype' => true,
-                'attr' => ['class' => 'subdomains-collection'],
+                'required'     => false,
+                'prototype'    => true,
+                'attr'         => ['class' => 'subdomains-collection'],
             ])
             ->add('disableWeb', CheckboxType::class, [
-                'label' => 'Disable Web Server',
+                'label'    => 'Disable Web Server',
                 'required' => false,
-                'attr' => ['class' => 'form-check-input'],
+                'attr'     => ['class' => 'form-check-input'],
             ]);
     }
 
@@ -102,4 +102,3 @@ class WorkspaceType extends AbstractType
         ]);
     }
 }
-

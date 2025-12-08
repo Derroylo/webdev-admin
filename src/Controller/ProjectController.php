@@ -19,7 +19,7 @@ class ProjectController extends AbstractController
     public function __construct(
         private readonly ProjectSessionServiceInterface $projectSessionService,
         private readonly ProjectServiceInterface $projectService,
-        private readonly IdePresetsServiceInterface $idePresetsService
+        private readonly IdePresetsServiceInterface $idePresetsService,
     ) {
     }
 
@@ -34,7 +34,7 @@ class ProjectController extends AbstractController
         if (empty($path)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Path is required',
+                'error'   => 'Path is required',
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -45,7 +45,7 @@ class ProjectController extends AbstractController
         if (!is_dir($path)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Directory does not exist: ' . $path,
+                'error'   => 'Directory does not exist: ' . $path,
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -53,7 +53,7 @@ class ProjectController extends AbstractController
         if (!$this->projectSessionService->isValidProjectPath($path)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Selected directory does not contain a valid .devcontainer/webdev.yml configuration file',
+                'error'   => 'Selected directory does not contain a valid .devcontainer/webdev.yml configuration file',
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -85,9 +85,9 @@ class ProjectController extends AbstractController
 
         return new JsonResponse([
             'selected' => true,
-            'project' => [
-                'path' => $path,
-                'name' => $this->projectSessionService->getProjectName(),
+            'project'  => [
+                'path'  => $path,
+                'name'  => $this->projectSessionService->getProjectName(),
                 'valid' => $this->projectSessionService->isValidProjectPath($path),
             ],
         ]);
@@ -117,7 +117,7 @@ class ProjectController extends AbstractController
         if (empty($basePath)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'PROJECTS_BASE_PATH environment variable is not set',
+                'error'   => 'PROJECTS_BASE_PATH environment variable is not set',
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -125,21 +125,21 @@ class ProjectController extends AbstractController
         $allProjects = $this->projectService->getAllProjects($basePath);
 
         // Filter only webdev-compatible projects
-        $compatibleProjects = array_filter($allProjects, fn($project) => $project->isWebdevCompatible);
+        $compatibleProjects = array_filter($allProjects, fn ($project) => $project->isWebdevCompatible);
 
         // Convert to array format for JSON response
-        $projects = array_map(function($project) {
+        $projects = array_map(function ($project) {
             return [
-                'name' => $project->name,
-                'path' => $project->path,
-                'phpVersion' => $project->phpVersion,
+                'name'          => $project->name,
+                'path'          => $project->path,
+                'phpVersion'    => $project->phpVersion,
                 'nodejsVersion' => $project->nodejsVersion,
             ];
         }, $compatibleProjects);
 
         return new JsonResponse([
-            'success' => true,
-            'projects' => array_values($projects),
+            'success'    => true,
+            'projects'   => array_values($projects),
             'ideConfigs' => $this->idePresetsService->getIdeConfigs(),
         ]);
     }
@@ -154,21 +154,22 @@ class ProjectController extends AbstractController
 
         // Security: prevent directory traversal
         $realPath = realpath($path);
+
         if ($realPath === false || !is_dir($realPath)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Invalid directory path',
+                'error'   => 'Invalid directory path',
             ], Response::HTTP_BAD_REQUEST);
         }
 
         // Get list of directories
         $directories = [];
-        $items = @scandir($realPath);
+        $items       = @scandir($realPath);
 
         if ($items === false) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Cannot read directory',
+                'error'   => 'Cannot read directory',
             ], Response::HTTP_FORBIDDEN);
         }
 
@@ -198,27 +199,27 @@ class ProjectController extends AbstractController
             $hasConfig = $this->projectSessionService->isValidProjectPath($fullPath);
 
             $directories[] = [
-                'name' => $item,
-                'path' => $fullPath,
-                'hasConfig' => $hasConfig,
+                'name'       => $item,
+                'path'       => $fullPath,
+                'hasConfig'  => $hasConfig,
                 'hasSubdirs' => $this->hasSubdirectories($fullPath),
             ];
         }
 
         // Sort directories alphabetically
-        usort($directories, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        usort($directories, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
 
         // Get parent directory
-        $parentPath = dirname($realPath);
-        $canGoUp = $parentPath !== $realPath && is_readable($parentPath);
+        $parentPath = \dirname($realPath);
+        $canGoUp    = $parentPath !== $realPath && is_readable($parentPath);
 
         return new JsonResponse([
-            'success' => true,
+            'success'     => true,
             'currentPath' => $realPath,
-            'parentPath' => $canGoUp ? $parentPath : null,
-            'canGoUp' => $canGoUp,
+            'parentPath'  => $canGoUp ? $parentPath : null,
+            'canGoUp'     => $canGoUp,
             'directories' => $directories,
-            'hasConfig' => $this->projectSessionService->isValidProjectPath($realPath),
+            'hasConfig'   => $this->projectSessionService->isValidProjectPath($realPath),
         ]);
     }
 
@@ -228,6 +229,7 @@ class ProjectController extends AbstractController
     private function hasSubdirectories(string $path): bool
     {
         $items = @scandir($path);
+
         if ($items === false) {
             return false;
         }
@@ -245,4 +247,3 @@ class ProjectController extends AbstractController
         return false;
     }
 }
-

@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class ToggleActiveServiceController extends AbstractController
 {
     public function __construct(
-        private readonly ServiceConfigServiceInterface $configService
+        private readonly ServiceConfigServiceInterface $configService,
     ) {
     }
 
@@ -24,7 +24,7 @@ class ToggleActiveServiceController extends AbstractController
         try {
             $active = $request->request->get('active') === 'true' || $request->request->get('active') === '1';
             $this->configService->toggleService($key, $active);
-            
+
             return new JsonResponse(['success' => true, 'active' => $active]);
         } catch (\Exception $e) {
             return new JsonResponse(['success' => false, 'error' => $e->getMessage()], 500);

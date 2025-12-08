@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteTestController extends AbstractController
 {
     public function __construct(
-        private readonly TestConfigServiceInterface $configService
+        private readonly TestConfigServiceInterface $configService,
     ) {
     }
 

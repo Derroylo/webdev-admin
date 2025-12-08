@@ -17,14 +17,14 @@ class CreateServiceController extends AbstractController
 {
     public function __construct(
         private readonly ServiceConfigServiceInterface $configService,
-        private readonly ServicePresetsServiceInterface $servicePresetsService
+        private readonly ServicePresetsServiceInterface $servicePresetsService,
     ) {
     }
 
     #[Route('/settings/services/new', name: 'settings_services_new')]
     public function __invoke(Request $request): Response
     {
-        $dto = new ServiceDto();
+        $dto  = new ServiceDto();
         $form = $this->createForm(ServiceType::class, $dto);
         $form->handleRequest($request);
 
@@ -32,7 +32,7 @@ class CreateServiceController extends AbstractController
             try {
                 // Generate a key from the service name
                 $key = $this->generateServiceKey($request->request->all()['service']['name'] ?? '');
-                
+
                 $this->configService->createService($key, $dto->toArray());
                 $this->addFlash('success', 'Service created successfully!');
 
@@ -43,10 +43,11 @@ class CreateServiceController extends AbstractController
         }
 
         // Get all service templates for JavaScript
-        $allTemplates = $this->servicePresetsService->getServiceTemplates();
+        $allTemplates        = $this->servicePresetsService->getServiceTemplates();
         $templatesByCategory = [];
         foreach ($allTemplates as $key => $template) {
             $category = $template['template_category_file'] ?? 'other';
+
             if (!isset($templatesByCategory[$category])) {
                 $templatesByCategory[$category] = [];
             }
@@ -54,14 +55,14 @@ class CreateServiceController extends AbstractController
         }
 
         return $this->render('settings/services/form.html.twig', [
-            'page_title' => 'Add New Service',
+            'page_title'  => 'Add New Service',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Services', 'url' => $this->generateUrl('settings_services')],
                 ['label' => 'New', 'url' => ''],
             ],
-            'form' => $form,
-            'is_edit' => false,
+            'form'                  => $form,
+            'is_edit'               => false,
             'templates_by_category' => $templatesByCategory,
         ]);
     }
@@ -73,7 +74,7 @@ class CreateServiceController extends AbstractController
         $key = preg_replace('/[^a-z0-9]+/', '', $key);
         $key = preg_replace('/^(.+?)\s*-.*$/', '$1', $name);
         $key = strtolower(preg_replace('/[^a-z0-9]+/', '', $key));
-        
+
         return $key ?: 'service_' . uniqid();
     }
 }

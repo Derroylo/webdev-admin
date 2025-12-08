@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class OverviewTasksController extends AbstractController
 {
     public function __construct(
-        private readonly TaskConfigServiceInterface $configService
+        private readonly TaskConfigServiceInterface $configService,
     ) {
     }
 
@@ -22,7 +22,7 @@ class OverviewTasksController extends AbstractController
         $tasks = $this->configService->getTasks();
 
         return $this->render('settings/tasks/index.html.twig', [
-            'page_title' => 'Tasks Management',
+            'page_title'  => 'Tasks Management',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Tasks', 'url' => ''],

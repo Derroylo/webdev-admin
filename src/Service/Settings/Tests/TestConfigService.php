@@ -14,6 +14,7 @@ class TestConfigService extends AbstractWebDevConfigService implements TestConfi
     public function getTests(): array
     {
         $config = $this->getConfig();
+
         return $config['tests'] ?? [];
     }
 
@@ -23,6 +24,7 @@ class TestConfigService extends AbstractWebDevConfigService implements TestConfi
     public function getTest(string $key): ?array
     {
         $tests = $this->getTests();
+
         return $tests[$key] ?? null;
     }
 
@@ -32,7 +34,7 @@ class TestConfigService extends AbstractWebDevConfigService implements TestConfi
     public function createTest(string $key, array $data): void
     {
         $this->validateTestData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -55,7 +57,7 @@ class TestConfigService extends AbstractWebDevConfigService implements TestConfi
     public function updateTest(string $key, array $data): void
     {
         $this->validateTestData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -97,7 +99,7 @@ class TestConfigService extends AbstractWebDevConfigService implements TestConfi
             }
         }
 
-        if (!is_array($data['commands'])) {
+        if (!\is_array($data['commands'])) {
             throw new \InvalidArgumentException("Test field 'commands' must be an array");
         }
     }

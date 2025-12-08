@@ -6,14 +6,14 @@ namespace App\Service\Config;
 
 class ServicePresetsService extends AbstractPresetsService implements ServicePresetsServiceInterface
 {
-     /**
+    /**
      * Get all service templates from all categories
      */
     public function getServiceTemplates(): array
     {
         $allTemplates = [];
-        $serviceDir = $this->projectDir . '/' . self::CONFIG_DIR . '/services';
-        
+        $serviceDir   = $this->projectDir . '/' . self::CONFIG_DIR . '/services';
+
         if (!is_dir($serviceDir)) {
             return [];
         }
@@ -21,17 +21,17 @@ class ServicePresetsService extends AbstractPresetsService implements ServicePre
         $files = glob($serviceDir . '/*.yaml');
         foreach ($files as $file) {
             $category = basename($file, '.yaml');
-            $data = $this->loadYamlFile($file);
-            
-            if (isset($data['templates']) && is_array($data['templates'])) {
+            $data     = $this->loadYamlFile($file);
+
+            if (isset($data['templates']) && \is_array($data['templates'])) {
                 foreach ($data['templates'] as $key => $template) {
-                    $template['template_key'] = $key;
+                    $template['template_key']           = $key;
                     $template['template_category_file'] = $category;
-                    $allTemplates[$key] = $template;
+                    $allTemplates[$key]                 = $template;
                 }
             }
         }
-        
+
         return $allTemplates;
     }
 
@@ -41,12 +41,13 @@ class ServicePresetsService extends AbstractPresetsService implements ServicePre
     public function getServiceTemplatesByCategory(string $category): array
     {
         $file = $this->projectDir . '/' . self::CONFIG_DIR . '/services/' . $category . '.yaml';
-        
+
         if (!file_exists($file)) {
             return [];
         }
 
         $data = $this->loadYamlFile($file);
+
         return $data['templates'] ?? [];
     }
 
@@ -56,6 +57,7 @@ class ServicePresetsService extends AbstractPresetsService implements ServicePre
     public function getServiceTemplate(string $key): ?array
     {
         $templates = $this->getServiceTemplates();
+
         return $templates[$key] ?? null;
     }
 
@@ -66,17 +68,17 @@ class ServicePresetsService extends AbstractPresetsService implements ServicePre
     {
         $categories = [];
         $serviceDir = $this->projectDir . '/' . self::CONFIG_DIR . '/services';
-        
+
         if (!is_dir($serviceDir)) {
             return [];
         }
 
         $files = glob($serviceDir . '/*.yaml');
         foreach ($files as $file) {
-            $category = basename($file, '.yaml');
+            $category     = basename($file, '.yaml');
             $categories[] = $category;
         }
-        
+
         return $categories;
     }
 
@@ -95,7 +97,7 @@ class ServicePresetsService extends AbstractPresetsService implements ServicePre
             'queue',
             'monitoring',
             'tools',
-            'other'
+            'other',
         ];
     }
 }

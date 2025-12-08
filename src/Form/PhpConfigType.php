@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class PhpConfigType extends AbstractType
 {
     public function __construct(
-        private readonly PhpPresetsServiceInterface $phpPresetsService
+        private readonly PhpPresetsServiceInterface $phpPresetsService,
     ) {
     }
 
@@ -21,75 +21,75 @@ class PhpConfigType extends AbstractType
     {
         // Build choices from configuration
         $phpVersions = $this->phpPresetsService->getPhpVersions();
-        $choices = [];
+        $choices     = [];
         foreach ($phpVersions as $versionData) {
-            $label = $versionData['label'] ?? 'PHP ' . $versionData['version'];
+            $label           = $versionData['label'] ?? 'PHP ' . $versionData['version'];
             $choices[$label] = $versionData['version'];
         }
 
         $builder
             ->add('version', ChoiceType::class, [
-                'label' => 'PHP Version',
+                'label'   => 'PHP Version',
                 'choices' => $choices,
-                'attr' => ['class' => 'form-control'],
+                'attr'    => ['class' => 'form-control'],
             ])
             ->add('opcache_enable', ChoiceType::class, [
-                'label' => 'OPcache Enable',
+                'label'   => 'OPcache Enable',
                 'choices' => [
-                    'On' => 'on',
+                    'On'  => 'on',
                     'Off' => 'off',
                 ],
-                'mapped' => false,
+                'mapped'   => false,
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
+                'attr'     => ['class' => 'form-control'],
             ])
             ->add('xdebug_mode', ChoiceType::class, [
-                'label' => 'Xdebug Mode',
+                'label'   => 'Xdebug Mode',
                 'choices' => [
-                    'Off' => 'off',
-                    'Debug' => 'debug',
+                    'Off'      => 'off',
+                    'Debug'    => 'debug',
                     'Coverage' => 'coverage',
-                    'Develop' => 'develop',
-                    'Profile' => 'profile',
+                    'Develop'  => 'develop',
+                    'Profile'  => 'profile',
                 ],
-                'mapped' => false,
+                'mapped'   => false,
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
+                'attr'     => ['class' => 'form-control'],
             ])
             ->add('xdebug_start_with_request', ChoiceType::class, [
-                'label' => 'Xdebug Start With Request',
+                'label'   => 'Xdebug Start With Request',
                 'choices' => [
                     'Yes' => 'yes',
-                    'No' => 'no',
+                    'No'  => 'no',
                 ],
-                'mapped' => false,
+                'mapped'   => false,
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
+                'attr'     => ['class' => 'form-control'],
             ])
             ->add('memory_limit_web', TextType::class, [
-                'label' => 'Memory Limit (Web)',
-                'mapped' => false,
+                'label'    => 'Memory Limit (Web)',
+                'mapped'   => false,
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., 512M',
                 ],
             ])
             ->add('memory_limit_cli', TextType::class, [
-                'label' => 'Memory Limit (CLI)',
-                'mapped' => false,
+                'label'    => 'Memory Limit (CLI)',
+                'mapped'   => false,
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., -1 for unlimited',
                 ],
             ])
             ->add('max_execution_time_cli', TextType::class, [
-                'label' => 'Max Execution Time (CLI)',
-                'mapped' => false,
+                'label'    => 'Max Execution Time (CLI)',
+                'mapped'   => false,
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., 0 for unlimited',
                 ],
             ]);

@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class GetLogsApiController extends AbstractController
 {
     public function __construct(
-        private readonly LogParserService $logParserService
+        private readonly LogParserService $logParserService,
     ) {
     }
 
@@ -22,13 +22,13 @@ class GetLogsApiController extends AbstractController
     {
         try {
             $logs = $this->logParserService->parseLogs($type);
-            
+
             return new JsonResponse([
-                'data' => $logs,
-                'recordsTotal' => count($logs),
-                'recordsFiltered' => count($logs),
+                'data'            => $logs,
+                'recordsTotal'    => \count($logs),
+                'recordsFiltered' => \count($logs),
             ]);
-        } catch (\RuntimeException|\InvalidArgumentException $e) {
+        } catch (\RuntimeException | \InvalidArgumentException $e) {
             return new JsonResponse([
                 'error' => $e->getMessage(),
             ], Response::HTTP_BAD_REQUEST);

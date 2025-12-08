@@ -17,7 +17,7 @@ class CreateTestController extends AbstractController
 {
     public function __construct(
         private readonly TestConfigServiceInterface $configService,
-        private readonly TestPresetsServiceInterface $testPresetsService
+        private readonly TestPresetsServiceInterface $testPresetsService,
     ) {
     }
 
@@ -27,7 +27,7 @@ class CreateTestController extends AbstractController
         $dto = new TestDto();
         // Initialize with one empty command field
         $dto->commands = [''];
-        
+
         $form = $this->createForm(TestType::class, $dto);
         $form->handleRequest($request);
 
@@ -35,7 +35,7 @@ class CreateTestController extends AbstractController
             try {
                 // Generate a key from the test name
                 $key = $this->generateTestKey($request->request->all()['test']['name'] ?? '');
-                
+
                 $this->configService->createTest($key, $dto->toArray());
                 $this->addFlash('success', 'Test created successfully!');
 
@@ -46,10 +46,11 @@ class CreateTestController extends AbstractController
         }
 
         // Get all test templates for JavaScript
-        $allTemplates = $this->testPresetsService->getTestTemplates();
+        $allTemplates        = $this->testPresetsService->getTestTemplates();
         $templatesByCategory = [];
         foreach ($allTemplates as $key => $template) {
             $category = $template['template_category_file'] ?? 'other';
+
             if (!isset($templatesByCategory[$category])) {
                 $templatesByCategory[$category] = [];
             }
@@ -57,14 +58,14 @@ class CreateTestController extends AbstractController
         }
 
         return $this->render('settings/tests/form.html.twig', [
-            'page_title' => 'Add New Test',
+            'page_title'  => 'Add New Test',
             'breadcrumbs' => [
                 ['label' => 'Settings', 'url' => $this->generateUrl('settings_dashboard')],
                 ['label' => 'Tests', 'url' => $this->generateUrl('settings_tests')],
                 ['label' => 'New', 'url' => ''],
             ],
-            'form' => $form,
-            'is_edit' => false,
+            'form'                  => $form,
+            'is_edit'               => false,
             'templates_by_category' => $templatesByCategory,
         ]);
     }
@@ -74,7 +75,7 @@ class CreateTestController extends AbstractController
         $key = strtolower($name);
         $key = preg_replace('/[^a-z0-9]+/', '_', $key);
         $key = trim($key, '_');
-        
+
         return $key ?: 'test_' . uniqid();
     }
 }

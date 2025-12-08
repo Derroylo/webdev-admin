@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Projects;
 
-use App\Service\Project\ProjectServiceInterface;
 use App\Service\Config\IdePresetsServiceInterface;
+use App\Service\Project\ProjectServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +15,7 @@ class OverviewProjectsController extends AbstractController
 {
     public function __construct(
         private readonly ProjectServiceInterface $projectService,
-        private readonly IdePresetsServiceInterface $idePresetsService
+        private readonly IdePresetsServiceInterface $idePresetsService,
     ) {
     }
 
@@ -31,7 +31,7 @@ class OverviewProjectsController extends AbstractController
         } else {
             // Check if refresh is requested
             $refresh = $request->query->getBoolean('refresh', false);
-            
+
             if ($refresh) {
                 $projects = $this->projectService->refreshProjects($basePath);
                 $this->addFlash('success', 'Projects list refreshed successfully.');
@@ -41,15 +41,14 @@ class OverviewProjectsController extends AbstractController
         }
 
         return $this->render('projects/overview.html.twig', [
-            'page_title' => 'Projects Overview',
+            'page_title'  => 'Projects Overview',
             'breadcrumbs' => [
                 ['label' => 'Home', 'url' => $this->generateUrl('app_dashboard')],
                 ['label' => 'Projects', 'url' => ''],
             ],
-            'projects' => $projects,
-            'base_path' => $basePath,
+            'projects'   => $projects,
+            'base_path'  => $basePath,
             'ideConfigs' => $this->idePresetsService->getIdeConfigs(),
         ]);
     }
 }
-

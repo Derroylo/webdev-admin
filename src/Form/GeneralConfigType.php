@@ -15,32 +15,32 @@ class GeneralConfigType extends AbstractType
     {
         $builder
             ->add('allowPreReleases', CheckboxType::class, [
-                'label' => 'Allow Pre-Releases',
-                'required' => false,
-                'attr' => ['class' => 'form-check-input'],
+                'label'      => 'Allow Pre-Releases',
+                'required'   => false,
+                'attr'       => ['class' => 'form-check-input'],
                 'label_attr' => ['class' => 'form-check-label'],
-                'help' => 'Enable updates to pre-release versions via webdev update',
+                'help'       => 'Enable updates to pre-release versions via webdev update',
             ])
             ->add('workspaceFolder', TextType::class, [
                 'label' => 'Workspace Folder',
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'  => [
+                    'class'       => 'form-control',
                     'placeholder' => 'workspaces',
                 ],
                 'help' => 'Folder where additional workspaces (projects) are located',
             ])
             ->add('proxyDomain', TextType::class, [
                 'label' => 'Proxy Domain',
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'  => [
+                    'class'       => 'form-control',
                     'placeholder' => 'dev.localhost',
                 ],
                 'help' => 'Default domain for the development environment (e.g., mailpit.dev.localhost)',
             ])
             ->add('proxySubDomain', TextType::class, [
                 'label' => 'Proxy Subdomain',
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'  => [
+                    'class'       => 'form-control',
                     'placeholder' => 'devcontainer',
                 ],
                 'help' => 'Default subdomain for the workspace (e.g., shop.dev.localhost)',

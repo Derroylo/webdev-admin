@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class OpenIdeController extends AbstractController
 {
     public function __construct(
-        private readonly IdePresetsServiceInterface $idePresetsService
+        private readonly IdePresetsServiceInterface $idePresetsService,
     ) {
     }
 
@@ -23,12 +23,12 @@ class OpenIdeController extends AbstractController
     public function __invoke(Request $request): JsonResponse
     {
         $projectPath = $request->request->get('projectPath');
-        $ide = $request->request->get('ide');
-        
+        $ide         = $request->request->get('ide');
+
         if (empty($projectPath) || empty($ide)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'projectPath and ide are required',
+                'error'   => 'projectPath and ide are required',
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -36,15 +36,16 @@ class OpenIdeController extends AbstractController
         if (empty($projectPath) || !is_dir($projectPath)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Invalid project path',
+                'error'   => 'Invalid project path',
             ], Response::HTTP_BAD_REQUEST);
         }
 
         $ideConfig = $this->idePresetsService->getIdeConfig($ide);
+
         if ($ideConfig === null) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Unknown IDE: ' . $ide,
+                'error'   => 'Unknown IDE: ' . $ide,
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -53,7 +54,7 @@ class OpenIdeController extends AbstractController
         if (empty($command)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'No command found for IDE: ' . $ideConfig['name'],
+                'error'   => 'No command found for IDE: ' . $ideConfig['name'],
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -67,13 +68,13 @@ class OpenIdeController extends AbstractController
         $process = Process::fromShellCommandline($command);
         $process->setWorkingDirectory($projectPath);
         $process->setTimeout(10); // Short timeout for opening IDE
-        
+
         try {
             // Run the process (non-blocking, fire and forget)
             $process->start();
             $process->wait();
 
-            $output = $process->getOutput();
+            $output      = $process->getOutput();
             $errorOutput = $process->getErrorOutput();
 
             if ($process->isSuccessful()) {
@@ -82,17 +83,16 @@ class OpenIdeController extends AbstractController
                     'message' => 'Opening project in ' . $name . '... ' . $output . ' ' . $errorOutput,
                 ]);
             }
-            
+
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Failed to open ' . $name . ': ' . $errorOutput,
+                'error'   => 'Failed to open ' . $name . ': ' . $errorOutput,
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'Failed to open ' . $name . ': ' . $e->getMessage(),
+                'error'   => 'Failed to open ' . $name . ': ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
-

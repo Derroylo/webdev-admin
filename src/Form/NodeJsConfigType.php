@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class NodeJsConfigType extends AbstractType
 {
     public function __construct(
-        private readonly NodeJsPresetsServiceInterface $nodeJsPresetsService
+        private readonly NodeJsPresetsServiceInterface $nodeJsPresetsService,
     ) {
     }
 
@@ -20,17 +20,17 @@ class NodeJsConfigType extends AbstractType
     {
         // Build choices from configuration
         $nodeVersions = $this->nodeJsPresetsService->getNodeJsVersions();
-        $choices = [];
+        $choices      = [];
         foreach ($nodeVersions as $versionData) {
-            $label = $versionData['label'] ?? 'Node.js ' . $versionData['version'];
+            $label           = $versionData['label'] ?? 'Node.js ' . $versionData['version'];
             $choices[$label] = $versionData['version'];
         }
 
         $builder
             ->add('version', ChoiceType::class, [
-                'label' => 'NodeJS Version',
+                'label'   => 'NodeJS Version',
                 'choices' => $choices,
-                'attr' => ['class' => 'form-control'],
+                'attr'    => ['class' => 'form-control'],
             ]);
     }
 

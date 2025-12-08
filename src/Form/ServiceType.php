@@ -15,22 +15,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ServiceType extends AbstractType
 {
     public function __construct(
-        private readonly ServicePresetsServiceInterface $servicePresetsService
+        private readonly ServicePresetsServiceInterface $servicePresetsService,
     ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Build category choices from available service template files
-        $templateCategories = $this->servicePresetsService->getServiceCategories();
+        $templateCategories      = $this->servicePresetsService->getServiceCategories();
         $templateCategoryChoices = ['-- Manual Entry --' => ''];
         foreach ($templateCategories as $category) {
-            $label = ucwords(str_replace('_', ' ', $category));
+            $label                           = ucwords(str_replace('_', ' ', $category));
             $templateCategoryChoices[$label] = $category;
         }
 
         // Build service category choices for the actual category field
-        $serviceCategories = $this->servicePresetsService->getValidServiceCategories();
+        $serviceCategories      = $this->servicePresetsService->getValidServiceCategories();
         $serviceCategoryChoices = [];
         foreach ($serviceCategories as $category) {
             $serviceCategoryChoices[ucfirst($category)] = $category;
@@ -38,64 +38,64 @@ class ServiceType extends AbstractType
 
         $builder
             ->add('template_category', ChoiceType::class, [
-                'label' => 'Template Category',
-                'choices' => $templateCategoryChoices,
-                'mapped' => false,
+                'label'    => 'Template Category',
+                'choices'  => $templateCategoryChoices,
+                'mapped'   => false,
                 'required' => false,
-                'attr' => [
+                'attr'     => [
                     'class' => 'form-control',
-                    'id' => 'template-category',
+                    'id'    => 'template-category',
                 ],
                 'help' => 'Select a category to choose from pre-defined service templates',
             ])
             ->add('template_key', ChoiceType::class, [
-                'label' => 'Service Template',
-                'choices' => ['-- Select a category first --' => ''],
-                'mapped' => false,
+                'label'    => 'Service Template',
+                'choices'  => ['-- Select a category first --' => ''],
+                'mapped'   => false,
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'id' => 'template-key',
+                'attr'     => [
+                    'class'    => 'form-control',
+                    'id'       => 'template-key',
                     'disabled' => 'disabled',
                 ],
                 'help' => 'Choose a pre-defined service template to auto-fill the form',
             ])
             ->add('name', TextType::class, [
                 'label' => 'Service Name',
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'  => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., MySQL Server - Relational Database',
-                    'id' => 'service-name',
+                    'id'          => 'service-name',
                 ],
             ])
             ->add('category', ChoiceType::class, [
-                'label' => 'Service Category',
+                'label'   => 'Service Category',
                 'choices' => $serviceCategoryChoices,
-                'attr' => [
+                'attr'    => [
                     'class' => 'form-control',
-                    'id' => 'service-category',
+                    'id'    => 'service-category',
                 ],
             ])
             ->add('active', CheckboxType::class, [
-                'label' => 'Active',
+                'label'    => 'Active',
                 'required' => false,
-                'attr' => ['class' => 'form-check-input'],
+                'attr'     => ['class' => 'form-check-input'],
             ])
             ->add('port', IntegerType::class, [
-                'label' => 'Port',
+                'label'    => 'Port',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., 8080',
-                    'min' => 1,
-                    'max' => 65535,
+                    'min'         => 1,
+                    'max'         => 65535,
                 ],
             ])
             ->add('subDomain', TextType::class, [
-                'label' => 'Subdomain',
+                'label'    => 'Subdomain',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
+                'attr'     => [
+                    'class'       => 'form-control',
                     'placeholder' => 'e.g., mysql',
                 ],
             ]);

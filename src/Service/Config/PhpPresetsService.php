@@ -12,6 +12,7 @@ class PhpPresetsService extends AbstractPresetsService implements PhpPresetsServ
     public function getPhpVersions(): array
     {
         $versions = $this->loadConfig('versions');
+
         return $versions['php']['versions'] ?? [];
     }
 

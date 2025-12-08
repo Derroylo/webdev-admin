@@ -12,16 +12,18 @@ class ServiceConfigService extends AbstractWebDevConfigService implements Servic
 {
     public function __construct(
         private readonly ServicePresetsServiceInterface $servicePresetsService,
-        ProjectSessionServiceInterface $projectSessionService
+        ProjectSessionServiceInterface $projectSessionService,
     ) {
         parent::__construct($projectSessionService);
     }
+
     /**
      * Get all services
      */
     public function getServices(): array
     {
         $config = $this->getConfig();
+
         return $config['services'] ?? [];
     }
 
@@ -31,6 +33,7 @@ class ServiceConfigService extends AbstractWebDevConfigService implements Servic
     public function getService(string $key): ?array
     {
         $services = $this->getServices();
+
         return $services[$key] ?? null;
     }
 
@@ -40,7 +43,7 @@ class ServiceConfigService extends AbstractWebDevConfigService implements Servic
     public function createService(string $key, array $data): void
     {
         $this->validateServiceData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -63,7 +66,7 @@ class ServiceConfigService extends AbstractWebDevConfigService implements Servic
     public function updateService(string $key, array $data): void
     {
         $this->validateServiceData($data);
-        
+
         if ($this->config === null) {
             $this->loadConfig();
         }
@@ -124,14 +127,16 @@ class ServiceConfigService extends AbstractWebDevConfigService implements Servic
 
         if (isset($data['port'])) {
             $port = (int) $data['port'];
+
             if ($port < 1 || $port > 65535) {
-                throw new \InvalidArgumentException("Invalid port number. Must be between 1 and 65535");
+                throw new \InvalidArgumentException('Invalid port number. Must be between 1 and 65535');
             }
         }
 
         $validCategories = $this->servicePresetsService->getValidServiceCategories();
-        if (!in_array($data['category'], $validCategories, true)) {
-            throw new \InvalidArgumentException("Invalid category. Must be one of: " . implode(', ', $validCategories));
+
+        if (!\in_array($data['category'], $validCategories, true)) {
+            throw new \InvalidArgumentException('Invalid category. Must be one of: ' . implode(', ', $validCategories));
         }
     }
 }
