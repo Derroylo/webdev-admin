@@ -27,6 +27,76 @@
 
 {% block body %}
 <div class="row">
+    {% set runningProject = projects|filter(p => p.isProjectRunning)|first %}
+    {% if runningProject %}
+    <div class="col-md-12 mb-3">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-play-circle"></i> Currently Running Project
+                </h3>
+            </div>
+            <div class="card-body" id="running-project-card">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4><strong>{{ runningProject.name }}</strong></h4>
+                        <p class="mb-2">
+                            <i class="fas fa-folder"></i> <code>{{ runningProject.path }}</code>
+                        </p>
+                        <div class="mb-2">
+                            {% if runningProject.config and runningProject.config.php.version %}
+                                <span class="badge badge-info mr-2">
+                                    PHP: {{ runningProject.config.php.version }}
+                                </span>
+                            {% endif %}
+                            {% if runningProject.config and runningProject.config.nodejs.version %}
+                                <span class="badge badge-success mr-2">
+                                    Node.js: {{ runningProject.config.nodejs.version }}
+                                </span>
+                            {% endif %}
+                            {% if runningProject.isWebdevCompatible %}
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check"></i> WebDev Compatible
+                                </span>
+                                {% if runningProject.config %}
+                                    <span class="badge badge-info">Schema: {{ runningProject.config.schemaVersion }}</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-info">Open in IDE</button>
+                            <button type="button" class="btn btn-sm btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                {% for ideKey, ideConfig in ideConfigs %}
+                                    <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ runningProject.path|e('html_attr') }}" data-ide="{{ ideKey }}">{{ ideConfig.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% if runningProject.isWebdevCompatible %}
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-success">Project</button>
+                                <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ runningProject.path|e('html_attr') }}" data-command="webdev project start">Project start</a></li>
+                                    <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ runningProject.path|e('html_attr') }}" data-command="webdev project stop">Project stop</a></li>
+                                    <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ runningProject.path|e('html_attr') }}" data-command="webdev project info">Project info</a></li>
+                                    <div class="dropdown-divider"></div>
+                                    <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ runningProject.path|e('html_attr') }}">Set as current project</a></li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
@@ -209,5 +279,132 @@
 
 {% block extra_javascripts %}
     {{ encore_entry_script_tags('admin') }}
+    <script>
+        (function() {
+            let pollInterval = null;
+            const pollUrl = '{{ path('projects_running') }}';
+            const ideConfigs = {{ ideConfigs|json_encode|raw }};
+            let runningProjectCard = document.querySelector('#running-project-card') ? document.querySelector('#running-project-card').closest('.col-md-12') : null;
+
+            function buildIdeDropdownItems(projectPath) {
+                let items = '';
+                for (const [ideKey, ideConfig] of Object.entries(ideConfigs)) {
+                    items += `<li><a class="dropdown-item ide-open-link" href="#" data-project-path="${escapeHtml(projectPath)}" data-ide="${escapeHtml(ideKey)}">${escapeHtml(ideConfig.name)}</a></li>`;
+                }
+                return items;
+            }
+
+            function updateRunningProject(data) {
+                if (!data.success) {
+                    return;
+                }
+
+                const runningProject = data.runningProject;
+                const row = document.querySelector('.row');
+
+                if (runningProject) {
+                    const cardHtml = `
+                        <div class="col-md-12 mb-3">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h3 class="card-title mb-0">
+                                        <i class="fas fa-play-circle"></i> Currently Running Project
+                                    </h3>
+                                </div>
+                                <div class="card-body" id="running-project-card">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4><strong>${escapeHtml(runningProject.name)}</strong></h4>
+                                            <p class="mb-2">
+                                                <i class="fas fa-folder"></i> <code>${escapeHtml(runningProject.path)}</code>
+                                            </p>
+                                            <div class="mb-2">
+                                                ${runningProject.phpVersion ? `<span class="badge badge-info mr-2">PHP: ${escapeHtml(runningProject.phpVersion)}</span>` : ''}
+                                                ${runningProject.nodejsVersion ? `<span class="badge badge-success mr-2">Node.js: ${escapeHtml(runningProject.nodejsVersion)}</span>` : ''}
+                                                ${runningProject.isWebdevCompatible ? `<span class="badge badge-success"><i class="fas fa-check"></i> WebDev Compatible</span>` : ''}
+                                                ${runningProject.schemaVersion ? `<span class="badge badge-info">Schema: ${escapeHtml(runningProject.schemaVersion)}</span>` : ''}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-info">Open in IDE</button>
+                                                <button type="button" class="btn btn-sm btn-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    ${buildIdeDropdownItems(runningProject.path)}
+                                                </ul>
+                                            </div>
+                                            ${runningProject.isWebdevCompatible ? `
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-success">Project</button>
+                                                <button type="button" class="btn btn-sm btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item command-execute-link" href="#" data-project-path="${escapeHtml(runningProject.path)}" data-command="webdev project start">Project start</a></li>
+                                                    <li><a class="dropdown-item command-execute-link" href="#" data-project-path="${escapeHtml(runningProject.path)}" data-command="webdev project stop">Project stop</a></li>
+                                                    <li><a class="dropdown-item command-execute-link" href="#" data-project-path="${escapeHtml(runningProject.path)}" data-command="webdev project info">Project info</a></li>
+                                                    <div class="dropdown-divider"></div>
+                                                    <li><a class="dropdown-item ide-open-link" href="#" data-project-path="${escapeHtml(runningProject.path)}">Set as current project</a></li>
+                                                </ul>
+                                            </div>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    if (runningProjectCard) {
+                        // Update existing card
+                        runningProjectCard.outerHTML = cardHtml;
+                        runningProjectCard = document.querySelector('#running-project-card') ? document.querySelector('#running-project-card').closest('.col-md-12') : null;
+                    } else if (row) {
+                        // Create new card
+                        row.insertAdjacentHTML('afterbegin', cardHtml);
+                        runningProjectCard = document.querySelector('#running-project-card') ? document.querySelector('#running-project-card').closest('.col-md-12') : null;
+                    }
+                } else if (runningProjectCard) {
+                    // Hide card if no project is running
+                    runningProjectCard.remove();
+                    runningProjectCard = null;
+                }
+            }
+
+            function escapeHtml(text) {
+                if (text === null || text === undefined) {
+                    return '';
+                }
+                const div = document.createElement('div');
+                div.textContent = String(text);
+                return div.innerHTML;
+            }
+
+            function pollRunningProject() {
+                fetch(pollUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateRunningProject(data);
+                    })
+                    .catch(error => {
+                        console.error('Error polling running project:', error);
+                    });
+            }
+
+            // Start polling every 20 seconds
+            if (pollUrl) {
+                pollInterval = setInterval(pollRunningProject, 20000);
+            }
+
+            // Clean up on page unload
+            window.addEventListener('beforeunload', function() {
+                if (pollInterval) {
+                    clearInterval(pollInterval);
+                }
+            });
+        })();
+    </script>
 {% endblock %}
 

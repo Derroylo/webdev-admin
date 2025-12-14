@@ -42,4 +42,13 @@ interface ProjectServiceInterface
      * @return ProjectDto[] Array of ProjectDto objects
      */
     public function refreshProjects(string $basePath): array;
+
+    /**
+     * Mark which project is currently running by checking Docker containers
+     *
+     * @param string $basePath Base directory to scan for projects
+     *
+     * @return ProjectDto[] Array of ProjectDto objects with isProjectRunning property set
+     */
+    public function markRunningProject(string $basePath): array;
 }

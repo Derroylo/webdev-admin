@@ -38,6 +38,9 @@ class OverviewProjectsController extends AbstractController
             } else {
                 $projects = $this->projectService->getAllProjects($basePath);
             }
+
+            // Mark which project is currently running
+            $projects = $this->projectService->markRunningProject($basePath);
         }
 
         return $this->render('projects/overview.html.twig', [

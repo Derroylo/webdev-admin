@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Project;
 
 use App\Dto\ProjectDto;
+use App\Service\Command\CommandExecutionServiceInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 class ProjectService implements ProjectServiceInterface
@@ -17,6 +18,7 @@ class ProjectService implements ProjectServiceInterface
     public function __construct(
         private readonly CacheItemPoolInterface $cache,
         private readonly ProjectConfigServiceInterface $projectConfigService,
+        private readonly CommandExecutionServiceInterface $commandExecutionService,
     ) {
     }
 
@@ -101,6 +103,95 @@ class ProjectService implements ProjectServiceInterface
             $cacheKey = self::CACHE_KEY_PREFIX . md5($basePath);
             $this->cache->deleteItem($cacheKey);
         }
+    }
+
+    /**
+     * Mark which project is currently running by checking Docker containers
+     *
+     * @return ProjectDto[]
+     */
+    public function markRunningProject(string $basePath): array
+    {
+        // Get all projects from cache
+        $projects = $this->getAllProjects($basePath);
+
+        // Get running container names
+        $runningContainers = $this->getRunningContainerNames();
+
+        // Mark running projects
+        foreach ($projects as $project) {
+            $expectedContainerName = $this->getExpectedContainerName($project->path);
+            $project->isProjectRunning = \in_array($expectedContainerName, $runningContainers, true);
+        }
+
+        return $projects;
+    }
+
+    /**
+     * Get list of running Docker container names
+     *
+     * @return string[]
+     */
+    private function getRunningContainerNames(): array
+    {
+        try {
+            // Use a temporary directory for the command (doesn't matter for docker ps)
+            $workingDir = sys_get_temp_dir();
+            $result = $this->commandExecutionService->executeCommand(
+                'docker ps --format "{{.Names}}"',
+                $workingDir,
+                10
+            );
+
+            if (!$result->success) {
+                return [];
+            }
+
+            $output = trim($result->output);
+            if (empty($output)) {
+                return [];
+            }
+
+            // Split by newlines and filter empty lines
+            $containers = array_filter(
+                explode("\n", $output),
+                fn (string $name) => !empty(trim($name))
+            );
+
+            return array_values(array_map('trim', $containers));
+        } catch (\Exception $e) {
+            // If Docker command fails, return empty array
+            return [];
+        }
+    }
+
+    /**
+     * Get expected container name for a project path
+     * Matches C# logic: {sanitized_directory_name}_devcontainer-app
+     *
+     * @param string $projectPath Full path to the project
+     *
+     * @return string Expected container name
+     */
+    private function getExpectedContainerName(string $projectPath): string
+    {
+        $directoryName = basename(rtrim($projectPath, '/'));
+        $sanitizedName = $this->sanitizeContainerName($directoryName);
+
+        return $sanitizedName . '_devcontainer-app';
+    }
+
+    /**
+     * Sanitize container name to match C# regex: [^A-Za-z0-9\-_]
+     *
+     * @param string $name Directory name to sanitize
+     *
+     * @return string Sanitized name
+     */
+    private function sanitizeContainerName(string $name): string
+    {
+        // Remove all characters except A-Z, a-z, 0-9, -, and _
+        return preg_replace('/[^A-Za-z0-9\-_]/', '', $name);
     }
 
     /**
