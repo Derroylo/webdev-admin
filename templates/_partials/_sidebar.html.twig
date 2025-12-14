@@ -38,21 +38,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('settings_general') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_general' %}active{% endif %}">
-                        <i class="fas fa-cog nav-icon"></i>
-                        <p>General Configuration</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('settings_php') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_php' %}active{% endif %}">
-                        <i class="fab fa-php nav-icon"></i>
-                        <p>PHP Configuration</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('settings_nodejs') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_nodejs' %}active{% endif %}">
-                        <i class="fab fa-node-js nav-icon"></i>
-                        <p>NodeJS Configuration</p>
+                    <a href="{{ path('project_configuration') }}" class="nav-link {% if app.request.get('_route') == 'project_configuration' %}active{% endif %}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Configuration</p>
                     </a>
                 </li>
                 <li class="nav-item">
