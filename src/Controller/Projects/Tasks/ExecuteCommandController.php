@@ -2,43 +2,37 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Projects;
+namespace App\Controller\Projects\Tasks;
 
-use App\Dto\TestExecutionRequestDto;
-use App\Service\Test\TestExecutionServiceInterface;
+use App\Service\Command\CommandExecutionServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class ExecuteTestController extends AbstractController
+class ExecuteCommandController extends AbstractController
 {
     public function __construct(
-        private readonly TestExecutionServiceInterface $testExecutionService,
+        private readonly CommandExecutionServiceInterface $commandExecutionService,
     ) {
     }
 
-    #[Route('/projects/tests/execute', name: 'projects_test_execute', methods: ['POST'])]
+    #[Route('/projects/commands/execute', name: 'projects_commands_execute', methods: ['POST'])]
     public function __invoke(Request $request): JsonResponse
     {
         $projectPath = $request->request->get('projectPath');
-        $testKey = $request->request->get('testKey');
+        $command = $request->request->get('command');
 
-        if (empty($projectPath) || empty($testKey)) {
+        if (empty($projectPath) || empty($command)) {
             return new JsonResponse([
                 'success' => false,
-                'error' => 'projectPath and testKey are required',
+                'error' => 'projectPath and command are required',
             ], Response::HTTP_BAD_REQUEST);
         }
 
         try {
-            $executionRequest = TestExecutionRequestDto::fromArray([
-                'projectPath' => $projectPath,
-                'testKey' => $testKey,
-            ]);
-
-            $result = $this->testExecutionService->executeTest($executionRequest);
+            $result = $this->commandExecutionService->executeCommand('webdev-prerelease ' . $command, $projectPath);
 
             return new JsonResponse($result->toArray(), Response::HTTP_OK);
         } catch (\InvalidArgumentException $e) {

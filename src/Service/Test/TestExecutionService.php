@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Test;
 
-use App\Dto\TestExecutionRequestDto;
-use App\Dto\TestExecutionResultDto;
+use App\Dto\Command\TestExecutionRequestDto;
+use App\Dto\Command\TestExecutionResultDto;
 use App\Service\Command\CommandExecutionServiceInterface;
 use App\Service\Settings\Tests\TestConfigServiceInterface;
 

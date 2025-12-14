@@ -128,9 +128,9 @@
                                                             <span class="sr-only">Toggle Dropdown</span>
                                                         </button>
                                                         <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Project start</a></li>
-                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Project stop</a></li>
-                                                            <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Project info</a></li>
+                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="project start">Project start</a></li>
+                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="project stop">Project stop</a></li>
+                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="project info">Project info</a></li>
                                                             <div class="dropdown-divider"></div>
                                                             <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Set as current project</a></li>
 
@@ -173,29 +173,29 @@
 </div>
 
 <!-- Test Execution Modal -->
-<div class="modal fade" id="testExecutionModal" tabindex="-1" aria-labelledby="testExecutionModalLabel" aria-hidden="true">
+<div class="modal fade" id="commandExecutionModal" tabindex="-1" aria-labelledby="commandExecutionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="testExecutionModalLabel">
-                    <i class="fas fa-terminal"></i> <span id="test-execution-title">Executing Test</span>
+                <h5 class="modal-title" id="commandExecutionModalLabel">
+                    <i class="fas fa-terminal"></i> <span id="command-execution-title">Executing Command</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="test-execution-loading" class="text-center py-4">
+                <div id="command-execution-loading" class="text-center py-4">
                     <div class="spinner-border text-primary" role="status">
                         <span class="sr-only">Executing test...</span>
                     </div>
-                    <p class="mt-2 text-muted">Executing test commands...</p>
+                    <p class="mt-2 text-muted">Executing command...</p>
                 </div>
-                <div id="test-execution-output" class="d-none">
-                    <div class="terminal-output" id="test-terminal-output"></div>
+                <div id="command-execution-output" class="d-none">
+                    <div class="terminal-output" id="command-terminal-output"></div>
                 </div>
-                <div id="test-execution-error" class="d-none">
+                <div id="command-execution-error" class="d-none">
                     <div class="alert alert-danger" role="alert">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <span id="test-execution-error-message"></span>
+                        <span id="command-execution-error-message"></span>
                     </div>
                 </div>
             </div>

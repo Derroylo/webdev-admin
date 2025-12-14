@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Projects;
+namespace App\Controller\Projects\Tasks;
 
 use App\Service\Config\IdePresetsServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

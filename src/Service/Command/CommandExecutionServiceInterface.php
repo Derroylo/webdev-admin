@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Command;
 
-use App\Dto\CommandExecutionResultDto;
+use App\Dto\Command\CommandExecutionResultDto;
 
 interface CommandExecutionServiceInterface
 {
