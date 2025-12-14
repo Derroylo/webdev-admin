@@ -128,9 +128,9 @@
                                                             <span class="sr-only">Toggle Dropdown</span>
                                                         </button>
                                                         <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="project start">Project start</a></li>
-                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="project stop">Project stop</a></li>
-                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="project info">Project info</a></li>
+                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="webdev project start">Project start</a></li>
+                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="webdev project stop">Project stop</a></li>
+                                                            <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="webdev project info">Project info</a></li>
                                                             <div class="dropdown-divider"></div>
                                                             <li><a class="dropdown-item ide-open-link" href="#" data-project-path="{{ project.path|e('html_attr') }}">Set as current project</a></li>
 
@@ -145,7 +145,7 @@
                                                         </button>
                                                         <ul class="dropdown-menu">
                                                             {% for testKey, test in project.config.tests %}
-                                                                <li><a class="dropdown-item test-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-test-key="{{ testKey|e('html_attr') }}" data-test-name="{{ test.name|e('html_attr') }}">{{ test.name }}</a></li>
+                                                                <li><a class="dropdown-item command-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-command="webdev tests {{ testKey|e('html_attr') }}">{{ test.name }}</a></li>
                                                             {% endfor %}
                                                         </ul>
                                                     </div>

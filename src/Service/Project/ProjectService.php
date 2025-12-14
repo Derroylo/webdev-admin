@@ -53,11 +53,18 @@ class ProjectService implements ProjectServiceInterface
 
     public function getProject(string $projectPath): ?ProjectDto
     {
-        $cacheKey = self::CACHE_KEY_PREFIX . md5($projectPath);
+        $basePath = $_ENV['PROJECTS_BASE_PATH'] ?? '';
+
+        $cacheKey = self::CACHE_KEY_PREFIX . md5($basePath);
         $cacheItem = $this->cache->getItem($cacheKey);
 
         if ($cacheItem->isHit()) {
-            return ProjectDto::fromArray($cacheItem->get());
+            $cachedData = $cacheItem->get();
+            foreach ($cachedData['projects'] as $project) {
+                if ($project->path === $projectPath) {
+                    return $project;
+                }
+            }
         }
 
         return null;

@@ -127,4 +127,37 @@ class CommandExecutionService implements CommandExecutionServiceInterface
             ];
         }
     }
+
+    /**
+     * Execute a command with streaming output
+     */
+    public function executeCommandStreaming(
+        string $command,
+        string $workingDirectory,
+        callable $onOutput,
+        int $timeout = 300,
+        array $env = []
+    ): int {
+        $process = Process::fromShellCommandline($command);
+        $process->setWorkingDirectory($workingDirectory);
+        $process->setTimeout($timeout);
+        $process->setEnv(array_merge([
+            'TERM' => 'xterm-256color',
+        ], $env));
+
+        try {
+            $process->start();
+
+            // Stream output as it arrives
+            $process->wait(function ($type, $buffer) use ($onOutput) {
+                $outputType = $type === Process::OUT ? 'stdout' : 'stderr';
+                $onOutput($outputType, $buffer, 0);
+            });
+
+            return $process->getExitCode() ?? 1;
+        } catch (\Exception $e) {
+            $onOutput('stderr', '[Error executing command: ' . $e->getMessage() . ']', 0);
+            return 1;
+        }
+    }
 }

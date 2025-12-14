@@ -30,11 +30,11 @@ class ProjectConfigService implements ProjectConfigServiceInterface
             return null;
         }
 
-        if (!isset($config['schema']) || $config['schema'] === 2) {
+        if (!isset($config['schemaVersion']) || $config['schemaVersion'] === 2) {
             return Schema2ProjectConfigDto::fromArray($config);
         }
 
-        if (isset($config['schema']) && $config['schema'] === 3) {
+        if (isset($config['schemaVersion']) && $config['schemaVersion'] === 3) {
             return Schema3ProjectConfigDto::fromArray($config);
         }
 

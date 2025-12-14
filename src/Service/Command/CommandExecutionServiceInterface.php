@@ -39,4 +39,22 @@ interface CommandExecutionServiceInterface
         int $timeout = 300,
         array $env = []
     ): CommandExecutionResultDto;
+
+    /**
+     * Execute a command with streaming output
+     *
+     * @param string $command The command to execute
+     * @param string $workingDirectory The working directory for the command
+     * @param callable $onOutput Callback function that receives output chunks: function(string $type, string $data, int $commandIndex): void
+     * @param int $timeout Timeout in seconds (default: 300)
+     * @param array<string, string> $env Additional environment variables
+     * @return int Exit code of the command
+     */
+    public function executeCommandStreaming(
+        string $command,
+        string $workingDirectory,
+        callable $onOutput,
+        int $timeout = 300,
+        array $env = []
+    ): int;
 }

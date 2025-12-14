@@ -121,6 +121,20 @@ $(document).ready(function() {
         executeTest(projectPath, testKey, testName);
     });
 
+    // Command execution handler
+    $(document).on('click', '.command-execute-link', function(e) {
+        e.preventDefault();
+        const projectPath = $(this).data('project-path');
+        const command = $(this).data('command');
+        
+        if (!projectPath || !command) {
+            console.error('Missing project path or command');
+            return;
+        }
+        
+        executeCommand(projectPath, command);
+    });
+
     // IDE opening handler
     $(document).on('click', '.ide-open-link', function(e) {
         e.preventDefault();
@@ -524,16 +538,16 @@ function openIde(projectPath, ide) {
     });
 }
 
-// Test execution function
-function executeTest(projectPath, testKey, testName) {
-    const modal = $('#testExecutionModal');
-    const titleEl = $('#test-execution-title');
-    const loadingEl = $('#test-execution-loading');
-    const outputEl = $('#test-execution-output');
-    const terminalOutputEl = $('#test-terminal-output');
-    const errorEl = $('#test-execution-error');
-    const errorMessageEl = $('#test-execution-error-message');
-    
+// Command execution function
+function executeCommand(projectPath, command) {
+    const modal = $('#commandExecutionModal');
+    const titleEl = $('#command-execution-title');
+    const loadingEl = $('#command-execution-loading');
+    const outputEl = $('#command-execution-output');
+    const terminalOutputEl = $('#command-terminal-output');
+    const errorEl = $('#command-execution-error');
+    const errorMessageEl = $('#command-execution-error-message');
+
     // Initialize ANSI converter
     const convert = new Convert({
         fg: '#FFF',
@@ -543,7 +557,7 @@ function executeTest(projectPath, testKey, testName) {
     });
     
     // Show modal and reset state
-    titleEl.text(testName || 'Executing Test');
+    titleEl.text(command || 'Executing Command');
     loadingEl.removeClass('d-none');
     outputEl.addClass('d-none');
     errorEl.addClass('d-none');
@@ -557,58 +571,81 @@ function executeTest(projectPath, testKey, testName) {
         modal.modal('show');
     }
     
-    // Execute test via AJAX
-    $.ajax({
-        url: '/projects/tests/execute',
+    // Use fetch with streaming for Server-Sent Events
+    const formData = new FormData();
+    formData.append('projectPath', projectPath);
+    formData.append('command', command);
+    
+    fetch('/projects/commands/execute', {
         method: 'POST',
-        data: {
-            projectPath: projectPath,
-            testKey: testKey
-        },
-        timeout: 360000, // 6 minutes timeout
-        success: function(response) {
-            loadingEl.addClass('d-none');
-            
-            if (response.success) {
-                // Convert ANSI to HTML
-                const htmlOutput = convert.toHtml(response.output);
-                
-                // Display output
-                terminalOutputEl.html(htmlOutput);
-                outputEl.removeClass('d-none');
-                
-                // Scroll to bottom
-                const terminalContainer = terminalOutputEl.parent();
-                terminalContainer.scrollTop(terminalContainer[0].scrollHeight);
-                
-                // Update title with exit code
-                if (response.exitCode !== undefined && response.exitCode !== 0) {
-                    titleEl.html(`${testName || 'Test'} <span class="badge badge-danger">Exit Code: ${response.exitCode}</span>`);
-                } else {
-                    titleEl.html(`${testName || 'Test'} <span class="badge badge-success">Success</span>`);
-                }
-            } else {
-                errorMessageEl.text(response.error || 'Failed to execute test');
-                errorEl.removeClass('d-none');
-            }
-        },
-        error: function(xhr, status, error) {
-            loadingEl.addClass('d-none');
-            let errorMessage = 'Failed to execute test. Please try again.';
-            
-            if (xhr.responseJSON && xhr.responseJSON.error) {
-                errorMessage = xhr.responseJSON.error;
-            } else if (xhr.status === 0) {
-                errorMessage = 'Network error. Please check your connection.';
-            } else if (xhr.status === 408 || status === 'timeout') {
-                errorMessage = 'Test execution timed out. The command may be taking too long.';
-            } else if (xhr.status) {
-                errorMessage = `Error ${xhr.status}: ${error || 'Unknown error'}`;
-            }
-            
-            errorMessageEl.text(errorMessage);
-            errorEl.removeClass('d-none');
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        
+        loadingEl.addClass('d-none');
+        outputEl.removeClass('d-none');
+        
+        function readChunk() {
+            return reader.read().then(({ done, value }) => {
+                if (done) {
+                    return;
+                }
+                
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || ''; // Keep incomplete line in buffer
+                
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.substring(6));
+                            
+                            if (data.type === 'start') {
+                                titleEl.text(`Executing Command: ${data.command}`);
+                            } else if (data.type === 'stdout' || data.type === 'stderr') {
+                                // Convert ANSI to HTML and append
+                                const htmlChunk = convert.toHtml(data.data);
+                                terminalOutputEl.append(htmlChunk);
+                                
+                                // Auto-scroll to bottom (improved for multiple jQuery/jQueryless contexts)
+                                const terminalContainer = terminalOutputEl.parent();
+                                if (terminalContainer && terminalContainer.length && terminalContainer[0]) {
+                                    terminalContainer[0].scrollTop = terminalContainer[0].scrollHeight;
+                                }
+                            } else if (data.type === 'complete') {
+                                // Update title with exit code
+                                if (data.exitCode !== 0) {
+                                    titleEl.html(`Executing Command: ${command} <span class="badge badge-danger">Exit Code: ${data.exitCode}</span>`);
+                                } else {
+                                    titleEl.html(`Executing Command: ${command} <span class="badge badge-success">Success</span>`);
+                                }
+                            } else if (data.type === 'error') {
+                                errorMessageEl.text(data.message || 'Failed to execute command');
+                                errorEl.removeClass('d-none');
+                            }
+                        } catch (e) {
+                            console.error('Error parsing SSE data:', e);
+                        }
+                    }
+                }
+                
+                return readChunk();
+            });
+        }
+        
+        return readChunk();
+    })
+    .catch(error => {
+        loadingEl.addClass('d-none');
+        errorMessageEl.text(error.message || 'Failed to execute command. Please try again.');
+        errorEl.removeClass('d-none');
     });
 }
 
