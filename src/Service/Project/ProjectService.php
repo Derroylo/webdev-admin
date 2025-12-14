@@ -6,8 +6,6 @@ namespace App\Service\Project;
 
 use App\Dto\ProjectDto;
 use Psr\Cache\CacheItemPoolInterface;
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
 
 class ProjectService implements ProjectServiceInterface
 {
@@ -18,6 +16,7 @@ class ProjectService implements ProjectServiceInterface
 
     public function __construct(
         private readonly CacheItemPoolInterface $cache,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
@@ -43,15 +42,25 @@ class ProjectService implements ProjectServiceInterface
 
                 if ($currentMtime <= $cachedData['lastScan']) {
                     // Convert cached arrays to DTOs
-                    $projects = $cachedData['projects'] ?? [];
-
-                    return array_map(fn (array $data) => ProjectDto::fromArray($data), $projects);
+                    return $cachedData['projects'] ?? [];
                 }
             }
         }
 
         // Cache miss or expired, scan for projects
         return $this->scanProjects($basePath, $cacheKey);
+    }
+
+    public function getProject(string $projectPath): ?ProjectDto
+    {
+        $cacheKey = self::CACHE_KEY_PREFIX . md5($projectPath);
+        $cacheItem = $this->cache->getItem($cacheKey);
+
+        if ($cacheItem->isHit()) {
+            return ProjectDto::fromArray($cacheItem->get());
+        }
+
+        return null;
     }
 
     /**
@@ -136,7 +145,7 @@ class ProjectService implements ProjectServiceInterface
         // Cache the results (convert DTOs to arrays for storage)
         $cacheItem = $this->cache->getItem($cacheKey);
         $cacheItem->set([
-            'projects' => array_map(fn (ProjectDto $dto) => $dto->toArray(), $projects),
+            'projects' => $projects,
             'lastScan' => time(),
             'basePath' => $basePath,
         ]);
@@ -169,27 +178,23 @@ class ProjectService implements ProjectServiceInterface
      */
     private function extractProjectData(string $projectPath): ?ProjectDto
     {
-        $name               = $this->extractProjectName($projectPath);
-        $phpVersion         = $this->extractPhpVersion($projectPath);
-        $nodejsVersion      = $this->extractNodejsVersion($projectPath);
         $isWebdevCompatible = $this->isWebdevCompatible($projectPath);
 
         $dto                     = new ProjectDto();
-        $dto->name               = $name;
-        $dto->phpVersion         = $phpVersion;
-        $dto->nodejsVersion      = $nodejsVersion;
+        $dto->name               = $this->extractProjectName($projectPath);
         $dto->path               = $projectPath;
         $dto->isWebdevCompatible = $isWebdevCompatible;
 
         // Extract tests only for compatible projects
         if ($isWebdevCompatible) {
-            $dto->tests = $this->extractTests($projectPath);
+            $dto->config = $this->projectConfigService->getProjectConfig($projectPath);
+            //$dto->isProjectRunning = $this->isProjectRunning($projectPath);
         }
 
         return $dto;
     }
 
-    /**
+        /**
      * Extract project name from devcontainer.json or use folder name
      */
     private function extractProjectName(string $projectPath): string
@@ -222,95 +227,5 @@ class ProjectService implements ProjectServiceInterface
 
         // Fallback to folder name
         return basename(rtrim($projectPath, '/'));
-    }
-
-    /**
-     * Extract PHP version from webdev.yml
-     */
-    private function extractPhpVersion(string $projectPath): string
-    {
-        $configPath = $projectPath . '/' . self::CONFIG_FILE;
-
-        if (!file_exists($configPath) || !is_readable($configPath)) {
-            return '';
-        }
-
-        try {
-            $config = Yaml::parseFile($configPath);
-
-            if (\is_array($config) && isset($config['php']['version'])) {
-                return (string) $config['php']['version'];
-            }
-        } catch (ParseException $e) {
-            // Return empty string on parse error
-        } catch (\Exception $e) {
-            // Return empty string on any other error
-        }
-
-        return '';
-    }
-
-    /**
-     * Extract Node.js version from webdev.yml
-     */
-    private function extractNodejsVersion(string $projectPath): string
-    {
-        $configPath = $projectPath . '/' . self::CONFIG_FILE;
-
-        if (!file_exists($configPath) || !is_readable($configPath)) {
-            return '';
-        }
-
-        try {
-            $config = Yaml::parseFile($configPath);
-
-            if (\is_array($config) && isset($config['nodejs']['version'])) {
-                return (string) $config['nodejs']['version'];
-            }
-        } catch (ParseException $e) {
-            // Return empty string on parse error
-        } catch (\Exception $e) {
-            // Return empty string on any other error
-        }
-
-        return '';
-    }
-
-    /**
-     * Extract tests from webdev.yml
-     * Returns an array of test key => test name
-     *
-     * @return array<string, string>
-     */
-    private function extractTests(string $projectPath): array
-    {
-        $configPath = $projectPath . '/' . self::CONFIG_FILE;
-
-        if (!file_exists($configPath) || !is_readable($configPath)) {
-            return [];
-        }
-
-        try {
-            $config = Yaml::parseFile($configPath);
-
-            if (!\is_array($config) || !isset($config['tests']) || !\is_array($config['tests'])) {
-                return [];
-            }
-
-            $tests = [];
-            foreach ($config['tests'] as $testKey => $testConfig) {
-                if (\is_array($testConfig) && isset($testConfig['name']) && \is_string($testConfig['name'])) {
-                    $tests[$testKey] = $testConfig['name'];
-                }
-            }
-
-            return $tests;
-        } catch (ParseException $e) {
-            // Return empty array on parse error
-        } catch (\Exception $e) {
-            // Return empty array on any other error
-        }
-
-        return [];
     }
 }

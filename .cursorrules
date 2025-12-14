@@ -1,0 +1,341 @@
+# Project Coding Rules and Best Practices
+
+This file defines the coding standards and architectural rules for this Symfony project.
+All code generated or modified should follow these guidelines.
+
+## PHP Standards (PSR-12)
+
+### Code Style
+- Follow PSR-12 coding standard strictly
+- Use strict types: `declare(strict_types=1);` at the top of every PHP file
+- Use 4 spaces for indentation (no tabs)
+- Use Unix line endings (LF)
+- Remove trailing whitespace
+- Files must end with a single blank line
+- Lines should not exceed 120 characters (soft limit)
+- Use single quotes for strings unless double quotes are needed for interpolation
+- Use meaningful variable, method, and class names
+
+### Naming Conventions
+- Classes: PascalCase (e.g., `ProjectService`)
+- Methods: camelCase (e.g., `getAllProjects()`)
+- Properties: camelCase (e.g., `$projectPath`)
+- Constants: UPPER_SNAKE_CASE (e.g., `CACHE_TTL`)
+- Private properties should be prefixed with `private` visibility modifier
+
+### Type Declarations
+- Always use type hints for method parameters and return types
+- Use union types when appropriate (PHP 8.0+)
+- Use nullable types (`?Type`) instead of `Type|null` when possible
+- Avoid `mixed` type unless absolutely necessary
+- Use `void` for methods that don't return anything
+
+### Class Structure
+- Order class elements as follows:
+  1. Constants (public, protected, private)
+  2. Properties (public static, protected static, private static, public, protected, private)
+  3. Constructor
+  4. Destructor
+  5. Magic methods
+  6. Methods (public static, protected static, private static, public, protected, private)
+
+## SOLID Principles
+
+### Single Responsibility Principle (SRP)
+- Each class should have only one reason to change
+- Controllers should only handle HTTP requests/responses
+- Services should contain business logic
+- DTOs should only carry data
+- Forms should only handle form configuration
+
+### Open/Closed Principle (OCP)
+- Classes should be open for extension but closed for modification
+- Use interfaces for contracts
+- Prefer composition over inheritance
+- Use abstract classes for shared behavior when appropriate
+
+### Liskov Substitution Principle (LSP)
+- Derived classes must be substitutable for their base classes
+- Interface implementations must fulfill all contract requirements
+- Don't throw exceptions in methods that aren't declared in the base class/interface
+
+### Interface Segregation Principle (ISP)
+- Clients should not be forced to depend on methods they don't use
+- Create small, focused interfaces
+- Prefer multiple specific interfaces over one large interface
+
+### Dependency Inversion Principle (DIP)
+- High-level modules should not depend on low-level modules; both should depend on abstractions
+- Always depend on interfaces, not concrete implementations
+- Use dependency injection for all dependencies
+- Services should be injected via constructor (constructor injection)
+
+## Symfony Best Practices
+
+### Controllers
+
+#### Structure
+- Controllers MUST extend `AbstractController`
+- Controllers should be invokable (use `__invoke()` method) when possible
+- Controllers should have only one public method (`__invoke()`)
+- Controller names must end with `Controller` (e.g., `ExecuteTestController`)
+- Controllers should be thin - contain only glue code (max 20-30 lines ideally)
+- Move business logic to services
+
+#### Routing
+- Use PHP attributes for routing: `#[Route('/path', name: 'route_name', methods: ['GET', 'POST'])]`
+- Route names should follow pattern: `{section}_{action}` (e.g., `projects_test_execute`)
+- Use route parameters instead of query strings when possible
+
+#### Dependency Injection
+- Use constructor injection or method injection (action method parameters)
+- Do NOT use `$this->container->get()` - use dependency injection instead
+- Type-hint dependencies in constructor or method parameters
+- Use Entity Value Resolvers for Doctrine entities when convenient
+
+#### Response Handling
+- Return proper HTTP status codes
+- Use appropriate response types (`JsonResponse`, `Response`, `RedirectResponse`)
+- Use `Response::HTTP_*` constants for status codes
+
+### Services
+
+#### Structure
+- Services MUST implement an interface
+- Interface name should be `{ServiceName}Interface` (e.g., `ProjectServiceInterface`)
+- Services should be in `App\Service` namespace
+- Services should be private in service container (not accessible via `$container->get()`)
+- Use autowiring for service configuration
+
+#### Business Logic
+- All business logic belongs in services, NOT in controllers
+- Services should be stateless when possible
+- Use dependency injection for all service dependencies
+- Services should return DTOs or domain objects, not entities directly
+
+#### Naming
+- Service classes: `{Purpose}Service` (e.g., `ProjectService`)
+- Service interfaces: `{Purpose}ServiceInterface` (e.g., `ProjectServiceInterface`)
+
+### Forms
+
+#### Structure
+- Forms MUST be defined as PHP classes extending `Symfony\Component\Form\AbstractType`
+- Form classes should be in `App\Form` namespace
+- Form names should end with `Type` (e.g., `ProjectType`)
+- Add form buttons in templates, not in form classes
+- Define validation constraints on the underlying object (DTO/Entity), not on form fields
+
+#### Usage
+- Use a single controller action to render and process forms
+- Forms should be agnostic to where they're used
+
+### DTOs (Data Transfer Objects)
+
+#### Structure
+- DTOs should be in `App\Dto` namespace
+- DTOs should be immutable when possible (use `readonly` properties in PHP 8.2+)
+- DTOs should have static factory methods: `fromArray(array $data): self`
+- DTOs should have `toArray(): array` method for serialization
+- DTOs should not contain business logic
+
+### Templates
+
+#### Naming
+- Use snake_case for template names and directories
+- Template fragments (partials) should be prefixed with underscore: `_header.html.twig`
+- Template paths should match controller namespace structure
+
+#### Structure
+- Use Twig inheritance (`extends`) for base templates
+- Use `include` or `embed` for reusable fragments
+- Keep templates simple - move complex logic to Twig extensions or services
+
+### Configuration
+
+#### Environment Variables
+- Use environment variables for infrastructure configuration (database URLs, API keys, etc.)
+- Use Symfony Secrets for sensitive information
+- Use parameters in `config/services.yaml` for application configuration
+- Parameter names should be prefixed with `app.` (e.g., `app.cache_ttl`)
+
+#### Services Configuration
+- Use YAML format for service configuration
+- Use autowiring and autoconfiguration
+- Make services private by default
+- Use service tags for event subscribers, Twig extensions, etc.
+
+### Doctrine (if used)
+
+#### Entities
+- Use PHP attributes for entity mapping (not YAML/XML)
+- Entities should be in `App\Entity` namespace
+- Use repositories for complex queries
+- Keep entities simple - move business logic to services
+
+## Architecture Rules
+
+### Layer Separation
+
+#### Controllers Layer
+- Controllers can depend on: Services (via interfaces), DTOs, Forms, Symfony components
+- Controllers MUST NOT depend on: Entities directly, Repositories directly, Infrastructure code
+- Controllers should use services to get data, not query databases directly
+
+#### Services Layer
+- Services can depend on: Other services (via interfaces), DTOs, Symfony components, Infrastructure
+- Services MUST NOT depend on: Controllers, HTTP components (Request, Response)
+- Services should be framework-agnostic when possible
+
+#### Domain Layer (DTOs, Entities if used)
+- Domain objects should not depend on any framework components
+- DTOs should be pure data structures
+
+### Dependency Rules
+
+1. **Controllers → Services**: Controllers depend on service interfaces, not implementations
+2. **Services → Services**: Services depend on other service interfaces
+3. **No Circular Dependencies**: Avoid circular dependencies between services
+4. **Framework Coupling**: Only controllers should be tightly coupled to Symfony
+
+### Naming Conventions
+
+#### Files and Directories
+- Match class names to file names (PSR-4 autoloading)
+- Use PascalCase for class files
+- Match directory structure to namespace structure
+
+#### Namespaces
+- Root namespace: `App\`
+- Controllers: `App\Controller\{Section}\{Name}Controller`
+- Services: `App\Service\{Category}\{Name}Service`
+- DTOs: `App\Dto\{Name}Dto`
+- Forms: `App\Form\{Name}Type`
+- Event Listeners: `App\EventListener\{Name}Listener`
+- Twig Extensions: `App\Twig\{Name}Extension`
+
+## Code Quality
+
+### Error Handling
+- Use exceptions for error conditions
+- Create custom exceptions when appropriate (in `App\Exception` namespace)
+- Use appropriate exception types (`InvalidArgumentException`, `RuntimeException`, etc.)
+- Always provide meaningful error messages
+
+### Documentation
+- Use PHPDoc blocks for all public methods and classes
+- Document parameters, return types, and exceptions
+- Use `@param`, `@return`, `@throws` annotations
+- Document complex business logic with inline comments
+
+### Testing Considerations
+- Write testable code (use dependency injection)
+- Keep methods small and focused
+- Avoid static methods when possible (harder to test)
+- Use interfaces to enable mocking in tests
+
+### Performance
+- Use caching for expensive operations
+- Avoid N+1 query problems
+- Use lazy loading when appropriate
+- Profile before optimizing
+
+## Security
+
+### Input Validation
+- Always validate and sanitize user input
+- Use Symfony Validator component
+- Validate at the form/DTO level, not just in controllers
+
+### Security Best Practices
+- Use Symfony Security component for authentication/authorization
+- Use CSRF protection for forms
+- Sanitize output in templates (Twig auto-escapes by default)
+- Use parameterized queries (Doctrine handles this)
+- Never trust user input
+
+## Code Examples
+
+### Good Controller Example
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\Projects;
+
+use App\Service\Project\ProjectServiceInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class OverviewProjectsController extends AbstractController
+{
+    public function __construct(
+        private readonly ProjectServiceInterface $projectService,
+    ) {
+    }
+
+    #[Route('/projects', name: 'projects_overview', methods: ['GET'])]
+    public function __invoke(Request $request): JsonResponse
+    {
+        $basePath = $request->query->get('basePath', '/default/path');
+        $projects = $this->projectService->getAllProjects($basePath);
+
+        return new JsonResponse($projects, Response::HTTP_OK);
+    }
+}
+```
+
+### Good Service Example
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Service\Project;
+
+use App\Dto\ProjectDto;
+
+interface ProjectServiceInterface
+{
+    public function getAllProjects(string $basePath): array;
+}
+
+class ProjectService implements ProjectServiceInterface
+{
+    public function __construct(
+        private readonly CacheInterface $cache,
+    ) {
+    }
+
+    public function getAllProjects(string $basePath): array
+    {
+        // Business logic here
+        return [];
+    }
+}
+```
+
+## Summary Checklist
+
+When writing code, ensure:
+- [ ] Strict types declared
+- [ ] PSR-12 compliant
+- [ ] Type hints on all methods
+- [ ] Controllers extend AbstractController
+- [ ] Controllers use __invoke() method
+- [ ] Services implement interfaces
+- [ ] Dependency injection used (no container->get())
+- [ ] Business logic in services, not controllers
+- [ ] DTOs used for data transfer
+- [ ] Forms defined as classes
+- [ ] Routing via attributes
+- [ ] Meaningful names following conventions
+- [ ] PHPDoc comments on public methods
+- [ ] Error handling with exceptions
+- [ ] Input validation
+- [ ] No circular dependencies
+- [ ] Layer separation respected

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Settings\Tests;
 
 use App\Service\Settings\AbstractWebDevConfigService;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
 class TestConfigService extends AbstractWebDevConfigService implements TestConfigServiceInterface
 {
@@ -26,6 +28,30 @@ class TestConfigService extends AbstractWebDevConfigService implements TestConfi
         $tests = $this->getTests();
 
         return $tests[$key] ?? null;
+    }
+
+    /**
+     * Get a specific test by key for a given project path
+     *
+     * @param string $projectPath The project path
+     * @param string $key The test key
+     * @return array<string, mixed> The test configuration
+     * @throws \InvalidArgumentException If the test is not found
+     * @throws \RuntimeException If the configuration file cannot be read or parsed
+     */
+    public function getTestForProject(string $projectPath, string $key): array
+    {
+        $config = $this->loadConfigForProject($projectPath);
+
+        if (!isset($config['tests']) || !\is_array($config['tests'])) {
+            throw new \InvalidArgumentException('No tests found in webdev.yml');
+        }
+
+        if (!isset($config['tests'][$key]) || !\is_array($config['tests'][$key])) {
+            throw new \InvalidArgumentException("Test '{$key}' not found");
+        }
+
+        return $config['tests'][$key];
     }
 
     /**
@@ -85,6 +111,34 @@ class TestConfigService extends AbstractWebDevConfigService implements TestConfi
 
         unset($this->config['tests'][$key]);
         $this->saveConfig();
+    }
+
+    /**
+     * Load configuration from webdev.yml file for a specific project path
+     *
+     * @param string $projectPath The project path
+     * @return array<string, mixed>
+     * @throws \RuntimeException If the configuration file cannot be read or parsed
+     */
+    private function loadConfigForProject(string $projectPath): array
+    {
+        $configPath = $projectPath . '/' . self::CONFIG_FILE;
+
+        if (!file_exists($configPath) || !is_readable($configPath)) {
+            throw new \RuntimeException('webdev.yml not found or not readable');
+        }
+
+        try {
+            $config = Yaml::parseFile($configPath);
+        } catch (ParseException $e) {
+            throw new \RuntimeException('Failed to parse webdev.yml: ' . $e->getMessage(), 0, $e);
+        }
+
+        if (!\is_array($config)) {
+            throw new \RuntimeException('Invalid configuration format');
+        }
+
+        return $config;
     }
 
     /**

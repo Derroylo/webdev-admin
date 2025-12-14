@@ -4,25 +4,28 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
+use App\Dto\Project\ProjectConfigInterfaceDto;
+
 class ProjectDto
 {
     public string $name             = '';
-    public string $phpVersion       = '';
-    public string $nodejsVersion    = '';
+
     public string $path             = '';
+
     public bool $isWebdevCompatible = false;
-    /** @var array<string, string> Array of test key => test name */
-    public array $tests = [];
+
+    public bool $isProjectRunning = false;
+
+    public ?ProjectConfigInterfaceDto $config = null;
 
     public static function fromArray(array $data): self
     {
         $dto                     = new self();
         $dto->name               = $data['name'] ?? '';
-        $dto->phpVersion         = $data['phpVersion'] ?? '';
-        $dto->nodejsVersion      = $data['nodejsVersion'] ?? '';
         $dto->path               = $data['path'] ?? '';
         $dto->isWebdevCompatible = $data['isWebdevCompatible'] ?? false;
-        $dto->tests              = $data['tests'] ?? [];
+        $dto->isProjectRunning   = $data['isProjectRunning'] ?? false;
+        $dto->config             = $data['config'] ?? null;
 
         return $dto;
     }
@@ -31,11 +34,10 @@ class ProjectDto
     {
         return [
             'name'               => $this->name,
-            'phpVersion'         => $this->phpVersion,
-            'nodejsVersion'      => $this->nodejsVersion,
             'path'               => $this->path,
             'isWebdevCompatible' => $this->isWebdevCompatible,
-            'tests'              => $this->tests,
+            'isProjectRunning'   => $this->isProjectRunning,
+            'config'             => $this->config?->toArray(),
         ];
     }
 }

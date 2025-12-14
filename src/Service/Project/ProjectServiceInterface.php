@@ -19,6 +19,15 @@ interface ProjectServiceInterface
     public function getAllProjects(string $basePath): array;
 
     /**
+     * Get a project by its path
+     *
+     * @param string $projectPath Path to the project
+     *
+     * @return ProjectDto|null ProjectDto object if found, null otherwise
+     */
+    public function getProject(string $projectPath): ?ProjectDto;
+
+    /**
      * Clear cache for projects
      *
      * @param string|null $basePath If provided, clear cache only for this base path. If null, clear all project caches.

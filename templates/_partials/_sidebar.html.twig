@@ -29,7 +29,7 @@
                 </li>
 
                 {# Settings Section #}
-                <li class="nav-header">Settings</li>
+                <li class="nav-header">Project</li>
 
                 <li class="nav-item">
                     <a href="{{ path('settings_dashboard') }}" class="nav-link {% if app.request.get('_route') == 'settings_dashboard' %}active{% endif %}">
@@ -117,6 +117,12 @@
                 {# Tools Section #}
                 <li class="nav-header">Tools</li>
 
+                <li class="nav-item">
+                    <a href="{{ path('placeholder') }}" class="nav-link {% if app.request.get('_route') starts with 'tools_placeholder' %}active{% endif %}">
+                        <i class="fas fa-tools nav-icon"></i>
+                        <p>Secrets</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="{{ path('placeholder') }}" class="nav-link {% if app.request.get('_route') starts with 'tools_placeholder' %}active{% endif %}">
                         <i class="fas fa-tools nav-icon"></i>

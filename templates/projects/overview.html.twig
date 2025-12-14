@@ -80,15 +80,15 @@
                                     <tr data-compatible="{{ project.isWebdevCompatible ? 'true' : 'false' }}">
                                         <td><strong>{{ project.name }}</strong></td>
                                         <td>
-                                            {% if project.phpVersion %}
-                                                <span class="badge badge-info">{{ project.phpVersion }}</span>
+                                            {% if project.config and project.config.php.version %}
+                                                <span class="badge badge-info">{{ project.config.php.version }}</span>
                                             {% else %}
                                                 <span class="text-muted">—</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if project.nodejsVersion %}
-                                                <span class="badge badge-success">{{ project.nodejsVersion }}</span>
+                                            {% if project.config and project.config.nodejs.version %}
+                                                <span class="badge badge-success">{{ project.config.nodejs.version }}</span>
                                             {% else %}
                                                 <span class="text-muted">—</span>
                                             {% endif %}
@@ -98,6 +98,7 @@
                                                 <span class="badge badge-success">
                                                     <i class="fas fa-check"></i> Yes
                                                 </span>
+                                                <span class="badge badge-info">Schema Version: {{ project.config.schemaVersion }}</span>
                                             {% else %}
                                                 <span class="badge badge-danger">
                                                     <i class="fas fa-times"></i> No
@@ -136,15 +137,15 @@
                                                         </ul>
                                                     </div>
                                                 {% endif %}
-                                                {% if project.isWebdevCompatible and project.tests is not empty %}
+                                                {% if project.isWebdevCompatible and project.config and project.config.tests is not empty %}
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-sm btn-primary">Tests</button>
                                                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                                             <span class="sr-only">Toggle Dropdown</span>
                                                         </button>
                                                         <ul class="dropdown-menu">
-                                                            {% for testKey, testName in project.tests %}
-                                                                <li><a class="dropdown-item test-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-test-key="{{ testKey|e('html_attr') }}" data-test-name="{{ testName|e('html_attr') }}">{{ testName }}</a></li>
+                                                            {% for testKey, test in project.config.tests %}
+                                                                <li><a class="dropdown-item test-execute-link" href="#" data-project-path="{{ project.path|e('html_attr') }}" data-test-key="{{ testKey|e('html_attr') }}" data-test-name="{{ test.name|e('html_attr') }}">{{ test.name }}</a></li>
                                                             {% endfor %}
                                                         </ul>
                                                     </div>
