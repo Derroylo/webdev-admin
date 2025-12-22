@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-folder-open"></i> Workspaces</h3>
+                <div class="card-tools">
+                    <a href="{{ path('project_workspaces_new') }}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Add New Workspace
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="workspaces-table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Workspace Key</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Repository</th>
+                            <th>Doc Root</th>
+                            <th>Subdomains</th>
+                            <th width="15%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, workspace in workspaces %}
+                            <tr>
+                                <td><code>{{ key }}</code></td>
+                                <td>{{ workspace.name ?? 'N/A' }}</td>
+                                <td>{{ workspace.description ?? 'N/A' }}</td>
+                                <td>
+                                    {% if workspace.repository is defined %}
+                                        <small class="text-monospace">{{ workspace.repository|slice(0, 40) }}{% if workspace.repository|length > 40 %}...{% endif %}</small>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td><code>{{ workspace.docRoot ?? 'public' }}</code></td>
+                                <td>
+                                    {% if workspace.subDomains is defined and workspace.subDomains is iterable %}
+                                        {% for subdomain in workspace.subDomains %}
+                                            <span class="badge badge-info">{{ subdomain }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('project_workspaces_edit', {key: key}) }}" 
+                                           class="btn btn-info" 
+                                           title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ path('project_workspaces_delete', {key: key}) }}" 
+                                              method="post" 
+                                              style="display: inline;"
+                                              onsubmit="return confirm('Are you sure you want to delete this workspace?');">
+                                            <button type="submit" class="btn btn-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No workspaces configured</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascripts %}
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
+

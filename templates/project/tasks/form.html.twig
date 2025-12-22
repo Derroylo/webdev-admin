@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+{{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-tasks"></i> 
+                        Configuration
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form_row(form.name) }}
+                        <small class="form-text text-muted">
+                            A descriptive name for the task
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            {{ form_widget(form.onlyMain) }}
+                            {{ form_label(form.onlyMain) }}
+                        </div>
+                        <small class="form-text text-muted">
+                            If checked, this task will only run in the main workspace
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-tasks"></i> 
+                        Lifecycle Hooks
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Init Commands</label>
+                        <div id="init-commands">
+                            {{ form_widget(form.init) }}
+                        </div>
+                        <small class="form-text text-muted">
+                            Commands to run during initialization
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Create Commands</label>
+                        <div id="create-commands">
+                            {{ form_widget(form.create) }}
+                        </div>
+                        <small class="form-text text-muted">
+                            Commands to run when the environment is created
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Start Commands</label>
+                        <div id="start-commands">
+                            {{ form_widget(form.start) }}
+                        </div>
+                        <small class="form-text text-muted">
+                            Commands to run when the environment starts
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Task
+            </button>
+            <a href="{{ path('project_tasks') }}" class="btn btn-default">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-header">
+                    <h3 class="card-title">Lifecycle Hooks</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><strong>init:</strong> Run during initialization</li>
+                        <li><strong>create:</strong> Run when environment is created</li>
+                        <li><strong>start:</strong> Run when environment starts</li>
+                    </ul>
+                    <p class="text-muted mb-0">Commands are executed in the order they are listed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{{ form_end(form, {'render_rest': false}) }}
+{% endblock %}

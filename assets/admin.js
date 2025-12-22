@@ -47,6 +47,33 @@ $(document).ready(function() {
         });
     }
 
+    // Workspaces table
+    if ($('#workspaces-table').length) {
+        $('#workspaces-table').DataTable({
+            responsive: true,
+            autoWidth: false,
+            pageLength: 25,
+            order: [[0, 'asc']],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search workspaces..."
+            }
+        });
+    }
+    // Secrets table
+    if ($('#secrets-table').length) {
+        $('#secrets-table').DataTable({
+            responsive: true,
+            autoWidth: false,
+            pageLength: 25,
+            order: [[0, 'asc']],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search secrets..."
+            }
+        });
+    }
+
     // Projects table
     if ($('#projects-table').length) {
         let compatibilityFilter = 'compatible'; // Default filter

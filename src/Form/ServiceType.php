@@ -61,7 +61,7 @@ class ServiceType extends AbstractType
                 'help' => 'Choose a pre-defined service template to auto-fill the form',
             ])
             ->add('name', TextType::class, [
-                'label' => 'Service Name',
+                'label' => 'Name',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., MySQL Server - Relational Database',
@@ -69,7 +69,7 @@ class ServiceType extends AbstractType
                 ],
             ])
             ->add('category', ChoiceType::class, [
-                'label'   => 'Service Category',
+                'label'   => 'Category',
                 'choices' => $serviceCategoryChoices,
                 'attr'    => [
                     'class' => 'form-control',

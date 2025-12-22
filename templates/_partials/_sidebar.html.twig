@@ -1,8 +1,7 @@
 {# Main Sidebar Container #}
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-lightblue elevation-4">
     {# Brand Logo #}
     <a href="{{ path('app_dashboard') }}" class="brand-link">
-        <i class="fas fa-cogs brand-image" style="opacity: .8; font-size: 2rem;"></i>
         <span class="brand-text font-weight-light">WebDev Admin</span>
     </a>
 
@@ -19,12 +18,21 @@
 
         {# Sidebar Menu #}
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent text-sm nav-flat" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-header">Overview</li>
+
                 {# Projects #}
                 <li class="nav-item">
                     <a href="{{ path('projects_overview') }}" class="nav-link {% if app.request.get('_route') == 'projects_overview' %}active{% endif %}">
                         <i class="nav-icon fas fa-project-diagram"></i>
                         <p>Projects</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ path('placeholder') }}" class="nav-link {% if app.request.get('_route') starts with 'tools_placeholder' %}active{% endif %}">
+                        <i class="fas fa-key nav-icon"></i>
+                        <p>Secrets</p>
                     </a>
                 </li>
 
@@ -38,79 +46,82 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('project_configuration') }}" class="nav-link {% if app.request.get('_route') == 'project_configuration' %}active{% endif %}">
-                        <i class="far fa-circle nav-icon"></i>
+                    <a href="{{ path('project_configuration') }}" class="nav-link {% if app.request.get('_route') starts with 'project_configuration' %}active{% endif %}">
+                        <i class="fas fa-cog nav-icon"></i>
                         <p>Configuration</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('settings_services') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_services' %}active{% endif %}">
+                    <a href="{{ path('project_services') }}" class="nav-link {% if app.request.get('_route') starts with 'project_services' %}active{% endif %}">
                         <i class="fas fa-server nav-icon"></i>
                         <p>Services</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('settings_tasks') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_tasks' %}active{% endif %}">
+                    <a href="{{ path('project_tasks') }}" class="nav-link {% if app.request.get('_route') starts with 'project_tasks' %}active{% endif %}">
                         <i class="fas fa-tasks nav-icon"></i>
                         <p>Tasks</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('settings_tests') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_tests' %}active{% endif %}">
+                    <a href="{{ path('project_tests') }}" class="nav-link {% if app.request.get('_route') starts with 'project_tests' %}active{% endif %}">
                         <i class="fas fa-vial nav-icon"></i>
                         <p>Tests</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('settings_workspaces') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_workspaces' %}active{% endif %}">
+                    <a href="{{ path('project_workspaces') }}" class="nav-link {% if app.request.get('_route') starts with 'project_workspaces' %}active{% endif %}">
                         <i class="fas fa-folder nav-icon"></i>
                         <p>Workspaces</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('settings_secrets') }}" class="nav-link {% if app.request.get('_route') starts with 'settings_secrets' %}active{% endif %}">
+                    <a href="{{ path('project_secrets') }}" class="nav-link {% if app.request.get('_route') starts with 'project_secrets' %}active{% endif %}">
                         <i class="fas fa-key nav-icon"></i>
                         <p>Secrets</p>
                     </a>
                 </li>
 
-                {# Logs Section #}
-                <li class="nav-header">Logs</li>
-
                 <li class="nav-item">
-                    <a href="{{ path('app_logs', {type: 'apache-error'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'apache-error' %}active{% endif %}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Apache Error</p>
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-file-alt nav-icon"></i>
+                        <p>   
+                            Logs
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('app_logs', {type: 'apache-access'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'apache-access' %}active{% endif %}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Apache Access</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('app_logs', {type: 'php'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'php' %}active{% endif %}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>PHP Logs</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('app_logs', {type: 'symfony'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'symfony' %}active{% endif %}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Symfony Logs</p>
-                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ path('app_logs', {type: 'apache-error'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'apache-error' %}active{% endif %}">
+                                <i class="fas fa-file-alt nav-icon"></i>
+                                <p>Apache Error</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('app_logs', {type: 'apache-access'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'apache-access' %}active{% endif %}">
+                                <i class="fas fa-file-alt nav-icon"></i>
+                                <p>Apache Access</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('app_logs', {type: 'php'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'php' %}active{% endif %}">
+                                <i class="fas fa-file-alt nav-icon"></i>
+                                <p>PHP Logs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('app_logs', {type: 'symfony'}) }}" class="nav-link {% if app.request.get('_route') == 'app_logs' and app.request.get('type') == 'symfony' %}active{% endif %}">
+                                <i class="fas fa-file-alt nav-icon"></i>
+                                <p>Symfony Logs</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 {# Tools Section #}
                 <li class="nav-header">Tools</li>
 
-                <li class="nav-item">
-                    <a href="{{ path('placeholder') }}" class="nav-link {% if app.request.get('_route') starts with 'tools_placeholder' %}active{% endif %}">
-                        <i class="fas fa-tools nav-icon"></i>
-                        <p>Secrets</p>
-                    </a>
-                </li>
+                
                 <li class="nav-item">
                     <a href="{{ path('placeholder') }}" class="nav-link {% if app.request.get('_route') starts with 'tools_placeholder' %}active{% endif %}">
                         <i class="fas fa-tools nav-icon"></i>

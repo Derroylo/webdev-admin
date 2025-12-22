@@ -14,13 +14,6 @@ class GeneralConfigType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('allowPreReleases', CheckboxType::class, [
-                'label'      => 'Allow Pre-Releases',
-                'required'   => false,
-                'attr'       => ['class' => 'form-check-input'],
-                'label_attr' => ['class' => 'form-check-label'],
-                'help'       => 'Enable updates to pre-release versions via webdev update',
-            ])
             ->add('workspaceFolder', TextType::class, [
                 'label' => 'Workspace Folder',
                 'attr'  => [

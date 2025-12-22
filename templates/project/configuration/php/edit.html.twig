@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="alert alert-info">
+    <i class="icon fas fa-info"></i>
+    <strong>Note:</strong> You may need to restart your development environment for changes to take effect.
+</div>
+{{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fab fa-php"></i> General PHP Configuration</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.version) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fab fa-php"></i> PHP Configuration (php.ini)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.opcache_enable) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(form.xdebug_mode) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(form.xdebug_start_with_request) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fab fa-php"></i> PHP Configuration (php.ini) - Web</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.memory_limit_web) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-outline card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fab fa-php"></i> PHP Configuration (php.ini) - CLI</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_row(form.memory_limit_cli) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(form.max_execution_time_cli) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-header">
+                    <h3 class="card-title">Help & Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-folder-open"></i>
+                        <strong>TODO</strong>
+                        <br>
+                        TODO
+                        <br>
+                        <a href="https://derroylo.github.io/workspaces" target="_blank" class="btn btn-link p-0 mt-2">
+                            <i class="fas fa-book"></i> Learn more about workspaces
+                        </a>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-folder-open"></i>
+                        <strong>What is the purpose of the proxy?</strong>
+                        <br>
+                        TODO: Add more information about the proxy
+                        <br>
+                        <a href="https://derroylo.github.io/proxy" target="_blank" class="btn btn-link p-0 mt-2">
+                            <i class="fas fa-book"></i> Learn more about the proxy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save"></i> Save Configuration
+    </button>
+    <a href="{{ path('project_configuration') }}" class="btn btn-default">
+        <i class="fas fa-times"></i> Cancel
+    </a>
+{{ form_end(form) }}
+{% endblock %}

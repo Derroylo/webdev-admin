@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }} - WebDev Admin{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-tasks"></i> Tasks</h3>
+                <div class="card-tools">
+                    <a href="https://derroylo.github.io/tasks" target="_blank" class="btn btn-info btn-sm">
+                        <i class="fas fa-book"></i> Documentation
+                    </a>
+                    <a href="{{ path('project_tasks_new') }}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Add New Task
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="tasks-table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Task Key</th>
+                            <th>Name</th>
+                            <th>Only Main</th>
+                            <th>Lifecycle Hooks</th>
+                            <th width="15%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, task in tasks %}
+                            <tr>
+                                <td><code>{{ key }}</code></td>
+                                <td>{{ task.name }}</td>
+                                <td>
+                                    {% if task.onlyMain ?? false %}
+                                        <span class="badge badge-warning">Yes</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">No</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if task.init is defined and task.init|length > 0 %}
+                                        <span class="badge badge-info">Init ({{ task.init|length }})</span>
+                                    {% endif %}
+                                    {% if task.create is defined and task.create|length > 0 %}
+                                        <span class="badge badge-success">Create ({{ task.create|length }})</span>
+                                    {% endif %}
+                                    {% if task.start is defined and task.start|length > 0 %}
+                                        <span class="badge badge-primary">Start ({{ task.start|length }})</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('project_tasks_edit', {key: key}) }}" 
+                                           class="btn btn-info" 
+                                           title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ path('project_tasks_delete', {key: key}) }}" 
+                                              method="post" 
+                                              style="display: inline;"
+                                              onsubmit="return confirm('Are you sure you want to delete this task?');">
+                                            <button type="submit" class="btn btn-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No tasks configured</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascripts %}
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
