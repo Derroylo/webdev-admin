@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Service;
 
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Service\Project\ProjectConfigServiceInterface;
-use App\Service\Project\ProjectSessionServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,7 +13,6 @@ use Symfony\Component\Routing\Attribute\Route;
 class ServicesOverviewController extends AbstractController
 {
     public function __construct(
-        private readonly ProjectSessionServiceInterface $projectSessionService,
         private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
@@ -21,8 +20,8 @@ class ServicesOverviewController extends AbstractController
     #[Route('/project/services', name: 'project_services')]
     public function __invoke(): Response
     {
-        $projectPath   = $this->projectSessionService->getCurrentProjectPath();
-        $projectConfig = $this->projectConfigService->getProjectConfig($projectPath);
+        /** @var ProjectConfigDto $projectConfigDto */
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
         return $this->render('project/services/overview.html.twig', [
             'page_title'  => 'Project Services',
@@ -30,7 +29,7 @@ class ServicesOverviewController extends AbstractController
                 ['label' => 'Projects', 'url' => $this->generateUrl('projects_overview')],
                 ['label' => 'Project Services', 'url' => ''],
             ],
-            'services' => $projectConfig->services,
+            'services' => $projectConfigDto->services,
         ]);
     }
 }

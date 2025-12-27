@@ -24,9 +24,10 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th width="20%">Name</th>
-                                    <th width="20%">Key</th>
-                                    <th width="20%">Value</th>
+                                    <th width="15%">Name</th>
+                                    <th width="15%">Key</th>
+                                    <th width="15%">Current Value</th>
+                                    <th width="15%">Default Value</th>
                                     <th width="40%">Description</th>
                                 </tr>
                             </thead>
@@ -34,7 +35,8 @@
                                 <tr>
                                     <td>Workspace Folder</td>
                                     <td>config.workspaceFolder</td>
-                                    <td><code>{{ config.workspaceFolder ?? 'workspaces' }}</code></td>
+                                    <td>{% if config.config.workspaceFolder is not null %}<code>{{ config.config.workspaceFolder }}</code>{% endif %}</td>
+                                    <td>workspaces</td>
                                     <td>The folder where additional workspaces (projects) are located. More info <a href="https://derroylo.github.io/workspaces" target="_blank">here</a>.</td>
                                 </tr>
                             </tbody>
@@ -46,9 +48,10 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th width="20%">Name</th>
-                                    <th width="20%">Key</th>
-                                    <th width="20%">Value</th>
+                                    <th width="15%">Name</th>
+                                    <th width="15%">Key</th>
+                                    <th width="15%">Current Value</th>
+                                    <th width="15%">Default Value</th>
                                     <th width="40%">Description</th>
                                 </tr>
                             </thead>
@@ -56,13 +59,15 @@
                                 <tr>
                                     <td>Domain</td>
                                     <td>config.proxy.domain</td>
-                                    <td><code>{{ config.config.proxyDomain ?? 'dev.localhost' }}</code></td>
+                                    <td>{% if config.config.proxyDomain is not null %}<code>{{ config.config.proxyDomain }}</code>{% endif %}</td>
+                                    <td>dev.localhost</td>
                                     <td>The domain for the development environment. More info <a href="https://derroylo.github.io/proxy" target="_blank">here</a>.</td>
                                 </tr>
                                 <tr>
                                     <td>Subdomain</td>
                                     <td>config.proxy.subDomain</td>
-                                    <td><code>{{ config.config.proxySubDomain ?? 'devcontainer' }}</code></td>
+                                    <td>{% if config.config.proxySubDomain is not null %}<code>{{ config.config.proxySubDomain }}</code>{% endif %}</td>
+                                    <td>devcontainer</td>
                                     <td>The subdomain for the development environment. More info <a href="https://derroylo.github.io/proxy" target="_blank">here</a>.</td>
                                 </tr>
                             </tbody>
@@ -88,9 +93,10 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th width="20%">Name</th>
-                            <th width="20%">Key</th>
-                            <th width="20%">Value</th>
+                            <th width="15%">Name</th>
+                            <th width="15%">Key</th>
+                            <th width="15%">Current Value</th>
+                            <th width="15%">Default Value</th>
                             <th width="40%">Description</th>
                         </tr>
                     </thead>
@@ -98,7 +104,8 @@
                         <tr>
                             <td>NodeJS Version</td>
                             <td>nodejs.version</td>
-                            <td><code>{{ config.nodejs.version ?? 'Not set' }}</code></td>
+                            <td>{% if config.nodejs.version is not null %}<code>{{ config.nodejs.version }}</code>{% endif %}</td>
+                            <td>Latest installed version</td>
                             <td>The version of NodeJS to use for the development environment. More info <a href="https://derroylo.github.io/reference/webdev_yml/nodejs" target="_blank">here</a>.</td>
                         </tr>
                     </tbody>
@@ -125,9 +132,10 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th width="20%">Name</th>
-                                    <th width="20%">Key</th>
-                                    <th width="20%">Value</th>
+                                    <th width="15%">Name</th>
+                                    <th width="15%">Key</th>
+                                    <th width="15%">Current Value</th>
+                                    <th width="15%">Default Value</th>
                                     <th width="40%">Description</th>
                                 </tr>
                             </thead>
@@ -135,7 +143,8 @@
                                 <tr>
                                     <td>PHP Version</td>
                                     <td>php.version</td>
-                                    <td><span class="badge badge-info">{{ config.php.version ?? 'Not set' }}</span></td>
+                                    <td>{% if config.php.version is not null %}<code>{{ config.php.version }}</code>{% endif %}</td>
+                                    <td>Latest installed version</td>
                                     <td>The version of PHP to use for the development environment. More info <a href="https://derroylo.github.io/reference/webdev_yml/php" target="_blank">here</a>.</td>
                                 </tr>
                             </tbody>

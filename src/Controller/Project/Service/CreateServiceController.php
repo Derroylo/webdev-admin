@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Service;
 
-use App\Dto\ServiceDto;
+use App\Dto\Project\Schema3\ServiceConfigDto as ServiceConfigSchema3Dto;
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Form\ServiceType;
+use App\Service\Project\ProjectConfigServiceInterface;
 use App\Service\Config\ServicePresetsServiceInterface;
-use App\Service\Settings\Services\ServiceConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateServiceController extends AbstractController
 {
     public function __construct(
-        private readonly ServiceConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
         private readonly ServicePresetsServiceInterface $servicePresetsService,
     ) {
     }
@@ -24,19 +25,27 @@ class CreateServiceController extends AbstractController
     #[Route('/project/services/new', name: 'project_services_new')]
     public function __invoke(Request $request): Response
     {
-        $dto  = new ServiceDto();
-        $form = $this->createForm(ServiceType::class, $dto);
+        /** @var ProjectConfigDto $projectConfigDto */
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
+
+        $form = $this->createForm(ServiceType::class, new ServiceConfigSchema3Dto());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // Generate a key from the service name
-                $key = $this->generateServiceKey($request->request->all()['service']['name'] ?? '');
+                $key = $form->get('key')->getData();
 
-                $this->configService->createService($key, $dto->toArray());
-                $this->addFlash('success', 'Service created successfully!');
+                if (!isset($projectConfigDto->services[$key])) {
+                    $projectConfigDto->services[$key] = $form->getData();
 
-                return $this->redirectToRoute('project_services');
+                    $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+
+                    $this->addFlash('success', 'Service created successfully!');
+
+                    return $this->redirectToRoute('project_services');                    
+                }
+
+                $this->addFlash('danger', 'Service with this key already exists.');                
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Error creating service: ' . $e->getMessage());
             }
@@ -65,16 +74,5 @@ class CreateServiceController extends AbstractController
             'is_edit'               => false,
             'templates_by_category' => $templatesByCategory,
         ]);
-    }
-
-    private function generateServiceKey(string $name): string
-    {
-        // Generate a lowercase key without spaces
-        $key = strtolower($name);
-        $key = preg_replace('/[^a-z0-9]+/', '', $key);
-        $key = preg_replace('/^(.+?)\s*-.*$/', '$1', $name);
-        $key = strtolower(preg_replace('/[^a-z0-9]+/', '', $key));
-
-        return $key ?: 'service_' . uniqid();
     }
 }

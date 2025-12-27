@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Service;
 
-use App\Service\Settings\Services\ServiceConfigServiceInterface;
+use App\Dto\Project\Schema3\ProjectConfigDto;
+use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteServiceController extends AbstractController
 {
     public function __construct(
-        private readonly ServiceConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
@@ -20,7 +21,13 @@ class DeleteServiceController extends AbstractController
     public function __invoke(string $key): Response
     {
         try {
-            $this->configService->deleteService($key);
+            /** @var ProjectConfigDto $projectConfigDto */
+            $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
+
+            unset($projectConfigDto->services[$key]);
+
+            $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+
             $this->addFlash('success', 'Service deleted successfully!');
         } catch (\Exception $e) {
             $this->addFlash('danger', 'Error deleting service: ' . $e->getMessage());

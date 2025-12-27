@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dto\Project\Schema3;
 
-use App\Dto\Project\ProjectConfigInterfaceDto;
+use App\Dto\Project\AbstractProjectConfigDto;
 use App\Dto\Project\Schema2\GeneralConfigDto;
 use App\Dto\Project\Schema2\NodeJsConfigDto;
 use App\Dto\Project\Schema2\PhpConfigDto;
@@ -13,7 +13,7 @@ use App\Dto\Project\Schema2\TaskConfigDto;
 use App\Dto\Project\Schema2\TestConfigDto;
 use App\Dto\Project\Schema2\WorkspaceConfigDto;
 
-class ProjectConfigDto implements ProjectConfigInterfaceDto
+class ProjectConfigDto extends AbstractProjectConfigDto
 {
     public int $schemaVersion = 3;
     
@@ -41,6 +41,7 @@ class ProjectConfigDto implements ProjectConfigInterfaceDto
     public static function fromArray(array $data): self
     {
         $dto = new self();
+        $dto->schemaVersion = $data['schemaVersion'] ?? 3;
         $dto->config = GeneralConfigDto::fromArray($data['config'] ?? []);
         $dto->php = PhpConfigDto::fromArray($data['php'] ?? []);
         $dto->nodejs = NodeJsConfigDto::fromArray($data['nodejs'] ?? []);
@@ -55,6 +56,7 @@ class ProjectConfigDto implements ProjectConfigInterfaceDto
     public function toArray(): array
     {
         return [
+            'schemaVersion' => $this->schemaVersion,
             'config' => $this->config->toArray(),
             'php' => $this->php->toArray(),
             'nodejs' => $this->nodejs->toArray(),

@@ -1,31 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
-use App\Dto\TaskDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TaskType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('key', TextType::class, [
+                'label' => 'Name',
+                'mapped' => false,
+                'attr'  => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'e.g., install-composer-dependencies',
+                ],
+                'help' => 'The key is used to identify the task in the project configuration',
+            ])
             ->add('name', TextType::class, [
-                'label' => 'Task Name',
+                'label' => 'Description',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., Install composer dependencies',
                 ],
+                'help' => 'A descriptive name for the task',
             ])
             ->add('onlyMain', CheckboxType::class, [
                 'label'    => 'Only Main (Run only in main workspace)',
                 'required' => false,
                 'attr'     => ['class' => 'form-check-input'],
+                'help' => 'If checked, this task will only run in the main workspace',
             ])
             ->add('init', CollectionType::class, [
                 'label'         => 'Init Commands',
@@ -38,6 +49,7 @@ class TaskType extends AbstractType
                 'allow_delete' => true,
                 'required'     => false,
                 'attr'         => ['class' => 'collection-container'],
+                'help' => 'Commands to run before the task is created',
             ])
             ->add('create', CollectionType::class, [
                 'label'         => 'Create Commands',
@@ -50,6 +62,7 @@ class TaskType extends AbstractType
                 'allow_delete' => true,
                 'required'     => false,
                 'attr'         => ['class' => 'collection-container'],
+                'help' => 'Commands to run after the task is created',
             ])
             ->add('start', CollectionType::class, [
                 'label'         => 'Start Commands',
@@ -62,13 +75,7 @@ class TaskType extends AbstractType
                 'allow_delete' => true,
                 'required'     => false,
                 'attr'         => ['class' => 'collection-container'],
+                'help' => 'Commands to run after the task is started',
             ]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => TaskDto::class,
-        ]);
     }
 }

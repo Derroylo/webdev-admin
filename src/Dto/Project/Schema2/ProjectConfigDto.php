@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Dto\Project\Schema2;
 
-use App\Dto\Project\ProjectConfigInterfaceDto;
+use App\Dto\Project\AbstractProjectConfigDto;
 
-class ProjectConfigDto implements ProjectConfigInterfaceDto
+class ProjectConfigDto extends AbstractProjectConfigDto
 {
     public int $schemaVersion = 2;
     

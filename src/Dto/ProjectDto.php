@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
-use App\Dto\Project\ProjectConfigInterfaceDto;
+use App\Dto\Project\AbstractProjectConfigDto;
 
 class ProjectDto
 {
@@ -16,7 +16,7 @@ class ProjectDto
 
     public bool $isProjectRunning = false;
 
-    public ?ProjectConfigInterfaceDto $config = null;
+    public ?AbstractProjectConfigDto $config = null;
 
     public static function fromArray(array $data): self
     {

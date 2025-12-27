@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Test;
 
-use App\Service\Settings\Tests\TestConfigServiceInterface;
+use App\Dto\Project\Schema3\ProjectConfigDto;
+use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteTestController extends AbstractController
 {
     public function __construct(
-        private readonly TestConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
@@ -20,7 +21,13 @@ class DeleteTestController extends AbstractController
     public function __invoke(string $key): Response
     {
         try {
-            $this->configService->deleteTest($key);
+            /** @var ProjectConfigDto $projectConfigDto */
+            $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
+
+            unset($projectConfigDto->tests[$key]);
+
+            $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+
             $this->addFlash('success', 'Test deleted successfully!');
         } catch (\Exception $e) {
             $this->addFlash('danger', 'Error deleting test: ' . $e->getMessage());

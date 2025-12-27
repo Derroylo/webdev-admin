@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Secret;
 
-use App\Service\Settings\Secrets\SecretConfigServiceInterface;
+use App\Dto\Project\Schema3\ProjectConfigDto;
+use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class DeleteSecretController extends AbstractController
 {
     public function __construct(
-        private readonly SecretConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
@@ -20,7 +21,13 @@ class DeleteSecretController extends AbstractController
     public function __invoke(string $key): Response
     {
         try {
-            $this->configService->deleteSecret($key);
+            /** @var ProjectConfigDto $projectConfigDto */
+            $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
+
+            unset($projectConfigDto->secrets[$key]);
+
+            $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+
             $this->addFlash('success', 'Secret deleted successfully!');
         } catch (\Exception $e) {
             $this->addFlash('danger', 'Error deleting secret: ' . $e->getMessage());

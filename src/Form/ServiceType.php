@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
-use App\Dto\ServiceDto;
 use App\Service\Config\ServicePresetsServiceInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -10,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ServiceType extends AbstractType
 {
@@ -60,13 +60,24 @@ class ServiceType extends AbstractType
                 ],
                 'help' => 'Choose a pre-defined service template to auto-fill the form',
             ])
-            ->add('name', TextType::class, [
+            ->add('key', TextType::class, [
                 'label' => 'Name',
+                'mapped' => false,
+                'attr'  => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'e.g., mysql',
+                    'id'          => 'service-key',
+                ],
+                'help' => 'The key is used to identify the service in the project configuration',
+            ])
+            ->add('name', TextType::class, [
+                'label' => 'Description',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., MySQL Server - Relational Database',
                     'id'          => 'service-name',
                 ],
+                'help' => 'A descriptive name for the service (e.g., "MySQL Server - Relational Database")',
             ])
             ->add('category', ChoiceType::class, [
                 'label'   => 'Category',
@@ -75,11 +86,13 @@ class ServiceType extends AbstractType
                     'class' => 'form-control',
                     'id'    => 'service-category',
                 ],
+                'help' => 'The category helps organize services',
             ])
             ->add('active', CheckboxType::class, [
                 'label'    => 'Active',
                 'required' => false,
                 'attr'     => ['class' => 'form-check-input'],
+                'help' => 'Whether the service should be started automatically',
             ])
             ->add('port', IntegerType::class, [
                 'label'    => 'Port',
@@ -90,6 +103,7 @@ class ServiceType extends AbstractType
                     'min'         => 1,
                     'max'         => 65535,
                 ],
+                'help' => 'The port number for the service (1-65535)',
             ])
             ->add('subDomain', TextType::class, [
                 'label'    => 'Subdomain',
@@ -98,13 +112,7 @@ class ServiceType extends AbstractType
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., mysql',
                 ],
+                'help' => 'The subdomain for the service (optional)',
             ]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => ServiceDto::class,
-        ]);
     }
 }

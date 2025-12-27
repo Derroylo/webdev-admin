@@ -16,10 +16,11 @@
                 
                 <div class="card-body">
                     <div class="form-group">
+                        {{ form_row(form.key) }}
+                    </div>
+
+                    <div class="form-group">
                         {{ form_row(form.name) }}
-                        <small class="form-text text-muted">
-                            A descriptive name for the task
-                        </small>
                     </div>
 
                     <div class="form-group">
@@ -45,9 +46,23 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label>Init Commands</label>
-                        <div id="init-commands">
-                            {{ form_widget(form.init) }}
+                        <div id="init-commands-collection" data-prototype="{{ form_widget(form.init.vars.prototype)|e('html_attr') }}">
+                            {% for command in form.init %}
+                                <div class="init-command-item mb-2">
+                                    <div class="input-group">
+                                        {{ form_widget(command) }}
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-danger remove-init-command">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-init-command">
+                            <i class="fas fa-plus"></i> Add Init Command
+                        </button>
                         <small class="form-text text-muted">
                             Commands to run during initialization
                         </small>
@@ -55,9 +70,23 @@
 
                     <div class="form-group">
                         <label>Create Commands</label>
-                        <div id="create-commands">
-                            {{ form_widget(form.create) }}
+                        <div id="create-commands-collection" data-prototype="{{ form_widget(form.create.vars.prototype)|e('html_attr') }}">
+                            {% for command in form.create %}
+                                <div class="create-command-item mb-2">
+                                    <div class="input-group">
+                                        {{ form_widget(command) }}
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-danger remove-create-command">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-create-command">
+                            <i class="fas fa-plus"></i> Add Create Command
+                        </button>
                         <small class="form-text text-muted">
                             Commands to run when the environment is created
                         </small>
@@ -65,9 +94,23 @@
 
                     <div class="form-group">
                         <label>Start Commands</label>
-                        <div id="start-commands">
-                            {{ form_widget(form.start) }}
+                        <div id="start-commands-collection" data-prototype="{{ form_widget(form.start.vars.prototype)|e('html_attr') }}">
+                            {% for command in form.start %}
+                                <div class="start-command-item mb-2">
+                                    <div class="input-group">
+                                        {{ form_widget(command) }}
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-danger remove-start-command">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-start-command">
+                            <i class="fas fa-plus"></i> Add Start Command
+                        </button>
                         <small class="form-text text-muted">
                             Commands to run when the environment starts
                         </small>
@@ -98,5 +141,61 @@
             </div>
         </div>
     </div>
+    {{ form_widget(form._token) }}
 {{ form_end(form, {'render_rest': false}) }}
+{% endblock %}
+
+{% block extra_javascripts %}
+<script>
+// Handle collections for task commands
+document.addEventListener('DOMContentLoaded', function() {
+    setupCollection('init-command', 'init-command', 'init-commands');
+    setupCollection('create-command', 'create-command', 'create-commands');
+    setupCollection('start-command', 'start-command', 'start-commands');
+    
+    function setupCollection(itemClass, buttonPrefix, collectionPrefix) {
+        const addButton = document.getElementById(`add-${buttonPrefix}`);
+        const collectionHolder = document.getElementById(`${collectionPrefix}-collection`);
+        
+        if (!addButton || !collectionHolder) return;
+        
+        let index = collectionHolder.querySelectorAll(`.${itemClass}-item`).length;
+        
+        addButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const prototype = collectionHolder.dataset.prototype;
+            const newForm = prototype.replace(/__name__/g, index);
+            
+            const div = document.createElement('div');
+            div.className = `${itemClass}-item mb-2`;
+            div.innerHTML = `
+                <div class="input-group">
+                    ${newForm}
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-danger remove-${itemClass}">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            collectionHolder.appendChild(div);
+            index++;
+            
+            attachRemoveHandler(div.querySelector(`.remove-${itemClass}`));
+        });
+        
+        function attachRemoveHandler(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.closest(`.${itemClass}-item`).remove();
+            });
+        }
+        
+        // Attach to existing items
+        document.querySelectorAll(`.remove-${itemClass}`).forEach(attachRemoveHandler);
+    }
+});
+</script>
 {% endblock %}

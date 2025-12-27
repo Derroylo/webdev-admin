@@ -195,7 +195,7 @@ $(document).ready(function() {
         const isActive = $(this).is(':checked');
         
         $.ajax({
-            url: '/settings/services/toggle/' + serviceKey,
+            url: '/project/services/' + serviceKey + '/toggle',
             method: 'POST',
             data: {
                 active: isActive

@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Service\Project;
 
-use App\Dto\Project\Schema2\ProjectConfigDto as Schema2ProjectConfigDto;
-use App\Dto\Project\Schema3\ProjectConfigDto as Schema3ProjectConfigDto;
+use App\Dto\Project\AbstractProjectConfigDto;
 
 interface ProjectConfigServiceInterface
 {
-    public function getProjectConfig(string $projectPath): Schema2ProjectConfigDto | Schema3ProjectConfigDto | null;
+    public function getCurrentProjectConfig(): AbstractProjectConfigDto | null;
+
+    public function getProjectConfig(string $projectPath): AbstractProjectConfigDto | null;
+
+    public function validateAndSaveCurrentProjectConfig(AbstractProjectConfigDto $projectConfigDto): void;
+
+    public function validateAndSaveProjectConfig(AbstractProjectConfigDto $projectConfigDto, string $projectPath): void;
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Task;
 
-use App\Service\Project\ProjectSessionServiceInterface;
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +13,6 @@ use Symfony\Component\Routing\Attribute\Route;
 class TasksOverviewController extends AbstractController
 {
     public function __construct(
-        private readonly ProjectSessionServiceInterface $projectSessionService,
         private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
@@ -21,8 +20,8 @@ class TasksOverviewController extends AbstractController
     #[Route('/project/tasks', name: 'project_tasks')]
     public function __invoke(): Response
     {
-        $projectPath   = $this->projectSessionService->getCurrentProjectPath();
-        $projectConfig = $this->projectConfigService->getProjectConfig($projectPath);
+        /** @var ProjectConfigDto $projectConfigDto */
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
         return $this->render('project/tasks/overview.html.twig', [
             'page_title'  => 'Project Tasks',
@@ -30,7 +29,7 @@ class TasksOverviewController extends AbstractController
                 ['label' => 'Projects', 'url' => $this->generateUrl('projects_overview')],
                 ['label' => 'Project Tasks', 'url' => ''],
             ],
-            'tasks' => $projectConfig->tasks,
+            'tasks' => $projectConfigDto->tasks,
         ]);
     }
 }

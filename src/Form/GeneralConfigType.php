@@ -2,9 +2,8 @@
 
 namespace App\Form;
 
-use App\Dto\GeneralConfigDto;
+use App\Dto\Project\AbstractProjectConfigDto;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +15,8 @@ class GeneralConfigType extends AbstractType
         $builder
             ->add('workspaceFolder', TextType::class, [
                 'label' => 'Workspace Folder',
+                'required' => false,
+                'property_path' => 'config.workspaceFolder',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'workspaces',
@@ -24,6 +25,8 @@ class GeneralConfigType extends AbstractType
             ])
             ->add('proxyDomain', TextType::class, [
                 'label' => 'Proxy Domain',
+                'required' => false,
+                'property_path' => 'config.proxyDomain',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'dev.localhost',
@@ -32,6 +35,8 @@ class GeneralConfigType extends AbstractType
             ])
             ->add('proxySubDomain', TextType::class, [
                 'label' => 'Proxy Subdomain',
+                'required' => false,
+                'property_path' => 'config.proxySubDomain',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'devcontainer',
@@ -43,7 +48,7 @@ class GeneralConfigType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => GeneralConfigDto::class,
+            'data_class' => AbstractProjectConfigDto::class,
         ]);
     }
 }

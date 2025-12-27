@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Test;
 
-use App\Service\Project\ProjectSessionServiceInterface;
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +13,6 @@ use Symfony\Component\Routing\Attribute\Route;
 class TestsOverviewController extends AbstractController
 {
     public function __construct(
-        private readonly ProjectSessionServiceInterface $projectSessionService,
         private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
@@ -21,8 +20,8 @@ class TestsOverviewController extends AbstractController
     #[Route('/project/tests', name: 'project_tests')]
     public function __invoke(): Response
     {
-        $projectPath   = $this->projectSessionService->getCurrentProjectPath();
-        $projectConfig = $this->projectConfigService->getProjectConfig($projectPath);
+        /** @var ProjectConfigDto $projectConfigDto */
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
         return $this->render('project/tests/overview.html.twig', [
             'page_title'  => 'Project Tests',
@@ -30,7 +29,7 @@ class TestsOverviewController extends AbstractController
                 ['label' => 'Projects', 'url' => $this->generateUrl('projects_overview')],
                 ['label' => 'Project Tests', 'url' => ''],
             ],
-            'tests' => $projectConfig->tests,
+            'tests' => $projectConfigDto->tests,
         ]);
     }
 }

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Configuration;
 
-use App\Dto\NodeJsConfigDto;
 use App\Form\NodeJsConfigType;
-use App\Service\Settings\NodeJs\NodeJsConfigServiceInterface;
+use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,22 +14,21 @@ use Symfony\Component\Routing\Attribute\Route;
 class EditNodeJsConfigController extends AbstractController
 {
     public function __construct(
-        private readonly NodeJsConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
     #[Route('/project/configuration/nodejs/edit', name: 'project_configuration_nodejs_edit')]
     public function __invoke(Request $request): Response
     {
-        $nodejsConfig = $this->configService->getNodeJsConfig();
-        $dto          = NodeJsConfigDto::fromArray($nodejsConfig);
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
-        $form = $this->createForm(NodeJsConfigType::class, $dto);
+        $form = $this->createForm(NodeJsConfigType::class, $projectConfigDto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->configService->updateNodeJsConfig($dto->toArray());
+                $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
                 $this->addFlash('success', 'NodeJS configuration updated successfully!');
 
                 return $this->redirectToRoute('project_configuration');

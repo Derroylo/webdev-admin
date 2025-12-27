@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Workspace;
 
-use App\Dto\WorkspaceDto;
+use App\Dto\Project\Schema2\WorkspaceConfigDto as WorkspaceConfigSchema2Dto;
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Form\WorkspaceType;
-use App\Service\Settings\Workspaces\WorkspaceConfigServiceInterface;
+use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,26 +16,34 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateWorkspaceController extends AbstractController
 {
     public function __construct(
-        private readonly WorkspaceConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
     #[Route('/project/workspaces/new', name: 'project_workspaces_new')]
     public function __invoke(Request $request): Response
     {
-        $dto  = new WorkspaceDto();
-        $form = $this->createForm(WorkspaceType::class, $dto);
+        /** @var ProjectConfigDto $projectConfigDto */
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
+
+        $form = $this->createForm(WorkspaceType::class, new WorkspaceConfigSchema2Dto());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // Generate a key from the workspace name or folder
-                $key = $this->generateWorkspaceKey($request->request->all()['workspace'] ?? []);
+                $key = $form->get('key')->getData();
 
-                $this->configService->createWorkspace($key, $dto->toArray());
-                $this->addFlash('success', 'Workspace created successfully!');
+                if (!isset($projectConfigDto->workspaces[$key])) {
+                    $projectConfigDto->workspaces[$key] = $form->getData();
 
-                return $this->redirectToRoute('project_workspaces');
+                    $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+
+                    $this->addFlash('success', 'Workspace created successfully!');
+
+                    return $this->redirectToRoute('project_workspaces');
+                }
+
+                $this->addFlash('danger', 'Workspace with this key already exists.');
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Error creating workspace: ' . $e->getMessage());
             }
@@ -50,23 +59,5 @@ class CreateWorkspaceController extends AbstractController
             'form'    => $form,
             'is_edit' => false,
         ]);
-    }
-
-    private function generateWorkspaceKey(array $data): string
-    {
-        // Try to use folder, name, or generate unique key
-        if (!empty($data['folder'])) {
-            $key = $data['folder'];
-        } elseif (!empty($data['name'])) {
-            $key = $data['name'];
-        } else {
-            return 'workspace_' . uniqid();
-        }
-
-        // Generate a lowercase key without spaces
-        $key = strtolower($key);
-        $key = preg_replace('/[^a-z0-9]+/', '', $key);
-
-        return $key ?: 'workspace_' . uniqid();
     }
 }

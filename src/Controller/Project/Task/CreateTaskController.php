@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Task;
 
-use App\Dto\TaskDto;
+use App\Dto\Project\Schema2\TaskConfigDto as TaskConfigSchema2Dto;
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Form\TaskType;
-use App\Service\Settings\Tasks\TaskConfigServiceInterface;
+use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,26 +16,35 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateTaskController extends AbstractController
 {
     public function __construct(
-        private readonly TaskConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
     #[Route('/project/tasks/new', name: 'project_tasks_new')]
     public function __invoke(Request $request): Response
     {
-        $dto  = new TaskDto();
-        $form = $this->createForm(TaskType::class, $dto);
+        /** @var ProjectConfigDto $projectConfigDto */
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
+
+        $form = $this->createForm(TaskType::class, new TaskConfigSchema2Dto());
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // Generate a key from the task name
-                $key = $this->generateTaskKey($request->request->all()['task']['name'] ?? '');
+                $key = $form->get('key')->getData();
 
-                $this->configService->createTask($key, $dto->toArray());
-                $this->addFlash('success', 'Task created successfully!');
+                if (!isset($projectConfigDto->tasks[$key])) {
+                    $projectConfigDto->tasks[$key] = $form->getData();
 
-                return $this->redirectToRoute('project_tasks');
+                    $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+
+                    $this->addFlash('success', 'Task created successfully!');
+
+                    return $this->redirectToRoute('project_tasks');
+                }
+
+                $this->addFlash('danger', 'Task with this key already exists.');
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Error creating task: ' . $e->getMessage());
             }
@@ -50,14 +60,5 @@ class CreateTaskController extends AbstractController
             'form'    => $form,
             'is_edit' => false,
         ]);
-    }
-
-    private function generateTaskKey(string $name): string
-    {
-        $key = strtolower($name);
-        $key = preg_replace('/[^a-z0-9]+/', '_', $key);
-        $key = trim($key, '_');
-
-        return $key ?: 'task_' . uniqid();
     }
 }

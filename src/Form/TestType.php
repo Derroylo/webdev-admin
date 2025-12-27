@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
-use App\Dto\TestDto;
 use App\Service\Config\TestPresetsServiceInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TestType extends AbstractType
 {
@@ -52,13 +52,23 @@ class TestType extends AbstractType
                 ],
                 'help' => 'Choose a pre-defined test template to auto-fill the form',
             ])
+            ->add('key', TextType::class, [
+                'label' => 'Name',
+                'mapped' => false,
+                'attr'  => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'e.g., phpunit',
+                ],
+                'help' => 'The key is used to identify the test in the project configuration',
+            ])
             ->add('name', TextType::class, [
-                'label' => 'Test Name',
+                'label' => 'Description',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., Run PHPUnit tests',
                     'id'          => 'test-name',
                 ],
+                'help' => 'A descriptive name for the test',
             ])
             ->add('commands', CollectionType::class, [
                 'label'         => 'Commands',
@@ -71,6 +81,7 @@ class TestType extends AbstractType
                 'allow_delete' => true,
                 'required'     => true,
                 'attr'         => ['class' => 'collection-container'],
+                'help' => 'Commands to execute for this test (at least one required)',
             ])
             ->add('tests', CollectionType::class, [
                 'label'         => 'Dependent Tests',
@@ -83,13 +94,7 @@ class TestType extends AbstractType
                 'allow_delete' => true,
                 'required'     => false,
                 'attr'         => ['class' => 'collection-container'],
+                'help' => 'Other test keys that should run before this test',
             ]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => TestDto::class,
-        ]);
     }
 }

@@ -8,28 +8,16 @@ class SecretConfigDto
 {
     public string $missingMessage = '';
 
-    public string $sourceKey = '';
+    public SecretSourceConfigDto $source;
 
-    public string $sourceGroup = '';
-
-    public string $targetFile = '';
-
-    public string $targetEnvVar = '';
-
-    public array $targetExpectedSecrets = [];
-
-    public array $targetExpectedVars = [];
+    public SecretTargetConfigDto $target;
 
     public static function fromArray(array $data): self
     {
         $dto = new self();
         $dto->missingMessage = $data['missingMessage'] ?? '';
-        $dto->sourceKey = $data['sourceKey'] ?? '';
-        $dto->sourceGroup = $data['sourceGroup'] ?? '';
-        $dto->targetFile = $data['targetFile'] ?? '';
-        $dto->targetEnvVar = $data['targetEnvVar'] ?? '';
-        $dto->targetExpectedSecrets = $data['targetExpectedSecrets'] ?? [];
-        $dto->targetExpectedVars = $data['targetExpectedVars'] ?? [];
+        $dto->source = SecretSourceConfigDto::fromArray($data['source'] ?? []);
+        $dto->target = SecretTargetConfigDto::fromArray($data['target'] ?? []);
 
         return $dto;
     }
@@ -38,12 +26,8 @@ class SecretConfigDto
     {
         return [
             'missingMessage' => $this->missingMessage,
-            'sourceKey' => $this->sourceKey,
-            'sourceGroup' => $this->sourceGroup,
-            'targetFile' => $this->targetFile,
-            'targetEnvVar' => $this->targetEnvVar,
-            'targetExpectedSecrets' => $this->targetExpectedSecrets,
-            'targetExpectedVars' => $this->targetExpectedVars,
+            'source' => $this->source->toArray(),
+            'target' => $this->target->toArray(),
         ];
     }
 }

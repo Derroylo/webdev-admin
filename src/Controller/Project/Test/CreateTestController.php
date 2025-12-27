@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Test;
 
-use App\Dto\TestDto;
+use App\Dto\Project\Schema2\TestConfigDto as TestConfigSchema2Dto;
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Form\TestType;
+use App\Service\Project\ProjectConfigServiceInterface;
 use App\Service\Config\TestPresetsServiceInterface;
-use App\Service\Settings\Tests\TestConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateTestController extends AbstractController
 {
     public function __construct(
-        private readonly TestConfigServiceInterface $configService,
+        private readonly ProjectConfigServiceInterface $projectConfigService,
         private readonly TestPresetsServiceInterface $testPresetsService,
     ) {
     }
@@ -24,22 +25,27 @@ class CreateTestController extends AbstractController
     #[Route('/project/tests/new', name: 'project_tests_new')]
     public function __invoke(Request $request): Response
     {
-        $dto = new TestDto();
-        // Initialize with one empty command field
-        $dto->commands = [''];
+        /** @var ProjectConfigDto $projectConfigDto */
+        $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
-        $form = $this->createForm(TestType::class, $dto);
+        $form = $this->createForm(TestType::class, new TestConfigSchema2Dto());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                // Generate a key from the test name
-                $key = $this->generateTestKey($request->request->all()['test']['name'] ?? '');
+                $key = $form->get('key')->getData();
 
-                $this->configService->createTest($key, $dto->toArray());
-                $this->addFlash('success', 'Test created successfully!');
+                if (!isset($projectConfigDto->tests[$key])) {
+                    $projectConfigDto->tests[$key] = $form->getData();
 
-                return $this->redirectToRoute('project_tests');
+                    $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+
+                    $this->addFlash('success', 'Test created successfully!');
+
+                    return $this->redirectToRoute('project_tests');
+                }
+
+                $this->addFlash('danger', 'Test with this key already exists.');
             } catch (\Exception $e) {
                 $this->addFlash('danger', 'Error creating test: ' . $e->getMessage());
             }
@@ -68,14 +74,5 @@ class CreateTestController extends AbstractController
             'is_edit'               => false,
             'templates_by_category' => $templatesByCategory,
         ]);
-    }
-
-    private function generateTestKey(string $name): string
-    {
-        $key = strtolower($name);
-        $key = preg_replace('/[^a-z0-9]+/', '_', $key);
-        $key = trim($key, '_');
-
-        return $key ?: 'test_' . uniqid();
     }
 }

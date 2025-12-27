@@ -1,20 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
-use App\Dto\SecretDto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SecretType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('key', TextType::class, [
+                'label' => 'Key',
+                'mapped' => false,
+                'attr'  => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'e.g., auth',
+                ],
+            ])
             ->add('missingMessage', TextareaType::class, [
                 'label'    => 'Missing Message',
                 'required' => false,
@@ -27,6 +35,7 @@ class SecretType extends AbstractType
             ])
             ->add('sourceKey', TextType::class, [
                 'label' => 'Source Key',
+                'property_path' => 'source.key',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., auth',
@@ -36,6 +45,7 @@ class SecretType extends AbstractType
             ->add('sourceGroup', TextType::class, [
                 'label'    => 'Source Group',
                 'required' => false,
+                'property_path' => 'source.group',
                 'attr'     => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., composer',
@@ -45,6 +55,7 @@ class SecretType extends AbstractType
             ->add('targetFile', TextType::class, [
                 'label'    => 'Target File',
                 'required' => false,
+                'property_path' => 'target.file',
                 'attr'     => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., auth.json',
@@ -54,6 +65,7 @@ class SecretType extends AbstractType
             ->add('targetEnvVar', TextType::class, [
                 'label'    => 'Target Environment Variable',
                 'required' => false,
+                'property_path' => 'target.envVar',
                 'attr'     => [
                     'class'       => 'form-control',
                     'placeholder' => 'e.g., file',
@@ -62,8 +74,10 @@ class SecretType extends AbstractType
             ])
             ->add('targetExpectedSecrets', CollectionType::class, [
                 'label'         => 'Expected Secrets',
+                'property_path' => 'target.expectedSecrets',
                 'entry_type'    => TextType::class,
                 'entry_options' => [
+                    
                     'attr' => [
                         'class'       => 'form-control',
                         'placeholder' => 'e.g., GitLab',
@@ -77,8 +91,10 @@ class SecretType extends AbstractType
             ])
             ->add('targetExpectedVars', CollectionType::class, [
                 'label'         => 'Expected Variables',
+                'property_path' => 'target.expectedVars',
                 'entry_type'    => TextType::class,
                 'entry_options' => [
+                    
                     'attr' => [
                         'class'       => 'form-control',
                         'placeholder' => 'e.g., DOCKER_USERNAME',
@@ -90,12 +106,5 @@ class SecretType extends AbstractType
                 'prototype'    => true,
                 'help'         => 'List of environment variables that should be in the file',
             ]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => SecretDto::class,
-        ]);
     }
 }

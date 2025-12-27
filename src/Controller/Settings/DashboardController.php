@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/settings')]
 class DashboardController extends AbstractController
 {
-    public function __construct(
+/*     public function __construct(
         private readonly PhpConfigServiceInterface $phpConfigService,
         private readonly NodeJsConfigServiceInterface $nodejsConfigService,
         private readonly ServiceConfigServiceInterface $serviceConfigService,
@@ -25,12 +25,12 @@ class DashboardController extends AbstractController
         private readonly WorkspaceConfigServiceInterface $workspaceConfigService,
         private readonly SecretConfigServiceInterface $secretConfigService,
     ) {
-    }
+    } */
 
     #[Route('', name: 'settings_dashboard')]
     public function index(): Response
     {
-        $phpConfig    = $this->phpConfigService->getPhpConfig();
+        /* $phpConfig    = $this->phpConfigService->getPhpConfig();
         $nodejsConfig = $this->nodejsConfigService->getNodeJsConfig();
         $services     = $this->serviceConfigService->getServices();
         $tasks        = $this->taskConfigService->getTasks();
@@ -54,6 +54,8 @@ class DashboardController extends AbstractController
             'total_tests'      => \count($tests),
             'total_workspaces' => \count($workspaces),
             'total_secrets'    => \count($secrets),
-        ]);
+        ]); */
+
+        return new Response('Not implemented');
     }
 }
