@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
-use App\Dto\PhpConfigDto;
 use App\Service\Config\PhpPresetsServiceInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PhpConfigType extends AbstractType
 {
@@ -30,6 +30,7 @@ class PhpConfigType extends AbstractType
         $builder
             ->add('version', ChoiceType::class, [
                 'label'   => 'PHP Version',
+                'property_path' => 'php.version',
                 'choices' => $choices,
                 'attr'    => ['class' => 'form-control'],
             ])
@@ -93,12 +94,5 @@ class PhpConfigType extends AbstractType
                     'placeholder' => 'e.g., 0 for unlimited',
                 ],
             ]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => PhpConfigDto::class,
-        ]);
     }
 }

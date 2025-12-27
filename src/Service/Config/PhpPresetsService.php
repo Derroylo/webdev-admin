@@ -33,4 +33,16 @@ class PhpPresetsService extends AbstractPresetsService implements PhpPresetsServ
 
         return $versions['php']['default_version'] ?? '8.3';
     }
+
+    public function getPhpSettings(): array
+    {
+        return $this->loadConfig('php_settings');
+    }
+
+    public function getPhpSetting(string $name): array
+    {
+        $settings = $this->getPhpSettings();
+
+        return $settings[$name] ?? [];
+    }
 }

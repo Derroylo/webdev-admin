@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Configuration;
 
+use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Form\PhpConfigType;
 use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ class EditPhpConfigController extends AbstractController
     #[Route('/project/configuration/php/edit', name: 'project_configuration_php_edit')]
     public function __invoke(Request $request): Response
     {
+        /** @var ProjectConfigDto $projectConfigDto */
         $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
         $form = $this->createForm(PhpConfigType::class, $projectConfigDto);

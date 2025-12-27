@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
-use App\Dto\NodeJsConfigDto;
 use App\Service\Config\NodeJsPresetsServiceInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NodeJsConfigType extends AbstractType
 {
@@ -29,15 +29,9 @@ class NodeJsConfigType extends AbstractType
         $builder
             ->add('version', ChoiceType::class, [
                 'label'   => 'NodeJS Version',
+                'property_path' => 'nodejs.version',
                 'choices' => $choices,
                 'attr'    => ['class' => 'form-control'],
             ]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => NodeJsConfigDto::class,
-        ]);
     }
 }

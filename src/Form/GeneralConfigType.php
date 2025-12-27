@@ -26,7 +26,7 @@ class GeneralConfigType extends AbstractType
             ->add('proxyDomain', TextType::class, [
                 'label' => 'Proxy Domain',
                 'required' => false,
-                'property_path' => 'config.proxyDomain',
+                'property_path' => 'config.proxy.domain',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'dev.localhost',
@@ -36,7 +36,7 @@ class GeneralConfigType extends AbstractType
             ->add('proxySubDomain', TextType::class, [
                 'label' => 'Proxy Subdomain',
                 'required' => false,
-                'property_path' => 'config.proxySubDomain',
+                'property_path' => 'config.proxy.subDomain',
                 'attr'  => [
                     'class'       => 'form-control',
                     'placeholder' => 'devcontainer',
