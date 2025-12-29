@@ -30,18 +30,48 @@
                     <h3 class="card-title"><i class="fab fa-php"></i> PHP Configuration (php.ini)</h3>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {{ form_row(form.opcache_enable) }}
-                            </div>
-                            <div class="form-group">
-                                {{ form_row(form.xdebug_mode) }}
-                            </div>
-                            <div class="form-group">
-                                {{ form_row(form.xdebug_start_with_request) }}
-                            </div>
+                    <div class="form-group">
+                        <label>Settings</label>
+                        <div id="config-collection" data-prototype="{{ form_widget(form.config.vars.prototype)|e('html_attr') }}">
+                            {% for setting in form.config %}
+                                <div class="php-setting-item mb-2">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ form_widget(setting.settingName, {'attr': {'class': 'form-control php-setting-select'}}) }}
+                                        </div>
+                                        <div class="col-md-5">
+                                            {{ form_widget(setting.value, {'attr': {'class': 'form-control php-setting-value'}}) }}
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-danger remove-php-setting">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-secondary" id="add-config-setting">
+                                <i class="fas fa-plus"></i> Add Setting
+                            </button>
+                            {% if recommended_settings_groups is not empty %}
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-primary">Add Recommended Settings</button>
+                                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-collection-prefix="config">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" data-recommended-settings="{{ recommended_settings_groups|json_encode|e('html_attr') }}">
+                                        {% for groupName in recommended_settings_groups|keys %}
+                                            <li><a class="dropdown-item recommended-settings-link" href="#" data-collection-prefix="config" data-group-name="{{ groupName|e('html_attr') }}">{{ groupName }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <small class="form-text text-muted">
+                            PHP ini settings for general configuration
+                        </small>
                     </div>
                 </div>
             </div>
@@ -51,12 +81,48 @@
                     <h3 class="card-title"><i class="fab fa-php"></i> PHP Configuration (php.ini) - Web</h3>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {{ form_row(form.memory_limit_web) }}
-                            </div>
+                    <div class="form-group">
+                        <label>Settings</label>
+                        <div id="configWeb-collection" data-prototype="{{ form_widget(form.configWeb.vars.prototype)|e('html_attr') }}">
+                            {% for setting in form.configWeb %}
+                                <div class="php-setting-item mb-2">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ form_widget(setting.settingName, {'attr': {'class': 'form-control php-setting-select'}}) }}
+                                        </div>
+                                        <div class="col-md-5">
+                                            {{ form_widget(setting.value, {'attr': {'class': 'form-control php-setting-value'}}) }}
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-danger remove-php-setting">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-secondary" id="add-configWeb-setting">
+                                <i class="fas fa-plus"></i> Add Setting
+                            </button>
+                            {% if recommended_settings_groups is not empty %}
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-primary">Add Recommended Settings</button>
+                                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-collection-prefix="configWeb">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" data-recommended-settings="{{ recommended_settings_groups|json_encode|e('html_attr') }}">
+                                        {% for groupName in recommended_settings_groups|keys %}
+                                            <li><a class="dropdown-item recommended-settings-link" href="#" data-collection-prefix="configWeb" data-group-name="{{ groupName|e('html_attr') }}">{{ groupName }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <small class="form-text text-muted">
+                            PHP ini settings for web server configuration
+                        </small>
                     </div>
                 </div>
             </div>
@@ -66,15 +132,48 @@
                     <h3 class="card-title"><i class="fab fa-php"></i> PHP Configuration (php.ini) - CLI</h3>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {{ form_row(form.memory_limit_cli) }}
-                            </div>
-                            <div class="form-group">
-                                {{ form_row(form.max_execution_time_cli) }}
-                            </div>
+                    <div class="form-group">
+                        <label>Settings</label>
+                        <div id="configCLI-collection" data-prototype="{{ form_widget(form.configCLI.vars.prototype)|e('html_attr') }}">
+                            {% for setting in form.configCLI %}
+                                <div class="php-setting-item mb-2">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ form_widget(setting.settingName, {'attr': {'class': 'form-control php-setting-select'}}) }}
+                                        </div>
+                                        <div class="col-md-5">
+                                            {{ form_widget(setting.value, {'attr': {'class': 'form-control php-setting-value'}}) }}
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-danger remove-php-setting">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-secondary" id="add-configCLI-setting">
+                                <i class="fas fa-plus"></i> Add Setting
+                            </button>
+                            {% if recommended_settings_groups is not empty %}
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-primary">Add Recommended Settings</button>
+                                    <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-collection-prefix="configCLI">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" data-recommended-settings="{{ recommended_settings_groups|json_encode|e('html_attr') }}">
+                                        {% for groupName in recommended_settings_groups|keys %}
+                                            <li><a class="dropdown-item recommended-settings-link" href="#" data-collection-prefix="configCLI" data-group-name="{{ groupName|e('html_attr') }}">{{ groupName }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <small class="form-text text-muted">
+                            PHP ini settings for CLI configuration
+                        </small>
                     </div>
                 </div>
             </div>
@@ -87,24 +186,16 @@
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <i class="fas fa-folder-open"></i>
-                        <strong>TODO</strong>
+                        <i class="fas fa-info-circle"></i>
+                        <strong>PHP Configuration</strong>
                         <br>
-                        TODO
+                        Configure PHP ini settings for your project. Settings are organized by category for easier navigation.
                         <br>
-                        <a href="https://derroylo.github.io/workspaces" target="_blank" class="btn btn-link p-0 mt-2">
-                            <i class="fas fa-book"></i> Learn more about workspaces
-                        </a>
-                    </div>
-                    <div class="alert alert-info">
-                        <i class="fas fa-folder-open"></i>
-                        <strong>What is the purpose of the proxy?</strong>
-                        <br>
-                        TODO: Add more information about the proxy
-                        <br>
-                        <a href="https://derroylo.github.io/proxy" target="_blank" class="btn btn-link p-0 mt-2">
-                            <i class="fas fa-book"></i> Learn more about the proxy
-                        </a>
+                        <ul class="mt-2 mb-0">
+                            <li><strong>General:</strong> Settings applied to all PHP contexts</li>
+                            <li><strong>Web:</strong> Settings specific to web server (Apache/Nginx)</li>
+                            <li><strong>CLI:</strong> Settings specific to command-line interface</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -118,4 +209,324 @@
         <i class="fas fa-times"></i> Cancel
     </a>
 {{ form_end(form) }}
+{% endblock %}
+
+{% block extra_javascripts %}
+<script>
+// Handle collections for PHP settings with Select2
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Select2 for existing selects
+    initializeSelect2();
+    
+    setupPhpSettingCollection('config', 'config');
+    setupPhpSettingCollection('configWeb', 'configWeb');
+    setupPhpSettingCollection('configCLI', 'configCLI');
+    setupRecommendedSettings();
+    
+    function initializeSelect2() {
+        $('.php-setting-select').each(function() {
+            if (!$(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2({
+                    placeholder: 'Search and select a PHP setting...',
+                    allowClear: true,
+                    width: '100%',
+                    tags: true,
+                    dropdownParent: $(this).closest('.php-setting-item')
+                }).on('change', function() {
+                    validateDuplicates($(this).closest('[id$="-collection"]').attr('id').replace('-collection', ''));
+                });
+            }
+        });
+    }
+    
+    function setupPhpSettingCollection(collectionId, collectionPrefix) {
+        const addButton = document.getElementById(`add-${collectionPrefix}-setting`);
+        const collectionHolder = document.getElementById(`${collectionPrefix}-collection`);
+        
+        if (!addButton || !collectionHolder) return;
+        
+        let index = collectionHolder.querySelectorAll('.php-setting-item').length;
+        
+        addButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const prototype = collectionHolder.dataset.prototype;
+            const newForm = prototype.replace(/__name__/g, index);
+            
+            // Parse the prototype HTML to extract individual fields
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = newForm;
+            
+            const settingSelect = tempDiv.querySelector('select[name*="[settingName]"]');
+            const valueField = tempDiv.querySelector('input[name*="[value]"]');
+            
+            const div = document.createElement('div');
+            div.className = 'php-setting-item mb-2';
+            
+            const row = document.createElement('div');
+            row.className = 'row';
+            
+            // Setting select column
+            const col1 = document.createElement('div');
+            col1.className = 'col-md-6';
+            if (settingSelect) {
+                settingSelect.className = 'form-control php-setting-select';
+                col1.appendChild(settingSelect);
+            }
+            row.appendChild(col1);
+            
+            // Value column
+            const col2 = document.createElement('div');
+            col2.className = 'col-md-5';
+            if (valueField) {
+                valueField.className = 'form-control php-setting-value';
+                valueField.placeholder = 'Enter value';
+                col2.appendChild(valueField);
+            }
+            row.appendChild(col2);
+            
+            // Remove button column
+            const col3 = document.createElement('div');
+            col3.className = 'col-md-1';
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-danger remove-php-setting';
+            removeBtn.innerHTML = '<i class="fas fa-minus"></i>';
+            col3.appendChild(removeBtn);
+            row.appendChild(col3);
+            
+            div.appendChild(row);
+            collectionHolder.appendChild(div);
+            index++;
+            
+            // Initialize Select2 for the new select
+            if (settingSelect) {
+                $(settingSelect).select2({
+                    placeholder: 'Search and select a PHP setting...',
+                    allowClear: true,
+                    width: '100%',
+                    tags: true,
+                    dropdownParent: $(div)
+                }).on('change', function() {
+                    validateDuplicates(collectionPrefix);
+                });
+            }
+            
+            attachRemoveHandler(div.querySelector('.remove-php-setting'));
+        });
+        
+        function attachRemoveHandler(button) {
+            if (!button) return;
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const item = this.closest('.php-setting-item');
+                const select = item.querySelector('.php-setting-select');
+                if (select && $(select).hasClass('select2-hidden-accessible')) {
+                    $(select).select2('destroy');
+                }
+                item.remove();
+                validateDuplicates(collectionPrefix);
+            });
+        }
+        
+        // Attach to existing items
+        collectionHolder.querySelectorAll('.remove-php-setting').forEach(attachRemoveHandler);
+    }
+    
+    function validateDuplicates(collectionPrefix) {
+        const collectionHolder = document.getElementById(`${collectionPrefix}-collection`);
+        if (!collectionHolder) return;
+        
+        const settingSelects = collectionHolder.querySelectorAll('.php-setting-select');
+        const usedSettings = new Set();
+        const duplicates = new Set();
+        
+        settingSelects.forEach(function(select) {
+            const $select = $(select);
+            const value = $select.val();
+            const $container = $select.next('.select2-container');
+            
+            if (value) {
+                if (usedSettings.has(value)) {
+                    duplicates.add(value);
+                    $container.addClass('is-invalid');
+                    $select.addClass('is-invalid');
+                } else {
+                    usedSettings.add(value);
+                    $container.removeClass('is-invalid');
+                    $select.removeClass('is-invalid');
+                }
+            } else {
+                $container.removeClass('is-invalid');
+                $select.removeClass('is-invalid');
+            }
+        });
+        
+        // Mark all duplicates
+        if (duplicates.size > 0) {
+            settingSelects.forEach(function(select) {
+                const $select = $(select);
+                if (duplicates.has($select.val())) {
+                    $select.next('.select2-container').addClass('is-invalid');
+                    $select.addClass('is-invalid');
+                }
+            });
+        }
+    }
+    
+    function setupRecommendedSettings() {
+        const recommendedLinks = document.querySelectorAll('.recommended-settings-link');
+        
+        recommendedLinks.forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const collectionPrefix = this.dataset.collectionPrefix;
+                const groupName = this.dataset.groupName;
+                const dropdown = this.closest('.dropdown-menu');
+                const recommendedSettingsJson = dropdown.dataset.recommendedSettings;
+                
+                if (!collectionPrefix || !groupName || !recommendedSettingsJson) {
+                    return;
+                }
+                
+                try {
+                    const allRecommendedSettings = JSON.parse(recommendedSettingsJson);
+                    const groupSettings = allRecommendedSettings[groupName];
+                    
+                    if (!groupSettings || typeof groupSettings !== 'object') {
+                        return;
+                    }
+                    
+                    applyRecommendedSettings(collectionPrefix, groupSettings);
+                } catch (error) {
+                    console.error('Error parsing recommended settings:', error);
+                }
+            });
+        });
+    }
+    
+    function applyRecommendedSettings(collectionPrefix, settings) {
+        const collectionHolder = document.getElementById(`${collectionPrefix}-collection`);
+        if (!collectionHolder) return;
+        
+        const prototype = collectionHolder.dataset.prototype;
+        let index = collectionHolder.querySelectorAll('.php-setting-item').length;
+        
+        // Get existing settings in the collection
+        const existingSettings = new Map();
+        collectionHolder.querySelectorAll('.php-setting-item').forEach(function(item) {
+            const select = item.querySelector('.php-setting-select');
+            const valueInput = item.querySelector('.php-setting-value');
+            if (select && valueInput) {
+                const $select = $(select);
+                const settingName = $select.val();
+                if (settingName) {
+                    existingSettings.set(settingName, { item: item, select: select, valueInput: valueInput });
+                }
+            }
+        });
+        
+        // Apply each recommended setting
+        for (const [settingName, value] of Object.entries(settings)) {
+            if (existingSettings.has(settingName)) {
+                // Update existing setting
+                const existing = existingSettings.get(settingName);
+                existing.valueInput.value = value;
+            } else {
+                // Add new setting
+                const newForm = prototype.replace(/__name__/g, index);
+                
+                // Parse the prototype HTML to extract individual fields
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = newForm;
+                
+                const settingSelect = tempDiv.querySelector('select[name*="[settingName]"]');
+                const valueField = tempDiv.querySelector('input[name*="[value]"]');
+                
+                const div = document.createElement('div');
+                div.className = 'php-setting-item mb-2';
+                
+                const row = document.createElement('div');
+                row.className = 'row';
+                
+                // Setting select column
+                const col1 = document.createElement('div');
+                col1.className = 'col-md-6';
+                if (settingSelect) {
+                    settingSelect.className = 'form-control php-setting-select';
+                    col1.appendChild(settingSelect);
+                }
+                row.appendChild(col1);
+                
+                // Value column
+                const col2 = document.createElement('div');
+                col2.className = 'col-md-5';
+                if (valueField) {
+                    valueField.className = 'form-control php-setting-value';
+                    valueField.placeholder = 'Enter value';
+                    valueField.value = value;
+                    col2.appendChild(valueField);
+                }
+                row.appendChild(col2);
+                
+                // Remove button column
+                const col3 = document.createElement('div');
+                col3.className = 'col-md-1';
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-danger remove-php-setting';
+                removeBtn.innerHTML = '<i class="fas fa-minus"></i>';
+                col3.appendChild(removeBtn);
+                row.appendChild(col3);
+                
+                div.appendChild(row);
+                collectionHolder.appendChild(div);
+                index++;
+                
+                // Initialize Select2 for the new select
+                if (settingSelect) {
+                    // Create and add the option element before initializing Select2
+                    const option = document.createElement('option');
+                    option.value = settingName;
+                    option.textContent = settingName;
+                    option.selected = true;
+                    settingSelect.appendChild(option);
+                    
+                    $(settingSelect).select2({
+                        placeholder: 'Search and select a PHP setting...',
+                        allowClear: true,
+                        width: '100%',
+                        tags: true,
+                        dropdownParent: $(div)
+                    });
+                    
+                    // Ensure the value is set (should already be set via option, but trigger change to update Select2)
+                    $(settingSelect).trigger('change');
+                    
+                    $(settingSelect).on('change', function() {
+                        validateDuplicates(collectionPrefix);
+                    });
+                }
+                
+                // Attach remove handler
+                const removeHandler = function(e) {
+                    e.preventDefault();
+                    const item = this.closest('.php-setting-item');
+                    const select = item.querySelector('.php-setting-select');
+                    if (select && $(select).hasClass('select2-hidden-accessible')) {
+                        $(select).select2('destroy');
+                    }
+                    item.remove();
+                    validateDuplicates(collectionPrefix);
+                };
+                removeBtn.addEventListener('click', removeHandler);
+            }
+        }
+        
+        // Validate duplicates after applying all settings
+        validateDuplicates(collectionPrefix);
+    }
+});
+</script>
 {% endblock %}

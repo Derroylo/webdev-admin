@@ -15,4 +15,6 @@ interface PhpPresetsServiceInterface
     public function getPhpSettings(): array;
 
     public function getPhpSetting(string $name): array;
+
+    public function getRecommendedSettingsGroups(): array;
 }

@@ -96,7 +96,8 @@ com:
 core:
   - name: allow_url_fopen
     description: This option enables the URL-aware fopen wrappers that enable accessing URL object like files. Default wrappers are provided for the access of remote files using the ftp or http protocol, some extensions like zlib may register additional wrappers.
-    info:  
+    info: 
+    common: true 
   - name: allow_url_include
     description: This option enables the URL-aware fopen wrappers that enable accessing URL object like files. Default wrappers are provided for the access of remote files using the ftp or http protocol, some extensions like zlib may register additional wrappers.
     info: Deprecated as of PHP 7.4.0.
@@ -120,7 +121,8 @@ core:
     info:  
   - name: default_charset
     description: The separator used in PHP generated URLs to separate arguments.
-    info:  
+    info: 
+    common: true 
   - name: input_encoding
     description: The separator used in PHP generated URLs to separate arguments.
     info:  
@@ -144,7 +146,8 @@ core:
     info:  
   - name: display_errors
     description: Set the error reporting level. The parameter is either an integer representing a bit field, or named constants. The error_reporting levels and constants are described in Predefined Constants, and in php.ini. To set at runtime, use the error_reporting() function. See also the display_errors directive.
-    info:  
+    info: 
+    common: true 
   - name: display_startup_errors
     description: Set the error reporting level. The parameter is either an integer representing a bit field, or named constants. The error_reporting levels and constants are described in Predefined Constants, and in php.ini. To set at runtime, use the error_reporting() function. See also the display_errors directive.
     info: Prior to PHP 8.0.0, the default value was "0".
@@ -171,7 +174,8 @@ core:
     info:  
   - name: error_log
     description: Set the error reporting level. The parameter is either an integer representing a bit field, or named constants. The error_reporting levels and constants are described in Predefined Constants, and in php.ini. To set at runtime, use the error_reporting() function. See also the display_errors directive.
-    info:  
+    info: 
+    common: true 
   - name: error_log_mode
     description: Set the error reporting level. The parameter is either an integer representing a bit field, or named constants. The error_reporting levels and constants are described in Predefined Constants, and in php.ini. To set at runtime, use the error_reporting() function. See also the display_errors directive.
     info: Available as of PHP 8.2.0
@@ -180,7 +184,8 @@ core:
     info:  
   - name: error_reporting
     description: Set the error reporting level. The parameter is either an integer representing a bit field, or named constants. The error_reporting levels and constants are described in Predefined Constants, and in php.ini. To set at runtime, use the error_reporting() function. See also the display_errors directive.
-    info:  
+    info: 
+    common: true 
   - name: exit_on_timeout
     description: "Tells PHP whether the short form () of PHP's open tag should be allowed. If you want to use PHP in combination with XML, you can disable this option in order to use  inline. Otherwise, you can print it with PHP, for example: . Also, if disabled, you must use the long form of the PHP open tag ()."
     info:  
@@ -195,7 +200,8 @@ core:
     info:  
   - name: file_uploads
     description: Whether or not to allow HTTP file uploads. See also the upload_max_filesize, upload_tmp_dir, and post_max_size directives.
-    info:  
+    info: 
+    common: true 
   - name: from
     description: This option enables the URL-aware fopen wrappers that enable accessing URL object like files. Default wrappers are provided for the access of remote files using the ftp or http protocol, some extensions like zlib may register additional wrappers.
     info:  
@@ -225,37 +231,54 @@ core:
     info:  
   - name: log_errors
     description: Set the error reporting level. The parameter is either an integer representing a bit field, or named constants. The error_reporting levels and constants are described in Predefined Constants, and in php.ini. To set at runtime, use the error_reporting() function. See also the display_errors directive.
-    info:  
+    info: 
+    common: true 
   - name: log_errors_max_len
     description: Set the error reporting level. The parameter is either an integer representing a bit field, or named constants. The error_reporting levels and constants are described in Predefined Constants, and in php.ini. To set at runtime, use the error_reporting() function. See also the display_errors directive.
     info:  
   - name: max_execution_time
     description: Enable assert() evaluation. zend.assertions should be used instead to control the behaviour of assert().
-    info:  
+    info: 
+    common: true 
+    recommended:
+      - name: Shopware 6
+        value: 60
+      - name: OXID eShop
+        value: 60
   - name: max_input_nesting_level
     description: Enable assert() evaluation. zend.assertions should be used instead to control the behaviour of assert().
     info:  
   - name: max_input_vars
     description: Enable assert() evaluation. zend.assertions should be used instead to control the behaviour of assert().
-    info:  
+    info: 
+    common: true 
   - name: max_input_time
     description: Enable assert() evaluation. zend.assertions should be used instead to control the behaviour of assert().
-    info:  
+    info: 
+    common: true 
   - name: memory_limit
     description: This sets the maximum amount of memory in bytes that a script is allowed to allocate. This helps prevent poorly written scripts for eating up all available memory on a server. Note that to have no memory limit, set this directive to -1.
-    info:  
+    info: 
+    common: true 
+    recommended:
+      - name: Shopware 6
+        value: 1024M
+      - name: OXID eShop
+        value: 512M
   - name: open_basedir
     description: "Specifies a list of directories where the require, include, fopen(), file(), readfile() and file_get_contents() functions look for files. The format is like the system's PATH environment variable: a list of directories separated with a colon in Unix or semicolon in Windows."
     info:  
   - name: output_buffering
     description: Output buffering for all files can be enabled by setting this directive to "On". To limit the size of the buffer, a number/quantity corresponding to the maximum numbers of bytes allowed can be used instead of "On" for the value of this directive. For example output_buffering=4096. This directive is always Off in PHP-CLI.
-    info:  
+    info: 
+    common: true 
   - name: output_handler
     description: Output buffering for all files can be enabled by setting this directive to "On". To limit the size of the buffer, a number/quantity corresponding to the maximum numbers of bytes allowed can be used instead of "On" for the value of this directive. For example output_buffering=4096. This directive is always Off in PHP-CLI.
     info:  
   - name: post_max_size
     description: The separator used in PHP generated URLs to separate arguments.
-    info:  
+    info: 
+    common: true 
   - name: precision
     description: "Tells PHP whether the short form () of PHP's open tag should be allowed. If you want to use PHP in combination with XML, you can disable this option in order to use  inline. Otherwise, you can print it with PHP, for example: . Also, if disabled, you must use the long form of the PHP open tag ()."
     info:  
@@ -288,7 +311,8 @@ core:
     info: Prior to PHP 7.1.0, the default value was 17.
   - name: short_open_tag
     description: "Tells PHP whether the short form () of PHP's open tag should be allowed. If you want to use PHP in combination with XML, you can disable this option in order to use  inline. Otherwise, you can print it with PHP, for example: . Also, if disabled, you must use the long form of the PHP open tag ()."
-    info:  
+    info: 
+    common: true 
   - name: SMTP
     description: Add X-PHP-Originating-Script that will include UID of the script followed by the filename.
     info:  
@@ -309,13 +333,16 @@ core:
     info: Available as of PHP 7.4.0.
   - name: upload_max_filesize
     description: Whether or not to allow HTTP file uploads. See also the upload_max_filesize, upload_tmp_dir, and post_max_size directives.
-    info:  
+    info: 
+    common: true 
   - name: max_file_uploads
     description: Whether or not to allow HTTP file uploads. See also the upload_max_filesize, upload_tmp_dir, and post_max_size directives.
-    info:  
+    info: 
+    common: true 
   - name: upload_tmp_dir
     description: Whether or not to allow HTTP file uploads. See also the upload_max_filesize, upload_tmp_dir, and post_max_size directives.
-    info:  
+    info: 
+    common: true 
   - name: user_agent
     description: This option enables the URL-aware fopen wrappers that enable accessing URL object like files. Default wrappers are provided for the access of remote files using the ftp or http protocol, some extensions like zlib may register additional wrappers.
     info:  
@@ -360,6 +387,7 @@ date:
     description: The default latitude ranging from 0 at the equator, to +90 northward, and -90 southward.
     info: From PHP 8.2, a warning is emitted when setting this to an invalid
       value or an empty string.
+    common: true
 
 dba:
   - name: dba.default_handler
@@ -812,19 +840,22 @@ odbc:
 opcache:
   - name: opcache.enable
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
-    info:  
+    info: 
+    common: true 
   - name: opcache.enable_cli
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
     info: Between PHP 7.1.2 and 7.1.6 inclusive, the default was 1
   - name: opcache.memory_consumption
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
-    info:  
+    info: 
+    common: true 
   - name: opcache.interned_strings_buffer
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
     info:  
   - name: opcache.max_accelerated_files
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
-    info:  
+    info: 
+    common: true 
   - name: opcache.max_wasted_percentage
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
     info:  
@@ -833,7 +864,8 @@ opcache:
     info:  
   - name: opcache.validate_timestamps
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
-    info:  
+    info: 
+    common: true 
   - name: opcache.revalidate_freq
     description: Enables the opcode cache. When disabled, code is not optimised or cached. The setting opcache.enable can not be enabled at runtime through ini_set(), it can only be disabled. Trying to enable it in a script will generate a warning.
     info:  
@@ -1007,8 +1039,7 @@ pdo_odbc:
     info:  
   - name: pdo_odbc.db2_instance_name
     description: Whether to pool ODBC connections. Can be one of "strict", "relaxed" or "off" (equals to ""). The parameter describes how strict the connection manager should be when matching connection parameters to existing pooled connections. strict is the recommend default, and will result in the use of cached connections only when all the connection parameters match exactly. relaxed will result in the use of cached connections when similar connection parameters are used. This can result in increased use ...
-    info: This deprecated feature will
-certainly be removed in the future.
+    info: This deprecated feature will certainly be removed in the future.
 
 pgsql:
   - name: pgsql.allow_persistent
@@ -1052,13 +1083,15 @@ runkit:
 session:
   - name: session.save_path
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
-    info:  
+    info: 
+    common: true 
   - name: session.name
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
     info:  
   - name: session.save_handler
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
-    info:  
+    info: 
+    common: true 
   - name: session.auto_start
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
     info:  
@@ -1070,13 +1103,15 @@ session:
     info:  
   - name: session.gc_maxlifetime
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
-    info:  
+    info: 
+    common: true 
   - name: session.serialize_handler
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
     info:  
   - name: session.cookie_lifetime
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
-    info:  
+    info: 
+    common: true 
   - name: session.cookie_path
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
     info:  
@@ -1086,9 +1121,11 @@ session:
   - name: session.cookie_secure
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
     info: Prior to PHP 7.2.0, the default was "".
+    common: true
   - name: session.cookie_httponly
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
     info: Prior to PHP 7.2.0, the default was "".
+    common: true
   - name: session.cookie_samesite
     description: There is an optional N argument to this directive that determines the number of directory levels your session files will be spread around in. For example, setting to '5;/tmp' may end up creating a session file and location like /tmp/4/b/1/e/3/sess_4b1e384ad74619bd212e236e52a5a174If . In order to use N you must create all of these directories before use. A small shell script exists in ext/session to do this, it's called mod_files.sh, with a Windows version called mod_files.bat. Also note that ...
     info: Available as of PHP 7.3.0.

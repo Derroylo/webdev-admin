@@ -45,4 +45,43 @@ class PhpPresetsService extends AbstractPresetsService implements PhpPresetsServ
 
         return $settings[$name] ?? [];
     }
+
+    /**
+     * Get recommended settings grouped by application name
+     *
+     * @return array<string, array<string, string>> Array of [application_name => [setting_name => value]]
+     */
+    public function getRecommendedSettingsGroups(): array
+    {
+        $phpSettings = $this->getPhpSettings();
+        $groups = [];
+
+        foreach ($phpSettings as $category => $settings) {
+            foreach ($settings as $setting) {
+                $settingName = $setting['name'] ?? null;
+                $recommended = $setting['recommended'] ?? [];
+
+                if (!$settingName || empty($recommended)) {
+                    continue;
+                }
+
+                foreach ($recommended as $recommendation) {
+                    $appName = $recommendation['name'] ?? null;
+                    $value = $recommendation['value'] ?? null;
+
+                    if (!$appName || $value === null) {
+                        continue;
+                    }
+
+                    if (!isset($groups[$appName])) {
+                        $groups[$appName] = [];
+                    }
+
+                    $groups[$appName][$settingName] = $value;
+                }
+            }
+        }
+
+        return $groups;
+    }
 }
