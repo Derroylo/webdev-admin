@@ -27,14 +27,28 @@ class EditPhpConfigController extends AbstractController
         /** @var ProjectConfigDto $projectConfigDto */
         $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
-        $form = $this->createForm(PhpConfigType::class, $projectConfigDto);
+        // Collect all existing setting names from all collections to include in dropdown
+        $phpConfig = $projectConfigDto->php;
+        $existingSettings = [];
+        
+        if (is_array($phpConfig->config)) {
+            $existingSettings = array_merge($existingSettings, array_keys($phpConfig->config));
+        }
+        if (is_array($phpConfig->configWeb)) {
+            $existingSettings = array_merge($existingSettings, array_keys($phpConfig->configWeb));
+        }
+        if (is_array($phpConfig->configCLI)) {
+            $existingSettings = array_merge($existingSettings, array_keys($phpConfig->configCLI));
+        }
+        
+        $form = $this->createForm(PhpConfigType::class, $projectConfigDto, [
+            'existing_settings' => array_unique($existingSettings),
+        ]);
         $form->handleRequest($request);
         
         // After handleRequest, if form is not submitted, repopulate unmapped collections
         // handleRequest() resets unmapped fields, so we need to set them again
         if (!$form->isSubmitted()) {
-            $phpConfig = $projectConfigDto->php;
-            
             // Repopulate config collection
             if (is_array($phpConfig->config) && !empty($phpConfig->config)) {
                 $formData = [];

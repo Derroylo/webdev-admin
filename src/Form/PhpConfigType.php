@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PhpConfigType extends AbstractType
 {
@@ -37,13 +38,17 @@ class PhpConfigType extends AbstractType
                 'attr'          => ['class' => 'form-control'],
             ]);
 
+        // Get existing settings from options to pass to entry type
+        $existingSettings = $options['existing_settings'] ?? [];
+
         // Add collection for general config
         $configBuilder = $builder->create('config', CollectionType::class, [
             'label'         => false,
             'entry_type'    => PhpSettingEntryType::class,
             'property_path' => 'php.config',
             'entry_options' => [
-                'label' => false,
+                'label'             => false,
+                'existing_settings' => $existingSettings,
             ],
             'allow_add'      => true,
             'allow_delete'   => true,
@@ -59,7 +64,8 @@ class PhpConfigType extends AbstractType
             'entry_type'    => PhpSettingEntryType::class,
             'property_path' => 'php.configWeb',
             'entry_options' => [
-                'label' => false,
+                'label'             => false,
+                'existing_settings' => $existingSettings,
             ],
             'allow_add'      => true,
             'allow_delete'   => true,
@@ -75,7 +81,8 @@ class PhpConfigType extends AbstractType
             'entry_type'    => PhpSettingEntryType::class,
             'property_path' => 'php.configCLI',
             'entry_options' => [
-                'label' => false,
+                'label'             => false,
+                'existing_settings' => $existingSettings,
             ],
             'allow_add'      => true,
             'allow_delete'   => true,
@@ -117,6 +124,13 @@ class PhpConfigType extends AbstractType
 
             $event->setData($data);
         });
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'existing_settings' => [],
+        ]);
     }
 
     /**
