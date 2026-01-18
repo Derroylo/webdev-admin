@@ -9,13 +9,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class ServiceType extends AbstractType
 {
     public function __construct(
-        private readonly ServicePresetsServiceInterface $servicePresetsService,
+        private readonly ServicePresetsServiceInterface $servicePresetsService
     ) {
     }
 
@@ -42,6 +43,7 @@ class ServiceType extends AbstractType
                 'choices'  => $templateCategoryChoices,
                 'mapped'   => false,
                 'required' => false,
+                'disabled' => true,
                 'attr'     => [
                     'class' => 'form-control',
                     'id'    => 'template-category',
@@ -53,6 +55,7 @@ class ServiceType extends AbstractType
                 'choices'  => ['-- Select a category first --' => ''],
                 'mapped'   => false,
                 'required' => false,
+                'disabled' => true,
                 'attr'     => [
                     'class'    => 'form-control',
                     'id'       => 'template-key',
@@ -113,6 +116,23 @@ class ServiceType extends AbstractType
                     'placeholder' => 'e.g., mysql',
                 ],
                 'help' => 'The subdomain for the service (optional)',
+            ])
+            ->add('service_definition', TextareaType::class, [
+                'label' => 'Service Definition',
+                'required' => false,
+                'mapped' => false,
+                'attr'     => [
+                    'class'       => 'form-control',
+                    'rows' => 10,
+                    'placeholder' => 'redis:
+    image: redis:latest
+    networks:
+      - webdev-network
+    container_name: ${COMPOSE_PROJECT_NAME:-devcontainer}-redis
+    ports:
+      - 6379:6379',
+                ],
+                'help' => 'The service definition for the docker-compose.yml file',
             ]);
     }
 }

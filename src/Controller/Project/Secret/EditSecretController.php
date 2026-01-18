@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Project\Secret;
 
 use App\Dto\Project\Schema3\ProjectConfigDto;
-use App\Dto\SecretDto;
 use App\Form\SecretType;
 use App\Service\Project\ProjectConfigServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,7 +52,7 @@ class EditSecretController extends AbstractController
             }
         }
 
-        return $this->render('project/secrets/form.html.twig', [
+        return $this->render('project/secrets/edit.html.twig', [
             'page_title'  => 'Edit Secret: ' . $key,
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_secrets')],

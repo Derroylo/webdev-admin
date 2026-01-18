@@ -53,7 +53,7 @@ class EditWorkspaceController extends AbstractController
             }
         }
 
-        return $this->render('project/workspaces/form.html.twig', [
+        return $this->render('project/workspaces/edit.html.twig', [
             'page_title'  => 'Edit Workspace: ' . $workspaceDto->name,
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_workspaces')],

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Project\Workspace;
+namespace App\Controller\Project\Secret;
 
 use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Service\Project\ProjectConfigServiceInterface;
@@ -10,26 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class WorkspacesOverviewController extends AbstractController
+class OverviewSecretController extends AbstractController
 {
     public function __construct(
         private readonly ProjectConfigServiceInterface $projectConfigService,
     ) {
     }
 
-    #[Route('/project/workspaces', name: 'project_workspaces')]
+    #[Route('/project/secrets', name: 'project_secrets')]
     public function __invoke(): Response
     {
         /** @var ProjectConfigDto $projectConfigDto */
         $projectConfigDto = $this->projectConfigService->getCurrentProjectConfig();
 
-        return $this->render('project/workspaces/overview.html.twig', [
-            'page_title'  => 'Project Workspaces',
+        return $this->render('project/secrets/overview.html.twig', [
+            'page_title'  => 'Project Secrets',
             'breadcrumbs' => [
                 ['label' => 'Projects', 'url' => $this->generateUrl('projects_overview')],
-                ['label' => 'Project Workspaces', 'url' => ''],
+                ['label' => 'Project Secrets', 'url' => ''],
             ],
-            'workspaces' => $projectConfigDto->workspaces,
+            'secrets' => $projectConfigDto->secrets,
         ]);
     }
 }

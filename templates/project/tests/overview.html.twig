@@ -57,6 +57,9 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
+                                        <a href="#" class="btn btn-primary command-execute-link" data-project-path="{{ project_path|e('html_attr') }}" data-command="webdev tests {{ key|e('html_attr') }}">
+                                            <i class="fas fa-play"></i>
+                                        </a>
                                         <a href="{{ path('project_tests_edit', {key: key}) }}" 
                                            class="btn btn-info" 
                                            title="Edit">
@@ -71,6 +74,7 @@
                                             </button>
                                         </form>
                                     </div>
+                                    
                                 </td>
                             </tr>
                         {% else %}
@@ -80,6 +84,40 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Test Execution Modal -->
+<div class="modal fade" id="commandExecutionModal" tabindex="-1" aria-labelledby="commandExecutionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commandExecutionModalLabel">
+                    <i class="fas fa-terminal"></i> <span id="command-execution-title">Executing Command</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="command-execution-loading" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Executing test...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Executing command...</p>
+                </div>
+                <div id="command-execution-output" class="d-none">
+                    <div class="terminal-output" id="command-terminal-output"></div>
+                </div>
+                <div id="command-execution-error" class="d-none">
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="command-execution-error-message"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

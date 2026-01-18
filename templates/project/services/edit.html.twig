@@ -86,6 +86,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        {{ form_row(form.service_definition) }}
+                    </div>
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary">
@@ -142,10 +145,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const templateSelect = document.getElementById('service_template_key');
     const templateInfo = document.getElementById('template-info');
     const nameField = document.getElementById('service_name');
+    const keyField = document.getElementById('service_key');
     const serviceCategoryField = document.getElementById('service_category');
     const portField = document.querySelector('input[id$="_port"]');
     const subDomainField = document.querySelector('input[id$="_subDomain"]');
     const activeCheckbox = document.querySelector('input[id$="_active"]');
+    const serviceDefinitionField = document.querySelector('textarea[id$="_service_definition"]');
+
+    categorySelect.disabled = false;
 
     // Handle category change
     categorySelect.addEventListener('change', function() {
@@ -201,6 +208,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Auto-fill form fields
         if (template.webdev_config) {
+            // Fill key
+            if (templateKey) {
+                keyField.value = templateKey;
+            }
+            
             // Fill name
             if (template.webdev_config.name) {
                 nameField.value = template.webdev_config.name;
@@ -226,6 +238,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fill active
             if (activeCheckbox) {
                 activeCheckbox.checked = template.webdev_config.active || false;
+            }
+
+            // Fill service definition
+            if (template.docker_compose_snippet) {
+                serviceDefinitionField.value = template.docker_compose_snippet;
             }
         }
     });

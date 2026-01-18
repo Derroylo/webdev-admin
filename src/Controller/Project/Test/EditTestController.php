@@ -52,7 +52,7 @@ class EditTestController extends AbstractController
             }
         }
 
-        return $this->render('project/tests/form.html.twig', [
+        return $this->render('project/tests/edit.html.twig', [
             'page_title'  => 'Edit Test: ' . $testDto->name,
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_tests')],

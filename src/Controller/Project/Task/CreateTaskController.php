@@ -50,7 +50,7 @@ class CreateTaskController extends AbstractController
             }
         }
 
-        return $this->render('project/tasks/form.html.twig', [
+        return $this->render('project/tasks/edit.html.twig', [
             'page_title'  => 'Add New Task',
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_tasks')],

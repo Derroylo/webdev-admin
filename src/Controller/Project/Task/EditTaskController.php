@@ -52,7 +52,7 @@ class EditTaskController extends AbstractController
             }
         }
 
-        return $this->render('project/tasks/form.html.twig', [
+        return $this->render('project/tasks/edit.html.twig', [
             'page_title'  => 'Edit Task: ' . $taskDto->name,
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_tasks')],

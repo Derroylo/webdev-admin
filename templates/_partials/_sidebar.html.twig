@@ -29,22 +29,22 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+{#                 <li class="nav-item">
                     <a href="{{ path('placeholder') }}" class="nav-link {% if app.request.get('_route') starts with 'tools_placeholder' %}active{% endif %}">
                         <i class="fas fa-key nav-icon"></i>
                         <p>Secrets</p>
                     </a>
-                </li>
+                </li> #}
 
                 {# Settings Section #}
                 <li class="nav-header">Project</li>
 
-                <li class="nav-item">
+{#                 <li class="nav-item">
                     <a href="{{ path('settings_dashboard') }}" class="nav-link {% if app.request.get('_route') == 'settings_dashboard' %}active{% endif %}">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Overview</p>
                     </a>
-                </li>
+                </li> #}
                 <li class="nav-item">
                     <a href="{{ path('project_configuration') }}" class="nav-link {% if app.request.get('_route') starts with 'project_configuration' %}active{% endif %}">
                         <i class="fas fa-cog nav-icon"></i>
@@ -82,7 +82,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                {# <li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="fas fa-file-alt nav-icon"></i>
                         <p>   
@@ -116,10 +116,10 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> #}
 
                 {# Tools Section #}
-                <li class="nav-header">Tools</li>
+                {# <li class="nav-header">Tools</li>
 
                 
                 <li class="nav-item">
@@ -134,7 +134,7 @@
                         <i class="fas fa-tools nav-icon"></i>
                         <p>Some other Tools</p>
                     </a>
-                </li>
+                </li> #}
 
                 <li class="nav-header">Documentation</li>
 

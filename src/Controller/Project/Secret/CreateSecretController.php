@@ -50,7 +50,7 @@ class CreateSecretController extends AbstractController
             }
         }
 
-        return $this->render('project/secrets/form.html.twig', [
+        return $this->render('project/secrets/edit.html.twig', [
             'page_title'  => 'Add New Secret',
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_secrets')],

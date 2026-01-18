@@ -63,7 +63,7 @@ class CreateTestController extends AbstractController
             $templatesByCategory[$category][$key] = $template;
         }
 
-        return $this->render('project/tests/form.html.twig', [
+        return $this->render('project/tests/edit.html.twig', [
             'page_title'  => 'Add New Test',
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_tests')],

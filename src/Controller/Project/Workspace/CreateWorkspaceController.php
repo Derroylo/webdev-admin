@@ -49,7 +49,7 @@ class CreateWorkspaceController extends AbstractController
             }
         }
 
-        return $this->render('project/workspaces/form.html.twig', [
+        return $this->render('project/workspaces/edit.html.twig', [
             'page_title'  => 'Add New Workspace',
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_workspaces')],

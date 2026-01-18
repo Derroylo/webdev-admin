@@ -9,6 +9,7 @@ use App\Dto\Project\Schema3\ProjectConfigDto;
 use App\Form\ServiceType;
 use App\Service\Project\ProjectConfigServiceInterface;
 use App\Service\Config\ServicePresetsServiceInterface;
+use App\Service\Project\ProjectDockerComposeServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ class CreateServiceController extends AbstractController
 {
     public function __construct(
         private readonly ProjectConfigServiceInterface $projectConfigService,
+        private readonly ProjectDockerComposeServiceInterface $projectDockerComposeService,
         private readonly ServicePresetsServiceInterface $servicePresetsService,
     ) {
     }
@@ -34,11 +36,13 @@ class CreateServiceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $key = $form->get('key')->getData();
+                $serviceDefinition = $form->get('service_definition')->getData();
 
                 if (!isset($projectConfigDto->services[$key])) {
                     $projectConfigDto->services[$key] = $form->getData();
 
                     $this->projectConfigService->validateAndSaveCurrentProjectConfig($projectConfigDto);
+                    $this->projectDockerComposeService->addService( $key, $serviceDefinition);
 
                     $this->addFlash('success', 'Service created successfully!');
 
@@ -63,7 +67,7 @@ class CreateServiceController extends AbstractController
             $templatesByCategory[$category][$key] = $template;
         }
 
-        return $this->render('project/services/form.html.twig', [
+        return $this->render('project/services/edit.html.twig', [
             'page_title'  => 'Add New Service',
             'breadcrumbs' => [
                 ['label' => 'Project', 'url' => $this->generateUrl('project_services')],
