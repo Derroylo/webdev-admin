@@ -62,7 +62,8 @@ jobs:
               --exclude='*.log' \
               --exclude='.phpunit.cache' \
               --exclude='.php-cs-fixer.cache' \
-              -czf "$ARCHIVE_NAME" .
+              -czf "../$ARCHIVE_NAME" .
+          mv "../$ARCHIVE_NAME" .
           echo "ARCHIVE_NAME=$ARCHIVE_NAME" >> $GITHUB_ENV
 
       - name: Create GitHub Release
