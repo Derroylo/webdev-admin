@@ -58,7 +58,6 @@ jobs:
           tar --exclude='.git' \
               --exclude='.github' \
               --exclude='node_modules' \
-              --exclude='.env*' \
               --exclude='*.log' \
               --exclude='.phpunit.cache' \
               --exclude='.php-cs-fixer.cache' \
