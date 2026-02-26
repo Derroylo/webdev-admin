@@ -46,37 +46,37 @@
                     </a>
                 </li> #}
                 <li class="nav-item">
-                    <a href="{{ project_selected|default(false) ? path('project_configuration') : '#' }}" class="nav-link {% if app.request.get('_route') starts with 'project_configuration' %}active{% endif %}{% if not project_selected|default(false) %} disabled{% endif %}">
+                    <a href="{{ path('project_configuration') }}" class="nav-link {% if app.request.get('_route') starts with 'project_configuration' %}active{% endif %}" {% if not project_selected|default(false) %}disabled{% endif %}>
                         <i class="fas fa-cog nav-icon"></i>
                         <p>Configuration</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ project_selected|default(false) ? path('project_services') : '#' }}" class="nav-link {% if app.request.get('_route') starts with 'project_services' %}active{% endif %}{% if not project_selected|default(false) %} disabled{% endif %}">
+                    <a href="{{ path('project_services') }}" class="nav-link {% if app.request.get('_route') starts with 'project_services' %}active{% endif %}" {% if not project_selected|default(false) %}disabled{% endif %}>
                         <i class="fas fa-server nav-icon"></i>
                         <p>Services</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ project_selected|default(false) ? path('project_tasks') : '#' }}" class="nav-link {% if app.request.get('_route') starts with 'project_tasks' %}active{% endif %}{% if not project_selected|default(false) %} disabled{% endif %}">
+                    <a href="{{ path('project_tasks') }}" class="nav-link {% if app.request.get('_route') starts with 'project_tasks' %}active{% endif %}" {% if not project_selected|default(false) %}disabled{% endif %}>
                         <i class="fas fa-tasks nav-icon"></i>
                         <p>Tasks</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ project_selected|default(false) ? path('project_tests') : '#' }}" class="nav-link {% if app.request.get('_route') starts with 'project_tests' %}active{% endif %}{% if not project_selected|default(false) %} disabled{% endif %}">
+                    <a href="{{ path('project_tests') }}" class="nav-link {% if app.request.get('_route') starts with 'project_tests' %}active{% endif %}" {% if not project_selected|default(false) %}disabled{% endif %}>
                         <i class="fas fa-vial nav-icon"></i>
                         <p>Tests</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ project_selected|default(false) ? path('project_workspaces') : '#' }}" class="nav-link {% if app.request.get('_route') starts with 'project_workspaces' %}active{% endif %}{% if not project_selected|default(false) %} disabled{% endif %}">
+                    <a href="{{ path('project_workspaces') }}" class="nav-link {% if app.request.get('_route') starts with 'project_workspaces' %}active{% endif %}" {% if not project_selected|default(false) %}disabled{% endif %}>
                         <i class="fas fa-folder nav-icon"></i>
                         <p>Workspaces</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ project_selected|default(false) ? path('project_secrets') : '#' }}" class="nav-link {% if app.request.get('_route') starts with 'project_secrets' %}active{% endif %}{% if not project_selected|default(false) %} disabled{% endif %}">
+                    <a href="{{ path('project_secrets') }}" class="nav-link {% if app.request.get('_route') starts with 'project_secrets' %}active{% endif %}" {% if not project_selected|default(false) %}disabled{% endif %}>
                         <i class="fas fa-key nav-icon"></i>
                         <p>Secrets</p>
                     </a>
